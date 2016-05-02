@@ -8,24 +8,25 @@ from kivy.uix.popup import Popup
 from kivy.lang import Builder
 from kivy.app import App
 
-
+# Data, which will form the view of popup, e.g. label, button text
+# Division may be useful for translation
 data_group = {
     'title': 'Group schedule',
     'label_text': 'Input the group cypher',
-    'first_button': 'Accept',
-    'second_button': 'Default'
+    'first_button_label': 'Accept',
+    'second_button_label': 'Default'
 }
 data_teacher = {
     'title': 'Teacher schedule',
     'label_text': 'Input teacher full name',
-    'first_button': 'Accept',
-    'second_button': 'Default'
+    'first_button_label': 'Accept',
+    'second_button_label': 'Default'
 }
 data_room = {
     'title': 'Room schedule',
     'label_text': 'Input the room number',
-    'first_button': 'Accept',
-    'second_button': 'All'
+    'first_button_label': 'Accept',
+    'second_button_label': 'All'
 }
 data = {
     'group': data_group,
@@ -34,13 +35,15 @@ data = {
 }
 
 
-def popup_create(p_type, first_bind, second_bind):
-    popup = Builder.template('HugePopup',
-                             first_btn=simple,
-                             second_btn=one_more,
-                             **data[p_type])
-    # popup
-    return popup
+class HugePopup(Popup):
+    # Popup-form for view schedule for group, teacher or room
+    def __init__(self, **kwargs):
+        self.label_text = kwargs['label_text']
+        self.first_button_label = kwargs['first_button_label']
+        self.first_button = kwargs['first_button']
+        self.second_button_label = kwargs['second_button_label']
+        self.second_button = kwargs['second_button']
+        super(Popup, self).__init__(**kwargs)
 
 
 def simple():
@@ -58,7 +61,9 @@ class PopupsApp(App):
 
     def show_popup(self, b):
         # p = Builder.template('HugePopup', **data_room)
-        p = popup_create('teacher', simple, one_more)
+        # p = popup_create('teacher', simple, one_more)
+        p = HugePopup(first_button=simple, second_button=one_more,
+                      **data['teacher'])
         p.open()
 
 
