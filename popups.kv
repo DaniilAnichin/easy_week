@@ -1,0 +1,28 @@
+[HugePopup@Popup]:
+    title: ctx.title
+    size_hint: 0.3, 0.3
+    auto_dismiss: True
+    BoxLayout:
+        orientation: 'vertical'
+        TextInput:
+            text: ctx.label_text
+        Button:
+            text: ctx.first_button
+            on_press: ctx.first_btn()
+        Button:
+            text: ctx.second_button
+            on_press: ctx.second_btn()
+
+<LoginPopup>:
+    size_hint: .3, .3
+    auto_dismiss: False
+    title: 'Login form'
+    BoxLayout:
+        orientation: 'vertical'
+        TextInput:
+            text: "Input full name/cypher"
+        TextInput:
+            text: "password(if teacher)"
+        Button:
+            text: "Accept"
+            on_press: root.dismiss()
