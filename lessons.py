@@ -3,10 +3,14 @@
 """
 Definitions for Easy Week lesson structure
 """
-from kivy.uix.button import Button
+from kivy.uix.button import Button, ButtonBehavior
+from kivy.uix.label import Label
 from kivy.lang import Builder
+from kivy.factory import Factory
 from kivy.app import App
 
+# Data which will form the view of pair, e.g. week days, time lapse
+# Division may be useful for translation
 day_times = [
     '08:30 - 10:05',
     '10:25 - 12:00',
@@ -29,9 +33,18 @@ week_days = [
     'Saturday',
     'Sunday'
 ]
+# Test data for lessons, just example
+data_pair = [dict(teacher='Orlovskiy I.V.', lesson='High Math II',
+                  type=lesson_types.index('Lecture'),
+                  groups=['IK-51', 'IK-52'], room='18/413',
+                  week_time={'week': 'upper', 'day': 1, 'number': 1}),
+             dict(teacher='Lisovichenko O.I.', lesson='OOP',
+                  type=lesson_types.index('Practice'),
+                  groups=['IK-51'], room='18/438',
+                  week_time={'week': 'lower', 'day': 4, 'number': 3})]
 
 
-class Lesson:
+class Lesson(Button):
     def __init__(self, **kwargs):
         self.teacher = kwargs['teacher']
         self.lesson = kwargs['lesson']
@@ -39,6 +52,10 @@ class Lesson:
         self.groups = kwargs['groups']
         self.room = kwargs['room']
         self.week_time = kwargs['week_time']
+        self.text = self.__str__()
+        self.on_press = kwargs['on_press']
+        super(Button, self).__init__()
+        # super(Label, self).__init__(**kwargs)
 
     def __str__(self, *excepted):
         result = 'Here You have:'
@@ -52,23 +69,19 @@ class Lesson:
         return result
 
 
-data_pair = [dict(teacher='Orlovskiy I.V.', lesson='High Math II',
-                  type=lesson_types.index('Lecture'),
-                  groups=['IK-51', 'IK-52'], room='18/413',
-                  week_time={'week': 'upper', 'day': 1, 'number': 1}),
-             dict(teacher='Lisovichenko O.I.', lesson='OOP',
-                  type=lesson_types.index('Practice'),
-                  groups=['IK-51'], room='18/438',
-                  week_time={'week': 'lower', 'day': 4, 'number': 3})]
+def clickable():
+    print 'And this too!'
 
 
-class ExampleApp(App):
+class LessonsApp(App):
     def build(self):
-        lesson = Lesson(**data_pair[0])
-        button = Button(text=lesson.__str__(),
-                        text_size=(200, 200))
+        # lesson = Lesson(**data_pair[0])
+        # button = Button(text=lesson.__str__(),
+        #                 text_size=(200, 200))
+        button = Factory.Lesson(on_press=clickable,
+                                **data_pair[0])
         return button
 
 
 if __name__ == "__main__":
-    ExampleApp().run()
+    LessonsApp().run()

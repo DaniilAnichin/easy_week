@@ -4,9 +4,11 @@ from kivy.app import App
 from random import random
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
+from kivy.uix.popup import Popup
 from kivy.uix.actionbar import ActionButton
 from kivy.uix.tabbedpanel import TabbedPanel, TabbedPanelItem
 from kivy.lang import Builder
+from kivy.factory import Factory
 import schedule
 import lessons
 import popups
@@ -39,7 +41,7 @@ class MainWindow(BoxLayout):
         self.add_widget(menu_layout)
         lesson_set = [[lessons.data_pair[int(random() * 100) % 2]
                        for i in range(4)] for j in range(5)]
-        table = schedule.lesson_holder_creator(pair_set=lesson_set)
+        table = schedule.lesson_table_creator(pair_set=lesson_set)
         tabs = TabbedPanel(do_default_tab=False)
         for i in range(3):
             tab = TabbedPanelItem(content=table, text='tab № {}'.format(i + 1))
@@ -58,7 +60,7 @@ class MenuApp(App):
         basic_layout.add_widget(menu_layout)
         lesson_set = [[lessons.data_pair[int(random() * 100) % 2]
                        for i in range(4)] for j in range(5)]
-        table = schedule.lesson_holder_creator(pair_set=lesson_set)
+        table = schedule.lesson_table_creator(pair_set=lesson_set)
         tabs = TabbedPanel(do_default_tab=False)
         for i in range(3):
             tab = TabbedPanelItem(content=table, text='tab № {}'.format(i + 1))
@@ -70,17 +72,29 @@ class MenuApp(App):
 
     @staticmethod
     def show_group_popup(b):
-        p = Builder.template('HugePopup', **popups.data_group)
+        if isinstance(b, Popup):
+            b.dismiss()
+        p = Factory.HugePopup(first_button=MenuApp.show_teacher_popup,
+                              second_button=MenuApp.show_room_popup,
+                              **popups.data_group)
         p.open()
 
     @staticmethod
     def show_teacher_popup(b):
-        p = Builder.template('HugePopup', **popups.data_teacher)
+        if isinstance(b, Popup):
+            b.dismiss()
+        p = Factory.HugePopup(first_button=MenuApp.show_group_popup,
+                              second_button=MenuApp.show_room_popup,
+                              **popups.data_teacher)
         p.open()
 
     @staticmethod
     def show_room_popup(b):
-        p = Builder.template('HugePopup', **popups.data_room)
+        if isinstance(b, Popup):
+            b.dismiss()
+        p = Factory.HugePopup(first_button=MenuApp.show_group_popup,
+                              second_button=MenuApp.show_teacher_popup,
+                              **popups.data_room)
         p.open()
 
 

@@ -8,7 +8,7 @@ from kivy.uix.popup import Popup
 from kivy.lang import Builder
 from kivy.app import App
 
-# Data, which will form the view of popup, e.g. label, button text
+# Data which will form the view of popup, e.g. label, button text
 # Division may be useful for translation
 data_group = {
     'title': 'Group schedule',

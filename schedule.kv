@@ -1,3 +1,22 @@
-<Lesson@Button>:
-    font_size: self.height/11
-    markup: True
+<LessonDay@BoxLayout>:
+    Lesson:
+        text: root.lesson_set[0]
+    Lesson:
+        text: root.lesson_set[1]
+    Lesson:
+        text: root.lesson_set[2]
+    Lesson:
+        text: root.lesson_set[3]
+
+<LessonTable@BoxLayout>:
+    orientation: vertical
+    LessonDay:
+        lesson_set: root.lesson_set[0]
+    LessonDay:
+        lesson_set: root.lesson_set[1]
+    LessonDay:
+        lesson_set: root.lesson_set[2]
+    LessonDay:
+        lesson_set: root.lesson_set[3]
+    LessonDay:
+        lesson_set: root.lesson_set[4]
