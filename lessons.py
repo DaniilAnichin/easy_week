@@ -3,9 +3,7 @@
 """
 Definitions for Easy Week lesson structure
 """
-from kivy.uix.button import Button, ButtonBehavior
-from kivy.uix.label import Label
-from kivy.lang import Builder
+from kivy.uix.button import Button
 from kivy.factory import Factory
 from kivy.app import App
 
@@ -75,9 +73,6 @@ def clickable():
 
 class LessonsApp(App):
     def build(self):
-        # lesson = Lesson(**data_pair[0])
-        # button = Button(text=lesson.__str__(),
-        #                 text_size=(200, 200))
         button = Factory.Lesson(on_press=clickable,
                                 **data_pair[0])
         return button

@@ -5,7 +5,7 @@ All necessary popup definitions for Easy Week
 """
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
-from kivy.lang import Builder
+from kivy.factory import Factory
 from kivy.app import App
 
 # Data which will form the view of popup, e.g. label, button text
@@ -46,12 +46,12 @@ class HugePopup(Popup):
         super(Popup, self).__init__(**kwargs)
 
 
-def simple():
-    print "Yes, it works"
+def simple(b):
+    print "Yes, it works: {}".format(b.title)
 
 
-def one_more():
-    print "Yeah"
+def one_more(b):
+    print "Yeah: {}".format(b.title)
 
 
 class PopupsApp(App):
@@ -62,8 +62,8 @@ class PopupsApp(App):
     def show_popup(self, b):
         # p = Builder.template('HugePopup', **data_room)
         # p = popup_create('teacher', simple, one_more)
-        p = HugePopup(first_button=simple, second_button=one_more,
-                      **data['teacher'])
+        p = Factory.HugePopup(first_button=simple, second_button=one_more,
+                              **data['teacher'])
         p.open()
 
 

@@ -3,7 +3,6 @@
 """
 All necessary table definitions for Easy Week
 """
-from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 from kivy.lang import Builder
 from kivy.factory import Factory
@@ -50,9 +49,7 @@ class ScheduleApp(App):
         #                                  for j in range(5)])
         hour_box = Factory.LessonTable(lesson_set=[[lessons.data_pair[0]
                                            for i in range(4)]
-                                           for j in range(5)],
-                               size_hint=(None, None),
-                               size=(800, 600))
+                                           for j in range(5)])
         return hour_box
 
 
