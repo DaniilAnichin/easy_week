@@ -53,7 +53,6 @@ class Lesson(Button):
         self.text = self.__str__()
         self.on_press = kwargs['on_press']
         super(Button, self).__init__()
-        # super(Label, self).__init__(**kwargs)
 
     def __str__(self, *excepted):
         result = 'Here You have:'

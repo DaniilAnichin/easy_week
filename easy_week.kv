@@ -1,3 +1,39 @@
+# popups
+<HugePopup@Popup>:
+    size_hint: 0.3, 0.3
+    auto_dismiss: True
+    BoxLayout:
+        orientation: 'vertical'
+        TextInput:
+            text: root.label_text
+        Button:
+            text: root.first_button_label
+            on_press: root.first_button(root)
+        Button:
+            text: root.second_button_label
+            on_press: root.second_button(root)
+
+<LoginPopup>:
+    size_hint: .3, .3
+    auto_dismiss: False
+    title: 'Login form'
+    BoxLayout:
+        orientation: 'vertical'
+        TextInput:
+            text: "Input full name/cypher"
+        TextInput:
+            text: "password(if teacher)"
+        Button:
+            text: "Accept"
+            on_press: root.dismiss()
+
+# lessons
+<Lesson@Button>:
+    font_size: self.height/11
+    markup: True
+
+# schedule
+
 <LessonBar@ActionBar>:
     pos_hint: {'top':1}
     ActionView:
