@@ -4,85 +4,96 @@
 All necessary table definitions for Easy Week
 """
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.actionbar import ActionBar, ActionButton
-from kivy.factory import Factory
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.actionbar import ActionBar
+from kivy.properties import ObjectProperty, ListProperty
 from kivy.lang import Builder
 from kivy.app import App
-import lessons
-import popups
-import main_app
-Builder.load_file('./lessons.kv')
-Builder.load_file('./popups.kv')
+from lessons import clickable, data_lesson, Lesson
+
+lesson_size = (150, 100)
 
 
 class LessonBar(ActionBar):
-    @staticmethod
-    def show_group_popup(b):
-        p = Factory.HugePopup(first_button=main_app.MenuApp.set_group(),
-                              second_button=None,
-                              **popups.data_group)
-        p.open()
+    login_bind = ObjectProperty()
+    login_button = ObjectProperty(None)
+    update_button = ObjectProperty(None)
+    logout_button = ObjectProperty(None)
+    group_button = ObjectProperty(None)
+    teacher_button = ObjectProperty(None)
+    room_button = ObjectProperty(None)
 
-    @staticmethod
-    def show_teacher_popup(b):
-        p = Factory.HugePopup(first_button=main_app.MenuApp.set_group(),
-                              second_button=None,
-                              **popups.data_teacher)
-        p.open()
-
-    @staticmethod
-    def show_room_popup(b):
-        p = Factory.HugePopup(first_button=main_app.MenuApp.set_group(),
-                              second_button=None,
-                              **popups.data_room)
-        p.open()
+    def __init__(self, **kwargs):
+        super(ActionBar, self).__init__(**kwargs)
 
 
 class LessonDay(BoxLayout):
+    lesson_set = ListProperty()
+
     def __init__(self, **kwargs):
-        self.lesson_set = kwargs['lesson_set']
-        super(BoxLayout, self).__init__(**kwargs)
-        for i in self.lesson_set:
-            pass
+        super(LessonDay, self).__init__(**kwargs)
+        for lesson in self.lesson_set:
+            self.add_widget(lesson)
 
 
-class LessonTable(BoxLayout):
+class LessonSet(BoxLayout):
+    lesson_set = ListProperty()
+
     def __init__(self, **kwargs):
-        # lesson_set = kwargs['lesson_set']
-        # for i in range(len(lesson_set)):
-        #     row_box = BoxLayout(orientation='vertical')
-        #     for j in range(len(lesson_set[0])):
-        #         lesson = lessons.Lesson(**lesson_set[i][j])
-        #         button = Factory.Lesson(text=lesson.__str__())
-        #         row_box.add_widget(button)
-        #     self.add_widget(row_box)
-        self.lesson_set = kwargs['lesson_set']
-        super(BoxLayout, self).__init__(**kwargs)
+        super(LessonSet, self).__init__(**kwargs)
+        for lesson in self.lesson_set:
+            self.add_widget(lesson)
 
 
-def lesson_table_creator(lesson_set, **kwargs):
-    holder = BoxLayout(**kwargs)
-    for i in range(len(lesson_set)):
-        row_box = BoxLayout(orientation='vertical')
-        for j in range(len(lesson_set[0])):
-            lesson = Factory.Lesson(on_press=lessons.clickable,
-                                    **lesson_set[i][j])
-            row_box.add_widget(lesson)
-        holder.add_widget(row_box)
+class LessonWeek(BoxLayout):
+    day_set = ListProperty()
 
-    return holder
+    def __init__(self, **kwargs):
+        super(LessonWeek, self).__init__(**kwargs)
+        for day in self.day_set:
+            self.add_widget(day)
+
+
+class LessonTable(GridLayout):
+    lesson_set = ListProperty()
+
+    def __init__(self, **kwargs):
+        super(LessonTable, self).__init__(**kwargs)
+        for day in self.lesson_set:
+            for lesson in day:
+                lesson.size_hint = (None, None)
+                lesson.size = lesson_size
+                self.add_widget(lesson)
+        self.cols = len(self.lesson_set)
 
 
 class ScheduleApp(App):
     def build(self):
-        self.title = "Schedule, mf"
-        hour_box = lesson_table_creator([[lessons.data_pair[0] for i in range(4)]
-                                         for j in range(5)])
-        # hour_box = Factory.LessonTable(lesson_set=[[lessons.data_pair[0]
+        # hour_box = lesson_table_creator([[data_lesson[0] for i in range(4)]
+        #                                  for j in range(5)])
+        # hour_box = LessonTable(lesson_set=[[data_lesson[0]
         #                                    for i in range(4)]
         #                                    for j in range(5)])
-        return hour_box
+        # hour_box = LessonDay(lesson_set=[Lesson(on_release=clickable,
+        #                                         view_type='All',
+        #                                         **data_lesson[0])
+        #                                  for i in range(5)
+        #                                  ])
+        # lesson_table = LessonWeek(day_set=[
+        #     LessonDay(lesson_set=[Lesson(on_release=clickable,
+        #                                  view_type='All',
+        #                                  **data_lesson[0])
+        #                           for i in range(5)
+        #                           ]) for j in range(6)])
+        lesson_table = LessonTable(lesson_set=[[Lesson(on_release=clickable,
+                                                       view_type='All',
+                                                       **data_lesson[0])
+                                               for i in range(2)]
+                                               for j in range(2)])
+        return lesson_table
 
 
 if __name__ == '__main__':
+    Builder.load_file('./lessons.kv')
+    Builder.load_file('./popups.kv')
     ScheduleApp().run()

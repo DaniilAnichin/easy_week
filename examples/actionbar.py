@@ -12,7 +12,7 @@ ActionBar:
         ActionOverflow:
         ActionButton:
             text: 'Btn0'
-            icon: 'atlas://data/images/defaulttheme/audio-volume-high'
+            icon: 'atlas://popup_data/images/defaulttheme/audio-volume-high'
         ActionButton:
             text: 'Btn1'
         ActionButton:

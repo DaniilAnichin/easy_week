@@ -1,70 +1,13 @@
-<LessonBar@ActionBar>:
-    pos_hint: {'top':1}
-    ActionView:
-        use_separator: True
-        ActionPrevious:
-            title: 'Action Bar'
-            with_previous: False
-        ActionOverflow:
-        ActionButton:
-            text: 'Prev'
-        ActionButton:
-            text: 'Next'
-        ActionButton:
-            text: 'Back'
-        ActionGroup:
-            text: 'Scales'
-            allow_no_selection: False
-            ActionToggleButton:
-                group: 'scale'
-                text: 'Week'
-                icon: './static/group.png'
-            ActionToggleButton:
-                group: 'scale'
-                text: 'Day'
-                icon: './static/teacher.png'
-            ActionToggleButton:
-                group: 'scale'
-                text: 'Lesson'
-                icon: './static/room.png'
-        ActionGroup:
-            text: 'Types'
-            allow_no_selection: False
-            ActionToggleButton:
-                group: 'type'
-                text: 'Group'
-                icon: './static/group.png'
-            ActionToggleButton:
-                group: 'type'
-                text: 'Teacher'
-                icon: './static/teacher.png'
-            ActionToggleButton:
-                group: 'type'
-                text: 'Room'
-                icon: './static/room.png'
-        ActionGroup:
-            mode: 'spinner'
-            text: 'Menu'
-            ActionButton:
-                text: 'Login'
-                size_hint_y: None
-                height: 40
-            ActionButton:
-                text: 'Update DB'
-                size_hint_y: None
-                height: 40
-            ActionButton:
-                text: 'Logout'
-                size_hint_y: None
-                height: 40
-            ActionButton:
-                text: 'Exit'
-                size_hint_y: None
-                height: 40
-                on_press: app.stop()
+<LessonDay>:
+    orientation: 'vertical'
 
-<LessonDay@BoxLayout>:
+<LessonWeek>:
 
-<LessonTable@BoxLayout>:
-    orientation: vertical
-    size_hint: 1.0, 1.0
+<LessonSet>:
+    size_hint: None, None
+    width: 150
+    height: len(self.children) * 100
+    orientation: 'vertical'
+
+<LessonTable>:
+    pos_hint: {'top':1, 'left':1}

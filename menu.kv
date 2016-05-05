@@ -1,0 +1,75 @@
+<MainWindow>:
+    orientation: 'vertical'
+    LessonBar:
+        pos_hint: {'top':1}
+
+        ActionView:
+            use_separator: True
+            ActionPrevious:
+                title: 'Action Bar'
+                with_previous: False
+            ActionOverflow:
+            ActionButton:
+                text: 'Prev'
+            ActionButton:
+                text: 'Next'
+            ActionButton:
+                text: 'Back'
+            ActionGroup:
+                text: 'Scales'
+                ActionToggleButton:
+                    allow_no_selection: False
+                    group: 'scale'
+                    text: 'Week'
+                    icon: './static/group.png'
+                ActionToggleButton:
+                    allow_no_selection: False
+                    group: 'scale'
+                    text: 'Day'
+                    icon: './static/teacher.png'
+                ActionToggleButton:
+                    allow_no_selection: False
+                    group: 'scale'
+                    text: 'Lesson'
+                    icon: './static/room.png'
+            ActionGroup:
+                text: 'Types'
+                ActionToggleButton:
+                    id: group_button
+                    group: 'type'
+                    text: 'Group'
+                    icon: './static/group.png'
+                ActionToggleButton:
+                    id: teacher_button
+                    group: 'type'
+                    text: 'Teacher'
+                    icon: './static/teacher.png'
+                ActionToggleButton:
+                    id: room_button
+                    group: 'type'
+                    text: 'Room'
+                    icon: './static/room.png'
+            ActionGroup:
+                mode: 'spinner'
+                text: 'Menu'
+                ActionButton:
+                    id: login_button
+                    text: 'Login'
+                    size_hint_y: None
+                    height: 40
+                    on_press: root.show_login_popup()
+                ActionButton:
+                    id: update_button
+                    text: 'Update DB'
+                    size_hint_y: None
+                    height: 40
+                ActionButton:
+                    id: logout_button
+                    text: 'Logout'
+                    size_hint_y: None
+                    height: 40
+                ActionButton:
+                    text: 'Exit'
+                    size_hint_y: None
+                    height: 40
+                    on_press: app.stop()

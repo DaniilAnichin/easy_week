@@ -1,27 +1,31 @@
-<HugePopup@Popup>:
-    size_hint: 0.3, 0.3
-    auto_dismiss: True
+<HugePopup>:
+    size_hint: .3, .3
+    text_input: text_input
     BoxLayout:
         orientation: 'vertical'
         TextInput:
+            id: text_input
             text: root.label_text
         Button:
             text: root.first_button_label
-            on_press: root.first_button(root)
+            on_press: root.first_button(root.text_input.text)
         Button:
             text: root.second_button_label
-            on_press: root.second_button(root)
+            on_press: root.second_button(root.text_input.text)
 
 <LoginPopup>:
     size_hint: .3, .3
-    auto_dismiss: False
-    title: 'Login form'
+    title: 'Login form(Second field is password, if you are a teacher)'
+    login_input: login_input
+    password_input: password_input
     BoxLayout:
         orientation: 'vertical'
         TextInput:
+            id: login_input
             text: "Input full name/cypher"
         TextInput:
-            text: "password(if teacher)"
+            id: password_input
+            password: True
         Button:
             text: "Accept"
-            on_press: root.dismiss()
+            on_press: root.accept(root.login_input.text, root.password_input.text)
