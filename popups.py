@@ -13,21 +13,15 @@ from kivy.app import App
 # Division may be useful for translation
 data_group = {
     'title': 'Group schedule',
-    'label_text': 'Input the group cypher',
-    'first_button_label': 'Accept',
-    'second_button_label': 'Default'
+    'label_text': 'Input the group cypher'
 }
 data_teacher = {
     'title': 'Teacher schedule',
-    'label_text': 'Input teacher full name',
-    'first_button_label': 'Accept',
-    'second_button_label': 'Default'
+    'label_text': 'Input teacher full name'
 }
 data_room = {
     'title': 'Room schedule',
-    'label_text': 'Input the room number',
-    'first_button_label': 'Accept',
-    'second_button_label': 'All'
+    'label_text': 'Input the room number'
 }
 popup_data = {
     'group': data_group,
@@ -40,8 +34,6 @@ class HugePopup(Popup):
     # Popup-form for view schedule for group, teacher or room
     label_text = StringProperty()
     text_input = ObjectProperty(None)
-    first_button_label = StringProperty()
-    second_button_label = StringProperty()
 
     def __init__(self, **kwargs):
         self.first_button = kwargs['first_button']

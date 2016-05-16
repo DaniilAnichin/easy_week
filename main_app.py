@@ -1,84 +1,124 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from random import random
+"""
+Main window for easy week, includes Action bar and logging
+"""
+from functools import partial
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.scrollview import ScrollView
 from kivy.effects.scroll import ScrollEffect
 from kivy.uix.actionbar import ActionBar
-from kivy.properties import ListProperty
+from kivy.properties import ListProperty, OptionProperty, ObjectProperty, \
+    StringProperty
+from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.app import App
-from schedule import LessonSet, LessonDay, LessonWeek, LessonTable, lesson_size
+from schedule import LessonDay, LessonWeek, LessonTable
 from lessons import data_lesson, Lesson, clickable
 from popups import HugePopup, LoginPopup, popup_data
+from database import get_lesson_set
 
 
-class NoOverscroll(ScrollEffect):
+class NoOverScroll(ScrollEffect):
     pass
 
 
 class MainWindow(BoxLayout):
     lesson_set = ListProperty()
-    day_set = ListProperty()
+    log_label = ObjectProperty(None)
+    table_type = OptionProperty('groups', options=['groups', 'group',
+                                                   'teachers', 'teacher',
+                                                   'rooms', 'room'])
+    content = StringProperty()
+    scroll_layout = ObjectProperty(None)
 
-    def __init__(self, lesson_set, **kwargs):
+    def __init__(self, **kwargs):
         super(MainWindow, self).__init__(**kwargs)
-        # lesson_table = LessonTable(day_set=[LessonSet(lesson_set=day)
-        #                                    for day in self.day_set])
-        lesson_table = LessonTable(lesson_set=lesson_set,
-                                   size_hint=(None, None),
-                                   pos_hint={'top': 1, 'left': 1})
-        lesson_table.bind(minimum_height=lesson_table.setter('height'))
-        lesson_table.bind(minimum_width=lesson_table.setter('width'))
-        scroll = ScrollView(pos_hint={'top': 1},
-                            bar_color=(.0, .8, .9, .9),
-                            bar_width=5,
-                            effect_cls=NoOverscroll)
-        scroll.add_widget(lesson_table)
-        self.add_widget(scroll)
+        self.no_resize = True
+        self.scroll_layout.effect_cls = NoOverScroll
+        self.log_label.text = 'loading database...(wait a bit, pls)'
+        Clock.schedule_once(lambda dt: self.load_database(), 1)
 
-    # This part is for popups and their selection:
-    def show_group(self, group):
-        print 'Group: %s' % group
+    def load_database(self):
+        self.lesson_set = get_lesson_set()
+        self.log_label.text = 'Database loaded successfully'
+        self.set_table(self.table_type)
 
-    def show_groups(self):
-        print 'Groups'
+    def set_table(self, table_type, content=None):
+        self.log_label.text = 'Preparing data'
+        try:
+            self.table_type = table_type
+        except ValueError:
+            return -1
 
-    def show_teacher(self, teacher):
-        print 'Teacher: %s' % teacher
+        self.clear_table()
 
-    def show_teachers(self):
-        print 'Teachers'
+        if self.table_type.endswith('s'):
+            self.no_resize = True
+            lesson_table = LessonTable(lesson_set=self.lesson_set,
+                                       size_hint=(None, None),
+                                       pos_hint={'top': 1, 'left': 1})
+            lesson_table.bind(minimum_height=lesson_table.setter('height'))
+            lesson_table.bind(minimum_width=lesson_table.setter('width'))
+        else:
+            self.no_resize = False
+            for day in self.lesson_set:
+                for lesson in day:
+                    lesson.view_type = self.table_type
+            lesson_table = LessonWeek(day_set=[LessonDay(lesson_set=day)
+                                               for day in self.lesson_set])
 
-    def show_room(self, room):
-        print 'Room: %s' % room
+        self.log_label.text = 'Showing %s table' % table_type
+        self.log_label.text += ' for %s' % content if content is not None else ''
+        self.scroll_layout.add_widget(lesson_table)
 
-    def show_rooms(self):
-        print 'Rooms'
+    def clear_table(self):
+        if len(self.scroll_layout.children) is 0:
+            return 0
 
-    def accept(self, login, password):
-        print 'Login: %s, Pass: %s' % (login, password)
+        if isinstance(self.scroll_layout.children[0], BoxLayout):
+            # if LessonWeek was used:
+            # print type(self.scroll_layout.children)
+            for child in self.scroll_layout.children[0].children:
+                child.clear_widgets()
+        else:
+            # if the LessonTable:
+            self.scroll_layout.children[0].clear_widgets()
+
+        self.scroll_layout.clear_widgets()
+
+    def login(self, login, password):
+        # if users['login'].password == password: (from db)
+        # self.user = ...
+        self.log_label.text = 'You have logged in as %s' % login
+        # else:
+        #     self.log_label.text = 'Incorrect password, try again'
+
+    # Helpful functions
+    def logout(self):
+        # self.user = ...
+        self.log_label.text = 'You have logged out'
 
     def show_group_popup(self):
-        p = HugePopup(first_button=self.view_group,
-                      second_button=self.view_groups,
-                      **popup_data['data_group'])
+        p = HugePopup(first_button=partial(self.set_table, 'group'),
+                      second_button=partial(self.set_table, 'groups'),
+                      **popup_data['group'])
         p.open()
 
     def show_teacher_popup(self):
-        p = HugePopup(first_button=self.show_teacher,
-                      second_button=self.show_teachers,
+        p = HugePopup(first_button=partial(self.set_table, 'teacher'),
+                      second_button=partial(self.set_table, 'teachers'),
                       **popup_data['teacher'])
         p.open()
 
     def show_room_popup(self):
-        p = HugePopup(first_button=self.show_room,
-                      second_button=self.show_rooms,
+        p = HugePopup(first_button=partial(self.set_table, 'room'),
+                      second_button=partial(self.set_table, 'rooms'),
                       **popup_data['room'])
         p.open()
 
     def show_login_popup(self):
-        p = LoginPopup(accept=self.accept)
+        p = LoginPopup(accept=self.login)
+        p.open()
 
 
 class LessonBar(ActionBar):
@@ -100,9 +140,7 @@ class MenuApp(App):
         # table = lesson_table_creator(lesson_set=lesson_set)
         # basic_layout.add_widget(table)
 
-        menu = MainWindow(lesson_set=[[Lesson(on_release=clickable,
-                                              **data_lesson[int(random() * 100) % 2])
-                                      for i in range(30)] for j in range(30)])
+        menu = MainWindow(table_type='groups')
         return menu
 
 

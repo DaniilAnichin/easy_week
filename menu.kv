@@ -1,5 +1,7 @@
 <MainWindow>:
     orientation: 'vertical'
+    scroll_layout: scroll_layout
+    log_label: log_label
     LessonBar:
         pos_hint: {'top':1}
 
@@ -11,27 +13,10 @@
             ActionOverflow:
             ActionButton:
                 text: 'Prev'
+                disabled: root.table_type[-1] == 's'
             ActionButton:
                 text: 'Next'
-            ActionButton:
-                text: 'Back'
-            ActionGroup:
-                text: 'Scales'
-                ActionToggleButton:
-                    allow_no_selection: False
-                    group: 'scale'
-                    text: 'Week'
-                    icon: './static/group.png'
-                ActionToggleButton:
-                    allow_no_selection: False
-                    group: 'scale'
-                    text: 'Day'
-                    icon: './static/teacher.png'
-                ActionToggleButton:
-                    allow_no_selection: False
-                    group: 'scale'
-                    text: 'Lesson'
-                    icon: './static/room.png'
+                disabled: root.table_type[-1] == 's'
             ActionGroup:
                 text: 'Types'
                 ActionToggleButton:
@@ -39,16 +24,19 @@
                     group: 'type'
                     text: 'Group'
                     icon: './static/group.png'
+                    on_press: root.show_group_popup()
                 ActionToggleButton:
                     id: teacher_button
                     group: 'type'
                     text: 'Teacher'
                     icon: './static/teacher.png'
+                    on_press: root.show_teacher_popup()
                 ActionToggleButton:
                     id: room_button
                     group: 'type'
                     text: 'Room'
                     icon: './static/room.png'
+                    on_press: root.show_room_popup()
             ActionGroup:
                 mode: 'spinner'
                 text: 'Menu'
@@ -63,13 +51,34 @@
                     text: 'Update DB'
                     size_hint_y: None
                     height: 40
+                    on_press: root.load_database()
                 ActionButton:
                     id: logout_button
                     text: 'Logout'
                     size_hint_y: None
                     height: 40
+                    on_press: root.logout()
                 ActionButton:
                     text: 'Exit'
                     size_hint_y: None
                     height: 40
                     on_press: app.stop()
+    ScrollView:
+        id: scroll_layout
+        pos_hint: {'top': 1}
+        bar_color: .0, .8, .9, .9
+        bar_width: 5
+    Label:
+        id: log_label
+        height: 20
+        size_hint_y: None
+        pos_hint: {'bottom': 1}
+        text: 'Success'
+        text_size: root.log_label.size
+        padding_x: 10
+        canvas.before:
+            Color:
+                rgba: .5, .5, .5, 1.0
+            Rectangle:
+                pos: self.pos
+                size: self.size

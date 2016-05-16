@@ -11,7 +11,7 @@ from kivy.lang import Builder
 from kivy.app import App
 from lessons import clickable, data_lesson, Lesson
 
-lesson_size = (150, 100)
+lesson_size = (150, 70)
 
 
 class LessonBar(ActionBar):
@@ -33,15 +33,7 @@ class LessonDay(BoxLayout):
     def __init__(self, **kwargs):
         super(LessonDay, self).__init__(**kwargs)
         for lesson in self.lesson_set:
-            self.add_widget(lesson)
-
-
-class LessonSet(BoxLayout):
-    lesson_set = ListProperty()
-
-    def __init__(self, **kwargs):
-        super(LessonSet, self).__init__(**kwargs)
-        for lesson in self.lesson_set:
+            lesson.size_hint = 1, 1
             self.add_widget(lesson)
 
 
@@ -69,8 +61,6 @@ class LessonTable(GridLayout):
 
 class ScheduleApp(App):
     def build(self):
-        # hour_box = lesson_table_creator([[data_lesson[0] for i in range(4)]
-        #                                  for j in range(5)])
         # hour_box = LessonTable(lesson_set=[[data_lesson[0]
         #                                    for i in range(4)]
         #                                    for j in range(5)])

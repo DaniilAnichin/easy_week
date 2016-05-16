@@ -1,3 +1,12 @@
 <Lesson>:
     font_size: self.height/(self.lines+2)
     markup: True
+
+<Tooltip>:
+    padding: 5, 5
+    canvas.before:
+        Color:
+            rgba: .5, .5, .5, 1.0
+        Rectangle:
+            pos: self.pos
+            size: self.size

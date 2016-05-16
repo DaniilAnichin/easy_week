@@ -4,6 +4,8 @@
 Definitions for Easy Week lesson structure
 """
 from kivy.uix.button import Button
+from kivy.uix.label import Label
+from kivy.uix.behaviors.focus import FocusBehavior
 from kivy.properties import StringProperty, ListProperty, OptionProperty, \
     BoundedNumericProperty, NumericProperty
 from kivy.app import App
@@ -44,7 +46,7 @@ data_lesson = [dict(teacher='Orlovskiy I.V.', lesson='High Math II',
                     week='lower', day=4, number=3)]
 
 
-class Lesson(Button):
+class Lesson(FocusBehavior, Button):
     teacher = StringProperty()
     lesson = StringProperty()
     groups = ListProperty()
@@ -54,25 +56,38 @@ class Lesson(Button):
     day = BoundedNumericProperty(0, min=0, max=5)
     number = BoundedNumericProperty(0, min=0, max=4)
     lines = NumericProperty(1)
+    view_type = OptionProperty('groups', options=['groups', 'group',
+                                                  'teachers', 'teacher',
+                                                  'rooms', 'room'])
 
-    def __init__(self, view_type='All', **kwargs):
+    def __init__(self, **kwargs):
         super(Button, self).__init__(**kwargs)
-        self.text = self.__str__(view_type)
+        self.text = self.__str__()
         self.lines = len(self.text.split('\n'))
 
-    def __str__(self, *args):
-        result = 'Here You have:'
-        result += '\nAn %s %s' % (self.lesson, lesson_types[self.type])
-        result += '\nWith %s' % self.teacher
-        result += '\nIn %s room' % self.room
-        result += '\nGroups: ' + ', '.join(self.groups)
-        result += '\nAt %s week' % week_types[self.week]
-        result += '\n%s (%s)' % (week_days[self.day], day_times[self.number])
+    def __str__(self):
+        result = 'An %s %s' % (self.lesson, lesson_types[self.type])
+        if not self.view_type.startswith('teacher'):
+            result += '\nWith %s' % self.teacher
+        if not self.view_type.startswith('room'):
+            result += '\nIn %s room' % self.room
+        if not self.view_type.startswith('group'):
+            result += '\nGroups: ' + ', '.join(self.groups)
+        if not self.view_type.endswith('s'):
+            result += '\nAt %s week' % week_types[self.week]
+            result += '\n%s, %s' % (week_days[self.day], day_times[self.number])
         return result
+
+    # def _on_focus(self, instance, value, *largs):
+
+
+
+class Tooltip(Label):
+    pass
 
 
 def clickable(b):
-    # print 'And this too!({})'.format(b.height / (len(b.text.split('\n')) + 2))
+    # test function, will die soon
     print 'And this too!({})'.format(b)
 
 

@@ -7,11 +7,13 @@
             id: text_input
             text: root.label_text
         Button:
-            text: root.first_button_label
+            text: 'Accept'
             on_press: root.first_button(root.text_input.text)
+            on_release: root.dismiss()
         Button:
-            text: root.second_button_label
-            on_press: root.second_button(root.text_input.text)
+            text: 'All'
+            on_press: root.second_button()
+            on_release: root.dismiss()
 
 <LoginPopup>:
     size_hint: .3, .3
@@ -29,3 +31,4 @@
         Button:
             text: "Accept"
             on_press: root.accept(root.login_input.text, root.password_input.text)
+            on_release: root.dismiss()
