@@ -4,6 +4,7 @@
 Definitions for Easy Week lesson structure
 """
 from kivy.uix.button import Button
+from kivy.uix.bubble import Bubble
 from kivy.uix.label import Label
 from kivy.uix.behaviors.focus import FocusBehavior
 from kivy.properties import StringProperty, ListProperty, OptionProperty, \
@@ -56,12 +57,12 @@ class Lesson(FocusBehavior, Button):
     day = BoundedNumericProperty(0, min=0, max=5)
     number = BoundedNumericProperty(0, min=0, max=4)
     lines = NumericProperty(1)
-    view_type = OptionProperty('groups', options=['groups', 'group',
-                                                  'teachers', 'teacher',
-                                                  'rooms', 'room'])
+    view_type = OptionProperty('all', options=['groups', 'group',
+                                               'teachers', 'teacher',
+                                               'rooms', 'room', 'all'])
 
     def __init__(self, **kwargs):
-        super(Button, self).__init__(**kwargs)
+        super(Lesson, self).__init__(**kwargs)
         self.text = self.__str__()
         self.lines = len(self.text.split('\n'))
 
@@ -78,23 +79,36 @@ class Lesson(FocusBehavior, Button):
             result += '\n%s, %s' % (week_days[self.day], day_times[self.number])
         return result
 
-    # def _on_focus(self, instance, value, *largs):
+    # def _on_focus(self, instance, value, *args):
 
 
+class LessonBubble(Bubble):
+    def __init__(self, lesson, **kwargs):
+        super(LessonBubble, self).__init__(**kwargs)
+        my_bubble = Bubble(pos=lesson.pos)
+        my_bubble.arrow_pos = 'top_left'   # which is correct?
+        data_label = Label(text='At %s week' % week_types[lesson.week])
+        data_label.text += '\n%s, %s' % (week_days[lesson.day],
+                                         day_times[lesson.number])
+        if lesson.view_type.startswith('teacher'):
+            data_label.text += '\nWith %s' % lesson.teacher
+        if lesson.view_type.startswith('room'):
+            data_label.text += '\nIn %s room' % lesson.room
+        if lesson.view_type.startswith('group'):
+            data_label.text += '\nGroups: ' + ', '.join(lesson.groups)
 
-class Tooltip(Label):
-    pass
+        my_bubble.add_widget(data_label)
+        self.add_widget(my_bubble)
 
 
-def clickable(b):
+def lesson_click(b):
     # test function, will die soon
-    print 'And this too!({})'.format(b)
+    print 'And this too!({})'.format(b.lesson)
 
 
 class LessonsApp(App):
     def build(self):
-        button = Lesson(on_press=clickable,
-                        **data_lesson[0])
+        button = Lesson(on_press=LessonBubble, **data_lesson[0])
         return button
 
 

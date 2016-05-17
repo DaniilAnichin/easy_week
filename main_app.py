@@ -13,7 +13,7 @@ from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.app import App
 from schedule import LessonDay, LessonWeek, LessonTable
-from lessons import data_lesson, Lesson, clickable
+from lessons import data_lesson, Lesson, lesson_click
 from popups import HugePopup, LoginPopup, popup_data
 from database import get_lesson_set
 

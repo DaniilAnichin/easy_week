@@ -9,7 +9,7 @@ from kivy.uix.actionbar import ActionBar
 from kivy.properties import ObjectProperty, ListProperty
 from kivy.lang import Builder
 from kivy.app import App
-from lessons import clickable, data_lesson, Lesson
+from lessons import lesson_click, data_lesson, Lesson, LessonBubble
 
 lesson_size = (150, 70)
 
@@ -64,22 +64,22 @@ class ScheduleApp(App):
         # hour_box = LessonTable(lesson_set=[[data_lesson[0]
         #                                    for i in range(4)]
         #                                    for j in range(5)])
-        # hour_box = LessonDay(lesson_set=[Lesson(on_release=clickable,
+        # hour_box = LessonDay(lesson_set=[Lesson(on_release=lesson_click,
         #                                         view_type='All',
         #                                         **data_lesson[0])
         #                                  for i in range(5)
         #                                  ])
-        # lesson_table = LessonWeek(day_set=[
-        #     LessonDay(lesson_set=[Lesson(on_release=clickable,
-        #                                  view_type='All',
-        #                                  **data_lesson[0])
-        #                           for i in range(5)
-        #                           ]) for j in range(6)])
-        lesson_table = LessonTable(lesson_set=[[Lesson(on_release=clickable,
-                                                       view_type='All',
-                                                       **data_lesson[0])
-                                               for i in range(2)]
-                                               for j in range(2)])
+        lesson_table = LessonWeek(day_set=[
+            LessonDay(lesson_set=[Lesson(on_release=LessonBubble,
+                                         view_type='all',
+                                         **data_lesson[0])
+                                  for i in range(5)
+                                  ]) for j in range(6)])
+        # lesson_table = LessonTable(lesson_set=[[Lesson(on_release=lesson_click,
+        #                                                view_type='all',
+        #                                                **data_lesson[0])
+        #                                        for i in range(2)]
+        #                                        for j in range(2)])
         return lesson_table
 
 

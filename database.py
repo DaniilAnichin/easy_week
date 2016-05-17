@@ -4,7 +4,7 @@
 Definitions for Easy Week database structure
 """
 from random import random
-from lessons import Lesson, clickable, data_lesson
+from lessons import Lesson, lesson_click, data_lesson
 
 week_len = 6
 day_len = 5
@@ -15,7 +15,7 @@ room_list = []
 
 
 def get_lesson_set():
-    return [[Lesson(on_release=clickable,
+    return [[Lesson(on_release=lesson_click,
                     **data_lesson[int(random() * 100) % 2])
             for i in range(60)] for j in range(70)]
 

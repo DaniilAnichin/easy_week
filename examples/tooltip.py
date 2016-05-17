@@ -1,3 +1,5 @@
+#!/use/bin/python
+# -*- coding: utf-8 -*-
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.widget import Widget
