@@ -16,7 +16,7 @@ Builder.load_string("""
         size_hint: .8,.8
         adapter:
             sla.SimpleListAdapter(
-            popup_data=["Item #{0}".format(i) for i in range(100)],
+            data=["Item #{0}".format(i) for i in range(100)],
             cls=label.Label)
 """)
 

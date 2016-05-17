@@ -148,4 +148,3 @@ if __name__ == "__main__":
     Builder.load_file('./schedule.kv')
     Builder.load_file('./lessons.kv')
     Builder.load_file('./popups.kv')
-    MenuApp().run()
