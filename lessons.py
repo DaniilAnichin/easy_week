@@ -85,7 +85,8 @@ class Lesson(FocusBehavior, Button):
 class LessonBubble(Bubble):
     def __init__(self, lesson, **kwargs):
         super(LessonBubble, self).__init__(**kwargs)
-        my_bubble = Bubble(pos=lesson.pos)
+        print 'PBubble started'
+        my_bubble = Bubble(orientation='horizontal', pos=lesson.pos)
         my_bubble.arrow_pos = 'top_left'   # which is correct?
         data_label = Label(text='At %s week' % week_types[lesson.week])
         data_label.text += '\n%s, %s' % (week_days[lesson.day],
