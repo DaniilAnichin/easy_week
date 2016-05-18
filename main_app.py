@@ -15,7 +15,7 @@ from kivy.app import App
 from schedule import LessonDay, LessonWeek, LessonTable
 from lessons import data_lesson, Lesson, lesson_click
 from popups import HugePopup, LoginPopup, popup_data
-from database import get_lesson_set
+from database import collect_lessons
 
 
 class NoOverScroll(ScrollEffect):
@@ -25,32 +25,37 @@ class NoOverScroll(ScrollEffect):
 class MainWindow(BoxLayout):
     lesson_set = ListProperty()
     log_label = ObjectProperty(None)
-    table_type = OptionProperty('groups', options=['groups', 'group',
-                                                   'teachers', 'teacher',
-                                                   'rooms', 'room'])
-    content = StringProperty()
+    table_type = OptionProperty('teacher', options=['groups', 'group',
+                                                    'teachers', 'teacher',
+                                                    'rooms', 'room'])
+    content = StringProperty(unicode('вик. Міхнєва Ю. Р.', 'utf-8'))
     scroll_layout = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(MainWindow, self).__init__(**kwargs)
-        self.no_resize = True
+        self.no_resize = False
         self.scroll_layout.effect_cls = NoOverScroll
         self.log_label.text = 'loading database...(wait a bit, pls)'
-        Clock.schedule_once(lambda dt: self.load_database(), 1)
+        self.load_database()
 
     def load_database(self):
-        self.lesson_set = get_lesson_set()
+        self.lesson_set = collect_lessons(content_type=self.table_type,
+                                          content=self.content)[:6]
         self.log_label.text = 'Database loaded successfully'
-        self.set_table(self.table_type)
+        self.set_table()
 
-    def set_table(self, table_type, content=None):
+    def set_table(self, table_type=None, content=None):
         self.log_label.text = 'Preparing data'
-        try:
-            self.table_type = table_type
-        except ValueError:
-            return -1
-
         self.clear_table()
+
+        if table_type is not None:
+            self.table_type = table_type
+
+        if content is not None:
+            self.content = content #.encode('utf-8').decode('utf-8')   # black magic
+
+        self.lesson_set = collect_lessons(content_type=self.table_type,
+                                          content=self.content)[:6]
 
         if self.table_type.endswith('s'):
             self.no_resize = True
@@ -64,11 +69,11 @@ class MainWindow(BoxLayout):
             for day in self.lesson_set:
                 for lesson in day:
                     lesson.view_type = self.table_type
-            lesson_table = LessonWeek(day_set=[LessonDay(lesson_set=day)
-                                               for day in self.lesson_set])
+            day_set = [LessonDay(lesson_set=day) for day in self.lesson_set]
+            lesson_table = LessonWeek(day_set=day_set)
 
-        self.log_label.text = 'Showing %s table' % table_type
-        self.log_label.text += ' for %s' % content if content is not None else ''
+        self.log_label.text = 'Showing %s table' % self.table_type
+        self.log_label.text += ' for %s' % self.content if self.content is not None else ''
         self.scroll_layout.add_widget(lesson_table)
 
     def clear_table(self):
@@ -127,20 +132,7 @@ class LessonBar(ActionBar):
 
 class MenuApp(App):
     def build(self):
-        # basic_layout = BoxLayout(orientation='vertical')
-        #
-        # # menu_layout = BoxLayout(size_hint_y=0.08, spacing=2)
-        # # buttons = [Button(text="button%d" % (i + 1)) for i in range(6)]
-        # # buttons[0].bind(on_press=self.show_group_popup)
-        # # for i in range(6):
-        # #     menu_layout.add_widget(buttons[i])
-        #
-        # lesson_set = [[data_lesson[int(random() * 100) % 2]
-        #                for i in range(5)] for j in range(6)]
-        # table = lesson_table_creator(lesson_set=lesson_set)
-        # basic_layout.add_widget(table)
-
-        menu = MainWindow(table_type='groups')
+        menu = MainWindow()
         return menu
 
 
@@ -148,3 +140,4 @@ if __name__ == "__main__":
     Builder.load_file('./schedule.kv')
     Builder.load_file('./lessons.kv')
     Builder.load_file('./popups.kv')
+    MenuApp().run()

@@ -75,7 +75,7 @@ class ScheduleApp(App):
                                          **data_lesson[0])
                                   for i in range(5)
                                   ]) for j in range(6)])
-        # lesson_table = LessonTable(lesson_set=[[Lesson(on_release=lesson_click,
+        # lesson_table =LessonTable(lesson_set=[[Lesson(on_release=lesson_click,
         #                                                view_type='all',
         #                                                **data_lesson[0])
         #                                        for i in range(2)]

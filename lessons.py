@@ -65,9 +65,10 @@ class Lesson(FocusBehavior, Button):
         super(Lesson, self).__init__(**kwargs)
         self.text = self.__str__()
         self.lines = len(self.text.split('\n'))
+        # self.lines = 5
 
     def __str__(self):
-        result = 'An %s %s' % (self.lesson, lesson_types[self.type])
+        result = 'An %s... %s' % (self.lesson[:21], lesson_types[self.type])
         if not self.view_type.startswith('teacher'):
             result += '\nWith %s' % self.teacher
         if not self.view_type.startswith('room'):

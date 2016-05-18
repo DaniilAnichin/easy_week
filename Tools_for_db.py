@@ -13,7 +13,7 @@ typeDict = {unicode('Лек', 'utf-8'): 'Lec',  unicode('Лаб', 'utf-8'): 'Lab
 
 # db_path = "D:\KPI\Kursach\Db\\"
 # path_delimiter = '\\'
-db_path = '/home/anichindaniil/Python/projects/cource_UI/db'
+db_path = '/home/anichindaniil/Python/projects/cource_UI/db/'
 path_delimiter = '/'
 
 
@@ -241,11 +241,13 @@ class Teacher:
         self.name = name
         self.path = db_path
         try:
-            f=open(self.path+'Teach' + path_delimiter+name+".csv", 'rb')
-            self.dataList = list(UnicodeReader(f, csv.excel, 'cp1251', delimiter=';'))
+            f = open(self.path+'Teach' + path_delimiter+self.name+'.csv', 'rb')
+            # f = open('%sTeach%s%s.csv' % (self.path, path_delimiter, self.name), 'rb')
+            self.dataList = list(UnicodeReader(f, csv.excel, 'cp1251',
+                                               delimiter=';'))
             f.close()
         except IOError:
-            print "None such teacher : {0}".format(name.encode('cp1251'))
+            print "None such teacher : {0}".format(self.name.encode('cp1251'))
         
     def addLesson(self, lesName, lesType, room, time):
         try:
