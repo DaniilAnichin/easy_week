@@ -68,7 +68,31 @@ def collect_lessons(content_type, **kwargs):
                     number=(i % 5)
                     )
     elif content_type == 'group':
-        pass
+        group = Tools_for_db.Group(name=kwargs['content'])
+        for i in range(60):
+            lesson = group.getInfoByTime(i)
+            if lesson[0] is not '':
+                room = lesson[0]
+                less = lesson[1]
+                # 'Лек' -> 'lect, 'Лаб' -> 'lab, 'Прак' -> 'pract'
+                type = type_dict[lesson[2]]
+                teach = get_groups(lesson[3])
+                my_lesson = Lesson(teacher=teach.encode('utf-8'),
+                                   lesson=less.encode('utf-8'),
+                                   type=type,
+                                   groups=group.name,
+                                   room=str(int(room)),
+                                   week=('upper' if i < 30 else 'lower'),
+                                   day=(i / 5 % 6),
+                                   number=(i % 5))
+                lesson_set[int(i / 5)][(i % 5)] = my_lesson
+            else:
+                lesson_set[int(i / 5)][(i % 5)] = Lesson(
+                    groups=group.name,
+                    week=('upper' if i < 30 else 'lower'),
+                    day=(i / 5 % 6),
+                    number=(i % 5)
+                    )
     elif content_type == 'room':
         pass
     else:
