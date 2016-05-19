@@ -4,12 +4,12 @@
 All necessary table definitions for Easy Week
 """
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.gridlayout import GridLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.actionbar import ActionBar
 from kivy.properties import ObjectProperty, ListProperty
 from kivy.lang import Builder
 from kivy.app import App
-from lessons import lesson_click, data_lesson, Lesson, LessonBubble
+from lessons import lesson_click, data_lesson, Lesson
 
 lesson_size = (150, 70)
 
@@ -46,7 +46,7 @@ class LessonWeek(BoxLayout):
             self.add_widget(day)
 
 
-class LessonTable(GridLayout):
+class LessonTable(FloatLayout):
     lesson_set = ListProperty()
 
     def __init__(self, **kwargs):
@@ -61,16 +61,8 @@ class LessonTable(GridLayout):
 
 class ScheduleApp(App):
     def build(self):
-        # hour_box = LessonTable(lesson_set=[[data_lesson[0]
-        #                                    for i in range(4)]
-        #                                    for j in range(5)])
-        # hour_box = LessonDay(lesson_set=[Lesson(on_release=lesson_click,
-        #                                         view_type='All',
-        #                                         **data_lesson[0])
-        #                                  for i in range(5)
-        #                                  ])
         lesson_table = LessonWeek(day_set=[
-            LessonDay(lesson_set=[Lesson(on_release=LessonBubble,
+            LessonDay(lesson_set=[Lesson(on_release=lesson_click,
                                          view_type='all',
                                          **data_lesson[0])
                                   for i in range(5)

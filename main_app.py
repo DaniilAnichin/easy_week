@@ -9,7 +9,6 @@ from kivy.effects.scroll import ScrollEffect
 from kivy.uix.actionbar import ActionBar
 from kivy.properties import ListProperty, OptionProperty, ObjectProperty, \
     StringProperty
-from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.app import App
 from schedule import LessonDay, LessonWeek, LessonTable
@@ -52,7 +51,8 @@ class MainWindow(BoxLayout):
             self.table_type = table_type
 
         if content is not None:
-            self.content = content #.encode('utf-8').decode('utf-8')   # black magic
+            # black magic
+            self.content = content # .encode('utf-8').decode('utf-8')
 
         self.lesson_set = collect_lessons(content_type=self.table_type,
                                           content=self.content)[:6]
