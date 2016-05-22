@@ -6,7 +6,7 @@ All necessary table definitions for Easy Week
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.actionbar import ActionBar
-from kivy.properties import ObjectProperty, ListProperty
+from kivy.properties import ObjectProperty, ListProperty, NumericProperty
 from kivy.lang import Builder
 from kivy.app import App
 from lessons import lesson_click, data_lesson, Lesson
@@ -48,30 +48,38 @@ class LessonWeek(BoxLayout):
 
 class LessonTable(FloatLayout):
     lesson_set = ListProperty()
+    day_num = NumericProperty(0)
+    lesson_num = NumericProperty(0)
 
     def __init__(self, **kwargs):
         super(LessonTable, self).__init__(**kwargs)
-        for day in self.lesson_set:
-            for lesson in day:
-                lesson.size_hint = (None, None)
-                lesson.size = lesson_size
+        self.day_num = len(self.lesson_set)
+        self.lesson_num = len(self.lesson_set[0])
+
+        for i in range(self.day_num):
+            for j in range(self.lesson_num):
+                lesson = self.lesson_set[i][j]
+                lesson.size_hint = None, None
+                lesson.size = (self.width / self.day_num,
+                               self.height / self.lesson_num)
+                lesson.pos_hint = {'x': i / self.day_num,
+                                   'y': j / self.lesson_num}
                 self.add_widget(lesson)
-        self.cols = len(self.lesson_set)
 
 
 class ScheduleApp(App):
     def build(self):
-        lesson_table = LessonWeek(day_set=[
-            LessonDay(lesson_set=[Lesson(on_release=lesson_click,
-                                         view_type='all',
-                                         **data_lesson[0])
-                                  for i in range(5)
-                                  ]) for j in range(6)])
-        # lesson_table =LessonTable(lesson_set=[[Lesson(on_release=lesson_click,
-        #                                                view_type='all',
-        #                                                **data_lesson[0])
-        #                                        for i in range(2)]
-        #                                        for j in range(2)])
+        # lesson_table = LessonWeek(day_set=[
+        #     LessonDay(lesson_set=[Lesson(on_release=lesson_click,
+        #                                  view_type='all',
+        #                                  **data_lesson[0])
+        #                           for i in range(5)
+        #                           ]) for j in range(6)])
+        lesson_table = LessonTable(lesson_set=[[Lesson(on_release=lesson_click,
+                                                       view_type='all',
+                                                       **data_lesson[0])
+                                               for i in range(5)]
+                                               for j in range(5)])
         return lesson_table
 
 

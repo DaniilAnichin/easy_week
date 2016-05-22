@@ -13,7 +13,7 @@ typeDict = {unicode('Лек', 'utf-8'): 'Lec',  unicode('Лаб', 'utf-8'): 'Lab
 
 # db_path = "D:\KPI\Kursach\Db\\"
 # path_delimiter = '\\'
-db_path = '/home/anichindaniil/Python/projects/cource_UI/db/'
+db_path = '/home/anichindaniil/Python/projects/easy_week/db/'
 path_delimiter = '/'
 
 

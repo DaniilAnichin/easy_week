@@ -1,14 +1,14 @@
-<HugePopup>:
+<ChoicePopup>:
     size_hint: .3, .3
-    text_input: text_input
+    choice_btn: choice_btn
     BoxLayout:
         orientation: 'vertical'
-        TextInput:
-            id: text_input
-            text: root.label_text
+        Button:
+            id: choice_btn
+            text: root.btn_text
         Button:
             text: 'Accept'
-            on_press: root.first_button(root.text_input.text)
+            on_press: root.on_release(root.choice_btn.text)
             on_release: root.dismiss()
 
 <LoginPopup>:

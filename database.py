@@ -11,8 +11,11 @@ from db.BlakMagicAlogorithm import getTeacher
 week_len = 6
 day_len = 5
 
-teacher_list = []
-group_list = []
+teacher_list = [teacher.decode('cp1251')[:-1] for teacher
+                in open('./db/_Teachers.txt', 'rt').readlines()]
+
+group_list = [group[:-1] for group in open('./db/dihc.txt', 'rt').readlines()]
+
 room_list = []
 
 
@@ -23,19 +26,11 @@ type_dict = {
 }
 
 
-def get_lesson_set():
-    return [[Lesson(on_release=lesson_click,
-                    **data_lesson[int(random() * 100) % 2])
-            for i in range(60)] for j in range(70)]
-
-
 def get_groups(stream):
     result = []
-    with open('./db/dihc.txt', 'rt') as out:
-        groups = out.readlines()
-        for group in groups:
-            if group.startswith(stream):
-                result.append(group[:-1])
+    for group in group_list:
+        if group.startswith(stream):
+            result.append(group)
     return result
 
 
@@ -56,17 +51,17 @@ def collect_lessons(content_type, **kwargs):
                                    type=type,
                                    groups=groups,
                                    room=str(int(room)),
-                                   week=('upper' if i < 30 else 'lower'),
-                                   day=(i / 5 % 6),
-                                   number=(i % 5))
-                lesson_set[int(i / 5)][(i % 5)] = my_lesson
+                                   week=('upper' if i < week_len * day_len else 'lower'),
+                                   day=(i / day_len % week_len),
+                                   number=(i % day_len))
+                lesson_set[int(i / day_len)][(i % day_len)] = my_lesson
             else:
-                lesson_set[int(i / 5)][(i % 5)] = Lesson(
+                lesson_set[int(i / day_len)][(i % day_len)] = Lesson(
                     teacher=kwargs['content'].encode('utf-8'),
-                    week=('upper' if i < 30 else 'lower'),
-                    day=(i / 5 % 6),
-                    number=(i % 5)
-                    )
+                    week=('upper' if i < week_len * day_len else 'lower'),
+                    day=(i / day_len % week_len),
+                    number=(i % day_len)
+                )
     elif content_type == 'group':
         pass
     elif content_type == 'room':

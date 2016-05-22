@@ -5,9 +5,9 @@ import csv, codecs, cStringIO
 import random
 
 random.seed()
-#typeDict = {'Лек' : 'Lec', 'Лаб':'Lab', 'Прак':'Pract'}
+# typeDict = {'Лек' : 'Lec', 'Лаб':'Lab', 'Прак':'Pract'}
 # teachers = codecs.open('D:\KPI\Kursach\Db\_Teachers.txt', 'r', 'cp1251')
-teachers = codecs.open('/home/anichindaniil/Python/projects/cource_UI/db/_Teachers.txt', 'r', 'cp1251')
+teachers = codecs.open('/home/anichindaniil/Python/projects/easy_week/db/_Teachers.txt', 'r', 'cp1251')
 
 
 def getTeacher(pos):
@@ -18,7 +18,6 @@ def getTeacher(pos):
         except IOError:
             return -1
     return unicode(teachers.readline()[:-1])[:-1]
-    # return unicode(teachers.readline()[:-1])[:-1]
 
 
 if __name__ == '__main__':

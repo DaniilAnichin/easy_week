@@ -5,23 +5,26 @@ All necessary popup definitions for Easy Week
 """
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
+from kivy.uix.dropdown import DropDown
 from kivy.uix.boxlayout import BoxLayout
-from kivy.properties import StringProperty, ObjectProperty
+from kivy.properties import StringProperty, ObjectProperty, ListProperty
+from database import teacher_list
 from kivy.app import App
+
 
 # Data which will form the view of popup, e.g. label, button text
 # Division may be useful for translation
 data_group = {
     'title': 'Group schedule',
-    'label_text': 'Input the group cypher'
+    'btn_text': 'Choose group cypher'
 }
 data_teacher = {
     'title': 'Teacher schedule',
-    'label_text': 'Input teacher full name'
+    'btn_text': 'Choose teacher'
 }
 data_room = {
     'title': 'Room schedule',
-    'label_text': 'Input the room number'
+    'btn_text': 'Choose room number'
 }
 popup_data = {
     'group': data_group,
@@ -30,15 +33,24 @@ popup_data = {
 }
 
 
-class HugePopup(Popup):
+class ChoicePopup(Popup):
     # Popup-form for view schedule for group, teacher or room
-    label_text = StringProperty()
-    text_input = ObjectProperty(None)
+    btn_text = StringProperty()
+    btn_choices = ListProperty()
+    choice_btn = ObjectProperty(None)
 
-    def __init__(self, **kwargs):
-        self.first_button = kwargs['first_button']
-        self.second_button = kwargs['second_button']
-        super(Popup, self).__init__(**kwargs)
+    def __init__(self, choices, on_release, **kwargs):
+        self.btn_choices = choices
+        self.on_release = on_release
+        super(ChoicePopup, self).__init__(**kwargs)
+        drop_down = DropDown()
+        for choice in self.btn_choices:
+            button = Button(text=choice, size_hint_y=None, height=30)
+            button.bind(on_release=lambda btn: drop_down.select(btn.text))
+            drop_down.add_widget(button)
+        self.choice_btn.bind(on_release=drop_down.open)
+        drop_down.bind(
+            on_select=lambda instance, x: setattr(self.choice_btn, 'text', x))
 
 
 class LoginPopup(Popup):
@@ -50,13 +62,8 @@ class LoginPopup(Popup):
         self.accept = accept
         super(Popup, self).__init__(**kwargs)
 
-
-def simple(b):
-    print "Yes, it works: {}".format(b)
-
-
-def one_more(b):
-    print "Yeah: {}".format(b)
+def simple(x):
+    print x
 
 
 class PopupsApp(App):
@@ -69,13 +76,12 @@ class PopupsApp(App):
         return box
 
     def show_popup(self, b):
-        p = HugePopup(first_button=simple, second_button=one_more,
-                      **popup_data['teacher'])
-        p.open()
+        ChoicePopup(choices=teacher_list,
+                    on_release=simple,
+                    **popup_data['teacher']).open()
 
     def show_login_popup(self, b):
-        p = LoginPopup(accept=self.login_show)
-        p.open()
+        LoginPopup(accept=self.login_show).open()
 
     def login_show(self, login, password):
         print "Login: %s, Pass: %s" % (login, password)

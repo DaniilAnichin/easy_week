@@ -8,13 +8,13 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.effects.scroll import ScrollEffect
 from kivy.uix.actionbar import ActionBar
 from kivy.properties import ListProperty, OptionProperty, ObjectProperty, \
-    StringProperty
+    StringProperty, NumericProperty
 from kivy.lang import Builder
 from kivy.app import App
 from schedule import LessonDay, LessonWeek, LessonTable
 from lessons import data_lesson, Lesson, lesson_click
-from popups import HugePopup, LoginPopup, popup_data
-from database import collect_lessons
+from popups import ChoicePopup, LoginPopup, popup_data
+from database import collect_lessons, group_list, teacher_list
 
 
 class NoOverScroll(ScrollEffect):
@@ -23,39 +23,44 @@ class NoOverScroll(ScrollEffect):
 
 class MainWindow(BoxLayout):
     lesson_set = ListProperty()
-    log_label = ObjectProperty(None)
+    day_num = NumericProperty(0)
+    lesson_num = NumericProperty(0)
+    week = OptionProperty('upper', options=['upper', 'lower'])
     table_type = OptionProperty('teacher', options=['groups', 'group',
                                                     'teachers', 'teacher',
                                                     'rooms', 'room'])
     content = StringProperty(unicode('вик. Міхнєва Ю. Р.', 'utf-8'))
-    scroll_layout = ObjectProperty(None)
+    log_label = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(MainWindow, self).__init__(**kwargs)
         self.no_resize = False
         self.scroll_layout.effect_cls = NoOverScroll
         self.log_label.text = 'loading database...(wait a bit, pls)'
-        self.load_database()
-
-    def load_database(self):
-        self.lesson_set = collect_lessons(content_type=self.table_type,
-                                          content=self.content)[:6]
-        self.log_label.text = 'Database loaded successfully'
         self.set_table()
 
-    def set_table(self, table_type=None, content=None):
+    def set_table(self, table_type=None, content=None, week='upper'):
         self.log_label.text = 'Preparing data'
         self.clear_table()
+        self.week = week
 
         if table_type is not None:
             self.table_type = table_type
 
         if content is not None:
             # black magic
-            self.content = content # .encode('utf-8').decode('utf-8')
+            # .encode('utf-8').decode('utf-8')
+            self.content = content
 
         self.lesson_set = collect_lessons(content_type=self.table_type,
-                                          content=self.content)[:6]
+                                          content=self.content)
+        self.day_num = len(self.lesson_set) / 2
+        self.lesson_num = len(self.lesson_set[0])
+
+        if self.week is 'upper':
+            self.lesson_set = self.lesson_set[:self.day_num]
+        else:
+            self.lesson_set = self.lesson_set[self.day_num:]
 
         if self.table_type.endswith('s'):
             self.no_resize = True
@@ -104,21 +109,18 @@ class MainWindow(BoxLayout):
         self.log_label.text = 'You have logged out'
 
     def show_group_popup(self):
-        p = HugePopup(first_button=partial(self.set_table, 'group'),
-                      second_button=partial(self.set_table, 'groups'),
-                      **popup_data['group'])
+        p = ChoicePopup(first_button=partial(self.set_table, 'group'),
+                        **popup_data['group'])
         p.open()
 
     def show_teacher_popup(self):
-        p = HugePopup(first_button=partial(self.set_table, 'teacher'),
-                      second_button=partial(self.set_table, 'teachers'),
-                      **popup_data['teacher'])
-        p.open()
+        ChoicePopup(on_release=partial(self.set_table, 'teacher'),
+                    choices=teacher_list,
+                    **popup_data['teacher']).open()
 
     def show_room_popup(self):
-        p = HugePopup(first_button=partial(self.set_table, 'room'),
-                      second_button=partial(self.set_table, 'rooms'),
-                      **popup_data['room'])
+        p = ChoicePopup(first_button=partial(self.set_table, 'room'),
+                        **popup_data['room'])
         p.open()
 
     def show_login_popup(self):
