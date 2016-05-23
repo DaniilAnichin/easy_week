@@ -4,9 +4,11 @@
 Definitions for Easy Week lesson structure
 """
 from kivy.uix.button import Button
+from kivy.uix.scatter import Scatter
 from kivy.uix.behaviors.focus import FocusBehavior
+from kivy.uix.behaviors.drag import DragBehavior
 from kivy.properties import StringProperty, ListProperty, OptionProperty, \
-    BoundedNumericProperty, NumericProperty
+    BoundedNumericProperty, NumericProperty, ObjectProperty
 from kivy.app import App
 
 # Data which will form the view of pair, e.g. week days, time lapse
@@ -45,12 +47,12 @@ data_lesson = [dict(teacher='Orlovskiy I.V.', lesson='High Math II',
                     week='lower', day=4, number=3)]
 
 
-class Lesson(FocusBehavior, Button):
+class Lesson(Scatter):
     teacher = StringProperty()
     lesson = StringProperty()
     groups = ListProperty()
     room = StringProperty()
-    type = OptionProperty('pract', options=["lect", "pract", "lab"])
+    type = OptionProperty('pract', options=['lect', 'pract', 'lab'])
     week = OptionProperty('lower', options=['lower', 'upper'])
     day = BoundedNumericProperty(0, min=0, max=5)
     number = BoundedNumericProperty(0, min=0, max=4)
@@ -58,11 +60,11 @@ class Lesson(FocusBehavior, Button):
     view_type = OptionProperty('all', options=['groups', 'group',
                                                'teachers', 'teacher',
                                                'rooms', 'room', 'all'])
+    button = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(Lesson, self).__init__(**kwargs)
-        self.text = self.__str__()
-        self.lines = len(self.text.split('\n'))
+        self.lines = len(self.__str__().split('\n'))
 
     def __str__(self):
         result = 'An %s... %s' % (self.lesson[:21], lesson_types[self.type])
@@ -85,7 +87,7 @@ def lesson_click(b):
 
 class LessonsApp(App):
     def build(self):
-        button = Lesson(on_press=LessonBubble, **data_lesson[0])
+        button = Lesson(on_press=lesson_click, **data_lesson[0])
         return button
 
 
