@@ -3,19 +3,20 @@
 """
 Definitions for Easy Week database structure
 """
-from random import random
+import csv
 from lessons import Lesson, lesson_click, data_lesson
 from db import Tools_for_db
-from db.BlakMagicAlogorithm import getTeacher
+from db.BlakMagicAlogorithm import getTeacher, UnicodeReader
+from db.Tools_for_db import db_path, path_delimiter
 
 week_len = 6
 day_len = 5
 week_num = week_len * day_len
 
-teacher_list = [teacher.decode('cp1251')[:-1] for teacher
+teacher_list = [teacher.decode('cp1251')[:-2] for teacher
                 in open('./db/_Teachers.txt', 'rt').readlines()]
 
-group_list = [group[:-1] for group in open('./db/dihc.txt', 'rt').readlines()]
+group_list = [group[:-2] for group in open('./db/dihc.txt', 'rt').readlines()]
 
 room_list = []
 
@@ -67,14 +68,19 @@ def collect_lessons(content_type, **kwargs):
         group = Tools_for_db.Group(name=kwargs['content'])
         for i in range(week_num * 2):
             lesson = group.getInfoByTime(i)
-            print lesson
             if lesson[0] is not '':
+                for less in lesson:
+                    if isinstance(less, unicode):
+                        print less
+                    if isinstance(less, list) or isinstance(less, set) or isinstance(less, tuple):
+                        for le in less:
+                            print le.decode('cp1251')
                 room = lesson[0]
                 less = lesson[1]
                 # 'Лек' -> 'lect, 'Лаб' -> 'lab, 'Прак' -> 'pract'
                 type = type_dict[lesson[2]]
                 teach = get_groups(lesson[3])
-                my_lesson = Lesson(teacher=teach.encode('utf-8'),
+                my_lesson = Lesson(teacher='',
                                    lesson=less.encode('utf-8'),
                                    type=type,
                                    groups=group.name,
@@ -107,45 +113,46 @@ def collect_lessons(content_type, **kwargs):
                         type = unicode('Прак', 'utf-8')
                 except IOError:
                     print 'Oops..'
+                    return None
         
         for i in range(60):
             lesson = roomList[i]
             if lesson[0] is not '0':
-            word =''
-            data_number = 0
-            for let in lesson[0]:
-                if let is not unicode(':', 'utf-8'):
-                    word+=let
-                else:
-                    if data_number == 0:
-                        group = word
-                    elif data_number == 1:
-                        less = word
-                    elif data_number == 2:
-                        pass
+                word = ''
+                data_number = 0
+                for let in lesson[0]:
+                    if let is not unicode(':', 'utf-8'):
+                        word += let
                     else:
-                        teach = word
-                    
-                    data_number+=1
-                    word=''
-                    
-                room = str(kwargs['content'])
-                # 'Лек' -> 'lect, 'Лаб' -> 'lab, 'Прак' -> 'pract'
-                teach = get_groups(lesson[3])
-                my_lesson = Lesson(teacher=teach.encode('utf-8'),
-                                   lesson=less.encode('utf-8'),
-                                   type=type,
-                                   groups=group,
-                                   room=str(int(room)),
-                                   week=('upper' if i < 30 else 'lower'),
-                                   day=(i / 5 % 6),
-                                   number=(i % 5))
-                lesson_set[int(i / 5)][(i % 5)] = my_lesson
-            else:
-                lesson_set[int(i / 5)][(i % 5)] = Lesson(
-                    week=('upper' if i < 30 else 'lower'),
-                    day=(i / 5 % 6),
-                    number=(i % 5)
+                        if data_number == 0:
+                            group = word
+                        elif data_number == 1:
+                            less = word
+                        elif data_number == 2:
+                            pass
+                        else:
+                            teach = word
+
+                        data_number += 1
+                        word = ''
+
+                    room = str(kwargs['content'])
+                    # 'Лек' -> 'lect, 'Лаб' -> 'lab, 'Прак' -> 'pract'
+                    teach = get_groups(lesson[3])
+                    my_lesson = Lesson(teacher=teach.encode('utf-8'),
+                                       lesson=less.encode('utf-8'),
+                                       type=type,
+                                       groups=group,
+                                       room=str(int(room)),
+                                       week=('upper' if i < week_num else 'lower'),
+                                       day=(i / day_len % week_len),
+                                       number=(i % day_len))
+                    lesson_set[int(i / day_len)][(i % day_len)] = my_lesson
+                else:
+                    lesson_set[int(i / day_len)][(i % day_len)] = Lesson(
+                        week=('upper' if i < week_num else 'lower'),
+                        day=(i / day_len % week_len),
+                        number=(i % day_len)
                     )
     else:
         print 'Oops..'
@@ -153,5 +160,11 @@ def collect_lessons(content_type, **kwargs):
 
 
 if __name__ == '__main__':
-    name = getTeacher(57)
-    collect_lessons('group', content=group_list[58])
+    # name = getTeacher(5)
+    # name = teacher_list[4]
+    # print name
+    less = collect_lessons('group', content=group_list[6])
+
+    # for le in less:
+    #     for l in le:
+    #         print l
