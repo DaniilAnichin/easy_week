@@ -34,7 +34,9 @@ popup_data = {
 
 
 class ChoicePopup(Popup):
-    # Popup-form for view schedule for group, teacher or room
+    """
+    Popup form for view schedule for group, teacher or room
+    """
     btn_text = StringProperty()
     btn_choices = ListProperty()
     choice_btn = ObjectProperty(None)
@@ -45,7 +47,7 @@ class ChoicePopup(Popup):
         super(ChoicePopup, self).__init__(**kwargs)
         drop_down = DropDown()
         for choice in self.btn_choices:
-            button = Button(text=choice, size_hint_y=None, height=30)
+            button = Button(text=choice, size_hint_y=None, height=35)
             button.bind(on_release=lambda btn: drop_down.select(btn.text))
             drop_down.add_widget(button)
         self.choice_btn.bind(on_release=drop_down.open)
@@ -54,7 +56,9 @@ class ChoicePopup(Popup):
 
 
 class LoginPopup(Popup):
-    # Popup-form for login
+    """
+    Popup form for logging in
+    """
     login_input = ObjectProperty(None)
     password_input = ObjectProperty(None)
 
@@ -62,8 +66,14 @@ class LoginPopup(Popup):
         self.accept = accept
         super(Popup, self).__init__(**kwargs)
 
-def simple(x):
-    print x
+
+class LessonPopup(Popup):
+    """
+    Popup form for editing the lesson object
+    """
+
+    def __init__(self, **kwargs):
+        super(LessonPopup, self).__init__(**kwargs)
 
 
 class PopupsApp(App):
@@ -76,9 +86,10 @@ class PopupsApp(App):
         return box
 
     def show_popup(self, b):
-        ChoicePopup(choices=teacher_list,
-                    on_release=simple,
-                    **popup_data['teacher']).open()
+        LessonPopup().open()
+        # ChoicePopup(choices=teacher_list,
+        #             on_release=print_function,
+        #             **popup_data['teacher']).open()
 
     def show_login_popup(self, b):
         LoginPopup(accept=self.login_show).open()

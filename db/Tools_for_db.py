@@ -93,12 +93,11 @@ class Group:
         self.name = name
         self.path = db_path
         try:
-            f=open(self.path+"Groups\\"+name+".csv", 'rb')
+            f = open(self.path+"Groups"+path_delimiter+name+".csv", 'rb')
             self.dataList = list(UnicodeReader(f, csv.excel, 'cp1251', delimiter=';'))
             f.close()
         except IOError:
-            pass
-            #print "None such group : {0}".format(name)
+            print "None such group : {0}".format(name)
 
     def addLesson(self, lesName, lesType, room, time):
         try:

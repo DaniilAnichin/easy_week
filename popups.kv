@@ -11,6 +11,18 @@
             on_press: root.on_release(root.choice_btn.text)
             on_release: root.dismiss()
 
+<LessonPopup>:
+    size_hint: .5, .5
+    title: 'Editing lesson'
+    BoxLayout:
+        orientation: 'vertical'
+        TextInput:
+            text: "Input full name/cypher"
+        TextInput:
+        Button:
+            text: "Accept"
+            on_release: root.dismiss()
+
 <LoginPopup>:
     size_hint: .3, .3
     title: 'Login form(Second field is password, if you are a teacher)'

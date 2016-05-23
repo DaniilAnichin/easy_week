@@ -4,6 +4,7 @@
 All necessary table definitions for Easy Week
 """
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.scatterlayout import ScatterPlaneLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.properties import ListProperty, NumericProperty
@@ -50,18 +51,24 @@ class LayoutsApp(App):
         # box.add_widget(lesson_table)
         # return box
         f = FloatLayout()
+        # f.size_hint = None, None
+        # f.size = (600, 600)
         lesson_set = [[Button(text='Oh no, %d %d' % (i, j))
                       for i in range(5)]
                       for j in range(6)]
         day_num = len(lesson_set)
+        print day_num
         lesson_num = len(lesson_set[0])
+        print lesson_num
         for i in range(day_num):
             for j in range(lesson_num):
-                lesson = lesson_set[i][j]
-                lesson.size_hint = (1 / day_num,
-                                    1 / lesson_num)
-                lesson.pos_hint = {'x': i / day_num,
-                                   'y': j / lesson_num}
+                lesson = Button(text='Oh no, %d %d' % (i, j))
+                lesson.size_hint = (1. / day_num,
+                                    1. / lesson_num)
+                # print (1 / day_num, 1. / lesson_num)
+
+                lesson.pos_hint = {'x': float(i) / day_num,
+                                   'y': float(j) / lesson_num}
                 f.add_widget(lesson)
         return f
 
