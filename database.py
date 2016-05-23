@@ -89,7 +89,62 @@ def collect_lessons(content_type, **kwargs):
                     number=(i % 5)
                     )
     elif content_type == 'room':
-        pass
+        try:
+            with open(db_path+'Lec'+path_delimiter+str(kwargs['content'])+'.csv', 'r') as f:
+                roomList = list(UnicodeReader(f, csv.excel, 'cp1251', delimiter = ';'))
+                type = unicode('Лек', 'utf-8')
+        except IOError:
+            try:
+                with open(db_path+'Lab'+path_delimiter+str(kwargs['content'])+'.csv', 'r') as f:
+                    roomList = list(UnicodeReader(f, csv.excel, 'cp1251', delimiter = ';'))
+                    type = unicode('Лаб', 'utf-8')
+            except IOError:
+                try:
+                    with open(db_path+'Prac'+path_delimiter+str(kwargs['content'])+'.csv', 'r') as f:
+                        roomList = list(UnicodeReader(f, csv.excel, 'cp1251', delimiter = ';'))
+                        type = unicode('Прак', 'utf-8')
+                except IOError:
+                    print 'Oops..'
+        
+        for i in range(60):
+            lesson = roomList[i]
+            if lesson[0] is not '0':
+            word =''
+            data_number = 0
+            for let in lesson[0]:
+                if let is not unicode(':', 'utf-8'):
+                    word+=let
+                else:
+                    if data_number == 0:
+                        group = word
+                    elif data_number == 1:
+                        less = word
+                    elif data_number == 2:
+                        pass
+                    else:
+                        teach = word
+                    
+                    data_number+=1
+                    word=''
+                    
+                room = str(kwargs['content'])
+                # 'Лек' -> 'lect, 'Лаб' -> 'lab, 'Прак' -> 'pract'
+                teach = get_groups(lesson[3])
+                my_lesson = Lesson(teacher=teach.encode('utf-8'),
+                                   lesson=less.encode('utf-8'),
+                                   type=type,
+                                   groups=group,
+                                   room=str(int(room)),
+                                   week=('upper' if i < 30 else 'lower'),
+                                   day=(i / 5 % 6),
+                                   number=(i % 5))
+                lesson_set[int(i / 5)][(i % 5)] = my_lesson
+            else:
+                lesson_set[int(i / 5)][(i % 5)] = Lesson(
+                    week=('upper' if i < 30 else 'lower'),
+                    day=(i / 5 % 6),
+                    number=(i % 5)
+                    )
     else:
         print 'Oops..'
     return lesson_set
