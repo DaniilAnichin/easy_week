@@ -14,7 +14,7 @@ from kivy.app import App
 from schedule import LessonDay, LessonWeek, LessonTable
 from lessons import data_lesson, Lesson, lesson_click
 from popups import ChoicePopup, LoginPopup, popup_data
-from database import collect_lessons, group_list, teacher_list, \
+from database import collect_lessons, group_list, teacher_list, room_list, \
     day_num, lesson_num, week_len
 
 
@@ -91,7 +91,8 @@ class MainWindow(BoxLayout):
                     **popup_data['teacher']).open()
 
     def show_room_popup(self):
-        ChoicePopup(first_button=partial(self.set_table, 'room'),
+        ChoicePopup(on_release=partial(self.set_table, 'room'),
+                    choices=room_list,
                     **popup_data['room']).open()
 
     def show_login_popup(self):

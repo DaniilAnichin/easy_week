@@ -47,12 +47,17 @@ class ChoicePopup(Popup):
         super(ChoicePopup, self).__init__(**kwargs)
         drop_down = DropDown()
         for choice in self.btn_choices:
-            button = Button(text=choice, size_hint_y=None, height=35)
+            button = Button(
+                text=str(choice) if isinstance(choice, int) else choice,
+                size_hint_y=None,
+                height=35
+            )
             button.bind(on_release=lambda btn: drop_down.select(btn.text))
             drop_down.add_widget(button)
         self.choice_btn.bind(on_release=drop_down.open)
         drop_down.bind(
-            on_select=lambda instance, x: setattr(self.choice_btn, 'text', x))
+            on_select=lambda instance, x: setattr(self.choice_btn, 'text', x)
+        )
 
 
 class LoginPopup(Popup):
