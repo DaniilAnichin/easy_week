@@ -9,9 +9,9 @@ from db import Tools_for_db
 from db.BlakMagicAlogorithm import getTeacher, UnicodeReader
 from db.Tools_for_db import db_path, path_delimiter
 
-week_len = 6
-day_len = 5
-week_num = week_len * day_len
+day_num = 6
+lesson_num = 5
+week_len = day_num * lesson_num
 
 teacher_list = [teacher.decode('cp1251')[:-2] for teacher
                 in open('./db/_Teachers.txt', 'rt').readlines()]
@@ -38,10 +38,10 @@ def get_groups(stream):
 
 
 def collect_lessons(content_type, content):
-    lesson_set = [[None for i in range(day_len)] for j in range(week_len * 2)]
+    lesson_set = [[None for i in range(lesson_num)] for j in range(day_num * 2)]
     if content_type is 'teacher':
         teacher = Tools_for_db.Teacher(name=content)
-        for i in range(week_num * 2):
+        for i in range(week_len * 2):
             lesson = teacher.getInfoByTime(i)
             if lesson[0] is not '':
                 room = lesson[0]
@@ -54,21 +54,23 @@ def collect_lessons(content_type, content):
                                    type=type,
                                    groups=groups,
                                    room=str(int(room)),
-                                   week=('upper' if i < week_num else 'lower'),
-                                   day=(i / day_len % week_len),
-                                   number=(i % day_len))
-                lesson_set[i / day_len][i % day_len] = my_lesson
+                                   week=('upper' if i < week_len else 'lower'),
+                                   day=(i / lesson_num % day_num),
+                                   number=(i % lesson_num),
+                                   view_type='teacher')
+                lesson_set[i / lesson_num][i % lesson_num] = my_lesson
             else:
-                lesson_set[i / day_len][i % day_len] = Lesson(
+                lesson_set[i / lesson_num][i % lesson_num] = Lesson(
                     teacher=content.encode('utf-8'),
-                    week=('upper' if i < week_num else 'lower'),
-                    day=(i / day_len % week_len),
-                    number=(i % day_len)
+                    week=('upper' if i < week_len else 'lower'),
+                    day=(i / lesson_num % day_num),
+                    number=(i % lesson_num),
+                    view_type='teacher'
                 )
 
     elif content_type is 'group':
         group = Tools_for_db.Group(name=content)
-        for i in range(week_num * 2):
+        for i in range(week_len * 2):
             lesson = group.getInfoByTime(i)
             if lesson[0] is not '':
                 room = lesson[0]
@@ -81,16 +83,18 @@ def collect_lessons(content_type, content):
                                    type=type,
                                    groups=[group.name],
                                    room=str(int(room)),
-                                   week=('upper' if i < week_num else 'lower'),
-                                   day=(i / day_len % week_len),
-                                   number=(i % day_len))
-                lesson_set[i / day_len][i % day_len] = my_lesson
+                                   week=('upper' if i < week_len else 'lower'),
+                                   day=(i / lesson_num % day_num),
+                                   number=(i % lesson_num),
+                                   view_type='group')
+                lesson_set[i / lesson_num][i % lesson_num] = my_lesson
             else:
-                lesson_set[i / day_len][i % day_len] = Lesson(
+                lesson_set[i / lesson_num][i % lesson_num] = Lesson(
                     groups=[group.name],
-                    week=('upper' if i < week_num else 'lower'),
-                    day=(i / day_len % week_len),
-                    number=(i % day_len)
+                    week=('upper' if i < week_len else 'lower'),
+                    day=(i / lesson_num % day_num),
+                    number=(i % lesson_num),
+                    view_type='group'
                 )
     elif content_type is 'room':
         try:
@@ -141,15 +145,17 @@ def collect_lessons(content_type, content):
                                    type=type,
                                    groups=get_groups(group.decode('cp1251')),
                                    room=str(int(room)),
-                                   week=('upper' if i < week_num else 'lower'),
-                                   day=(i / day_len % week_len),
-                                   number=(i % day_len))
-                lesson_set[i / day_len][i % day_len] = my_lesson
+                                   week=('upper' if i < week_len else 'lower'),
+                                   day=(i / lesson_num % day_num),
+                                   number=(i % lesson_num),
+                                   view_type='room')
+                lesson_set[i / lesson_num][i % lesson_num] = my_lesson
             else:
-                lesson_set[i / day_len][i % day_len] = Lesson(
-                    week=('upper' if i < week_num else 'lower'),
-                    day=(i / day_len % week_len),
-                    number=(i % day_len)
+                lesson_set[i / lesson_num][i % lesson_num] = Lesson(
+                    week=('upper' if i < week_len else 'lower'),
+                    day=(i / lesson_num % day_num),
+                    number=(i % lesson_num),
+                    view_type='room'
                 )
     else:
         print 'Oops..'

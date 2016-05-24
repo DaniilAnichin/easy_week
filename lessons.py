@@ -50,14 +50,12 @@ class Lesson(FocusBehavior, Button):
     lesson = StringProperty()
     groups = ListProperty()
     room = StringProperty()
-    type = OptionProperty('pract', options=["lect", "pract", "lab"])
+    type = OptionProperty('pract', options=['lect', 'pract', 'lab'])
     week = OptionProperty('lower', options=['lower', 'upper'])
     day = BoundedNumericProperty(0, min=0, max=5)
     number = BoundedNumericProperty(0, min=0, max=4)
     lines = NumericProperty(1)
-    view_type = OptionProperty('all', options=['groups', 'group',
-                                               'teachers', 'teacher',
-                                               'rooms', 'room', 'all'])
+    view_type = OptionProperty('group', options=['group', 'teacher', 'room'])
 
     def __init__(self, **kwargs):
         super(Lesson, self).__init__(**kwargs)
@@ -72,7 +70,7 @@ class Lesson(FocusBehavior, Button):
         if not self.view_type.startswith('room'):
             result += '\nIn %s room' % self.room
         if not self.view_type.startswith('group'):
-            result += '\n %s' % ', '.join(self.groups)
+            result += '\n%s...' % ', '.join(self.groups)[:17]
         # if not self.view_type.endswith('s'):
         #     result += '\nAt %s week' % week_types[self.week]
         #     result += '\n%s, %s' % (week_days[self.day], day_times[self.number])

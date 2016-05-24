@@ -1,7 +1,7 @@
 <MainWindow>:
     orientation: 'vertical'
-    scroll_layout: scroll_layout
     log_label: log_label
+    table: table
     LessonBar:
         pos_hint: {'top':1}
 
@@ -13,10 +13,8 @@
             ActionOverflow:
             ActionButton:
                 text: 'Prev'
-                disabled: root.table_type[-1] == 's'
             ActionButton:
                 text: 'Next'
-                disabled: root.table_type[-1] == 's'
             ActionGroup:
                 text: 'Types'
                 ActionToggleButton:
@@ -47,12 +45,6 @@
                     height: 40
                     on_press: root.show_login_popup()
                 ActionButton:
-                    id: update_button
-                    text: 'Update DB'
-                    size_hint_y: None
-                    height: 40
-                    on_press: root.load_database()
-                ActionButton:
                     id: logout_button
                     text: 'Logout'
                     size_hint_y: None
@@ -63,11 +55,8 @@
                     size_hint_y: None
                     height: 40
                     on_press: app.stop()
-    ScrollView:
-        id: scroll_layout
-        pos_hint: {'top': 1}
-        bar_color: .0, .8, .9, .9
-        bar_width: 5
+    BoxLayout:
+        id: table
     Label:
         id: log_label
         height: 20
