@@ -14,7 +14,8 @@ from kivy.app import App
 from schedule import LessonDay, LessonWeek, LessonTable
 from lessons import data_lesson, Lesson, lesson_click
 from popups import ChoicePopup, LoginPopup, popup_data
-from database import collect_lessons, group_list, teacher_list
+from database import collect_lessons, group_list, teacher_list, \
+    week_len, day_len, week_num
 
 
 class NoOverScroll(ScrollEffect):
@@ -54,9 +55,6 @@ class MainWindow(BoxLayout):
 
         self.lesson_set = collect_lessons(content_type=self.table_type,
                                           content=self.content)
-        self.day_num = len(self.lesson_set) / 2
-        self.lesson_num = len(self.lesson_set[0])
-
         if self.week is 'upper':
             self.lesson_set = self.lesson_set[:self.day_num]
         else:
@@ -64,9 +62,7 @@ class MainWindow(BoxLayout):
 
         if self.table_type.endswith('s'):
             self.no_resize = True
-            lesson_table = LessonTable(lesson_set=self.lesson_set,
-                                       size_hint=(None, None),
-                                       pos_hint={'top': 1, 'left': 1})
+            lesson_table = LessonTable(lesson_set=self.lesson_set)
             lesson_table.bind(minimum_height=lesson_table.setter('height'))
             lesson_table.bind(minimum_width=lesson_table.setter('width'))
         else:

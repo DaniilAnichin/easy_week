@@ -4,14 +4,18 @@
 All necessary table definitions for Easy Week
 """
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.actionbar import ActionBar
-from kivy.properties import ObjectProperty, ListProperty, NumericProperty
+from kivy.properties import ObjectProperty, ListProperty, NumericProperty, \
+    StringProperty
 from kivy.lang import Builder
 from kivy.app import App
-from lessons import lesson_click, data_lesson, Lesson
+from lessons import lesson_click, data_lesson, Lesson, week_days, day_times
 
 lesson_size = (150, 70)
+
+ruler_hint = 0.08
 
 
 class LessonBar(ActionBar):
@@ -46,6 +50,10 @@ class LessonWeek(BoxLayout):
             self.add_widget(day)
 
 
+class KindaButton(Button):
+    pass
+
+
 class LessonTable(FloatLayout):
     lesson_set = ListProperty()
     day_num = NumericProperty(0)
@@ -59,12 +67,33 @@ class LessonTable(FloatLayout):
         for i in range(self.day_num):
             for j in range(self.lesson_num):
                 lesson = self.lesson_set[i][j]
-                lesson.size_hint = None, None
-                lesson.size = (self.width / self.day_num,
-                               self.height / self.lesson_num)
-                lesson.pos_hint = {'x': i / self.day_num,
-                                   'y': j / self.lesson_num}
+                lesson.size_hint = ((1 - ruler_hint) / self.day_num,
+                                    (1 - ruler_hint) / self.lesson_num)
+                lesson.pos_hint = {
+                    'x': ruler_hint + i * (1 - ruler_hint) / self.day_num,
+                    'y': 1 - ruler_hint - (j + 1) *
+                                          (1 - ruler_hint) / self.lesson_num}
                 self.add_widget(lesson)
+
+        for i in range(self.day_num):
+            button = KindaButton(text=week_days[i],
+                            size_hint=(
+                                (1 - ruler_hint) / self.day_num, ruler_hint),
+                            pos_hint={'x': ruler_hint + i * (
+                                1 - ruler_hint) / self.day_num,
+                                      'y': 1 - ruler_hint},
+                            )
+            self.add_widget(button)
+
+        for j in range(self.lesson_num):
+            button = KindaButton(text='\n\n'.join(day_times[j].split(' - ')),
+                            size_hint=(ruler_hint,
+                                      (1 - ruler_hint) / self.lesson_num),
+                            pos_hint={'x': 0,
+                                      'y': 1 - ruler_hint - (j + 1) *
+                                      (1 - ruler_hint) / self.lesson_num}
+                            )
+            self.add_widget(button)
 
 
 class ScheduleApp(App):
@@ -78,8 +107,8 @@ class ScheduleApp(App):
         lesson_table = LessonTable(lesson_set=[[Lesson(on_release=lesson_click,
                                                        view_type='all',
                                                        **data_lesson[0])
-                                               for i in range(5)]
-                                               for j in range(5)])
+                                                for i in range(5)]
+                                               for j in range(6)])
         return lesson_table
 
 

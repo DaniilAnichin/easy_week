@@ -12,6 +12,8 @@ from kivy.app import App
 from lessons import lesson_click, Lesson
 
 
+ruler_hint = 0.08
+
 class LessonTable(FloatLayout):
     lesson_set = ListProperty()
     day_num = NumericProperty(0)
@@ -58,15 +60,15 @@ class LayoutsApp(App):
                       for j in range(6)]
         day_num = len(lesson_set)
         lesson_num = len(lesson_set[0])
-        for i in range(day_num/2):
-            for j in range(lesson_num/2):
-                lesson = Lesson(text='Oh no, %d %d' % (i, j))
-                lesson.size_hint = (1. / day_num,
-                                    1. / lesson_num)
+        for i in range(day_num):
+            for j in range(lesson_num):
+                lesson = Button(text='Oh no, %d %d' % (i + 1, j + 1))
+                lesson.size_hint = ((1 - ruler_hint) / day_num,
+                                    (1 - ruler_hint) / lesson_num)
                 # print (1 / day_num, 1. / lesson_num)
 
-                lesson.pos_hint = {'x': float(i) / day_num,
-                                   'y': float(j) / lesson_num}
+                lesson.pos_hint = {'x': ruler_hint + i * (1 - ruler_hint) / day_num,
+                                   'y': 1 - ruler_hint - (j + 1) * (1 - ruler_hint) / lesson_num}
                 f.add_widget(lesson)
         return f
 

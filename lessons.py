@@ -4,11 +4,9 @@
 Definitions for Easy Week lesson structure
 """
 from kivy.uix.button import Button
-from kivy.uix.scatter import Scatter
 from kivy.uix.behaviors.focus import FocusBehavior
-from kivy.uix.behaviors.drag import DragBehavior
 from kivy.properties import StringProperty, ListProperty, OptionProperty, \
-    BoundedNumericProperty, NumericProperty, ObjectProperty
+    BoundedNumericProperty, NumericProperty
 from kivy.app import App
 
 # Data which will form the view of pair, e.g. week days, time lapse
@@ -47,12 +45,12 @@ data_lesson = [dict(teacher='Orlovskiy I.V.', lesson='High Math II',
                     week='lower', day=4, number=3)]
 
 
-class Lesson(Scatter):
+class Lesson(FocusBehavior, Button):
     teacher = StringProperty()
     lesson = StringProperty()
     groups = ListProperty()
     room = StringProperty()
-    type = OptionProperty('pract', options=['lect', 'pract', 'lab'])
+    type = OptionProperty('pract', options=["lect", "pract", "lab"])
     week = OptionProperty('lower', options=['lower', 'upper'])
     day = BoundedNumericProperty(0, min=0, max=5)
     number = BoundedNumericProperty(0, min=0, max=4)
@@ -60,23 +58,24 @@ class Lesson(Scatter):
     view_type = OptionProperty('all', options=['groups', 'group',
                                                'teachers', 'teacher',
                                                'rooms', 'room', 'all'])
-    button = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(Lesson, self).__init__(**kwargs)
-        self.lines = len(self.__str__().split('\n'))
+        self.text = self.__str__()
+        self.lines = len(self.text.split('\n'))
 
     def __str__(self):
-        result = 'An %s... %s' % (self.lesson[:21], lesson_types[self.type])
+        result = '%s...' % self.lesson[:21]
+        result += '\n%s' % lesson_types[self.type]
         if not self.view_type.startswith('teacher'):
-            result += '\nWith %s' % self.teacher
+            result += '\n%s...' % self.teacher[:26]
         if not self.view_type.startswith('room'):
             result += '\nIn %s room' % self.room
         if not self.view_type.startswith('group'):
-            result += '\nGroups: ' + ', '.join(self.groups)
-        if not self.view_type.endswith('s'):
-            result += '\nAt %s week' % week_types[self.week]
-            result += '\n%s, %s' % (week_days[self.day], day_times[self.number])
+            result += '\n %s' % ', '.join(self.groups)
+        # if not self.view_type.endswith('s'):
+        #     result += '\nAt %s week' % week_types[self.week]
+        #     result += '\n%s, %s' % (week_days[self.day], day_times[self.number])
         return result
 
 
@@ -87,7 +86,7 @@ def lesson_click(b):
 
 class LessonsApp(App):
     def build(self):
-        button = Lesson(on_press=lesson_click, **data_lesson[0])
+        button = Lesson(on_press=print_function, **data_lesson[0])
         return button
 
 
