@@ -63,10 +63,10 @@ class Lesson(FocusBehavior, Button):
         self.lines = len(self.text.split('\n'))
 
     def __str__(self):
-        result = '%s...' % self.lesson[:21]
+        result = '%s...' % self.lesson.decode('utf-8')[:12].encode('utf-8')
         result += '\n%s' % lesson_types[self.type]
         if not self.view_type.startswith('teacher'):
-            result += '\n%s...' % self.teacher[:26]
+            result += '\n%s...' % self.teacher.decode('utf-8')[:12].encode('utf-8')
         if not self.view_type.startswith('room'):
             result += '\nIn %s room' % self.room
         if not self.view_type.startswith('group'):
