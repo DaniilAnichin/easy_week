@@ -38,15 +38,16 @@ class ChoicePopup(Popup):
     Popup form for view schedule for group, teacher or room
     """
     btn_text = StringProperty()
-    btn_choices = ListProperty()
+    choices = ListProperty()
     choice_btn = ObjectProperty(None)
+    on_release = ObjectProperty()
 
-    def __init__(self, choices, on_release, **kwargs):
-        self.btn_choices = choices
+    def __init__(self, on_release, **kwargs):
         self.on_release = on_release
         super(ChoicePopup, self).__init__(**kwargs)
         drop_down = DropDown()
-        for choice in self.btn_choices:
+
+        for choice in self.choices:
             button = Button(
                 text=str(choice) if isinstance(choice, int) else choice,
                 size_hint_y=None,
@@ -91,10 +92,12 @@ class PopupsApp(App):
         return box
 
     def show_popup(self, b):
-        LessonPopup().open()
-        # ChoicePopup(choices=teacher_list,
-        #             on_release=print_function,
-        #             **popup_data['teacher']).open()
+        # LessonPopup().open()
+        ChoicePopup(
+            choices=teacher_list,
+            on_release=print_function,
+            **popup_data['teacher']
+        ).open()
 
     def show_login_popup(self, b):
         LoginPopup(accept=self.login_show).open()

@@ -5,14 +5,12 @@ Main window for easy week, includes Action bar and logging
 """
 from functools import partial
 from kivy.uix.boxlayout import BoxLayout
-from kivy.effects.scroll import ScrollEffect
 from kivy.uix.actionbar import ActionBar
 from kivy.properties import ListProperty, OptionProperty, ObjectProperty, \
     StringProperty, NumericProperty
 from kivy.lang import Builder
 from kivy.app import App
-from schedule import LessonDay, LessonWeek, LessonTable
-from lessons import data_lesson, Lesson, lesson_click
+from schedule import LessonTable
 from popups import ChoicePopup, LoginPopup, popup_data
 from database import collect_lessons, group_list, teacher_list, room_list, \
     day_num, lesson_num, week_len
@@ -27,6 +25,7 @@ class MainWindow(BoxLayout):
     content = StringProperty(unicode('вик. Міхнєва Ю. Р.', 'utf-8'))
     table = ObjectProperty()
     log_label = ObjectProperty(None)
+    title = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(MainWindow, self).__init__(**kwargs)
@@ -34,10 +33,11 @@ class MainWindow(BoxLayout):
         self.log_label.text = 'loading database...(wait a bit, pls)'
         self.set_table()
 
-    def set_table(self, table_type=None, content=None, week='upper'):
+    def set_table(self, table_type=None, content=None, week=None):
         self.log_label.text = 'Preparing data'
         self.clear_table()
-        self.week = week
+        if week is not None:
+            self.week = week
 
         if table_type is not None:
             self.table_type = table_type
@@ -60,6 +60,7 @@ class MainWindow(BoxLayout):
                     lesson_set=self.lesson_set[self.day_num:]
                 )
             self.log_label.text = 'Showing %s schedule' % self.content
+            self.title.title = '%s schedule, %s week' % (self.content, self.week)
             self.table.add_widget(lesson_table)
         else:
             self.log_label.text = 'Troubles loading schedule'
@@ -67,6 +68,11 @@ class MainWindow(BoxLayout):
     def clear_table(self):
         if isinstance(self.table, BoxLayout):
             self.table.clear_widgets()
+
+    def switch_week(self):
+        self.week = 'upper' if self.week == 'lower' else 'lower'
+        self.clear_table()
+        self.set_table()
 
     def login(self, login, password):
         # if users['login'].password == password: (from db)

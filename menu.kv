@@ -2,19 +2,21 @@
     orientation: 'vertical'
     log_label: log_label
     table: table
-    LessonBar:
+    title: title
+    ActionBar:
         pos_hint: {'top':1}
 
         ActionView:
             use_separator: True
             ActionPrevious:
+                id: title
                 title: 'Action Bar'
                 with_previous: False
-            ActionOverflow:
             ActionButton:
-                text: 'Prev'
+                text: 'Both'
             ActionButton:
-                text: 'Next'
+                text: 'Switch'
+                on_press: root.switch_week()
             ActionGroup:
                 text: 'Types'
                 ActionToggleButton:
@@ -59,11 +61,10 @@
         id: table
     Label:
         id: log_label
-        height: 20
-        size_hint_y: None
+        size_hint_y: 0.05
         pos_hint: {'bottom': 1}
         text: 'Success'
-        text_size: root.log_label.size
+        font_size: root.log_label.height * 0.8
         padding_x: 10
         canvas.before:
             Color:
