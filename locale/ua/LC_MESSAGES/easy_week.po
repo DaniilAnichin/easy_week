@@ -1,0 +1,88 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#: lessons.py:22
+msgid "Lecture"
+msgstr "Лекція"
+
+#: lessons.py:23
+msgid "Practice"
+msgstr "Практичне заняття"
+
+#: lessons.py:24
+msgid "Laboratory"
+msgstr "Лабораторне заняття"
+
+#: lessons.py:31
+msgid "Monday"
+msgstr "Понеділок"
+
+#: lessons.py:32
+msgid "Tuesday"
+msgstr "Вівторок"
+
+#: lessons.py:33
+msgid "Wednesday"
+msgstr "Середа"
+
+#: lessons.py:34
+msgid "Thursday"
+msgstr "Четвер"
+
+#: lessons.py:35
+msgid "Friday"
+msgstr "П’ятниця"
+
+#: lessons.py:36
+msgid "Saturday"
+msgstr "Субота"
+
+#: lessons.py:37
+msgid "Sunday"
+msgstr "Неділя"
+
+#: lessons.py:72
+msgid ""
+"\n"
+"In %s room"
+msgstr ""
+"\n"
+"У %s-ї аудиторії"
+
+
+#: popups.py:18
+msgid "Group schedule"
+msgstr "Розклад групи"
+
+#: popups.py:19
+msgid "Choose group cypher"
+msgstr "Введіть шифр групи"
+
+#: popups.py:22
+msgid "Teacher schedule"
+msgstr "Розклад викладача"
+
+#: popups.py:23
+msgid "Choose teacher"
+msgstr "Оберіть викладача"
+
+#: popups.py:26
+msgid "Room schedule"
+msgstr "Розклад занять у кімнатах"
+
+#: popups.py:27
+msgid "Choose room number"
+msgstr "Оберіть номер аудиторії"
+
+#: popups.kv:10
+msgid "Accept"
+msgstr "Підтвердити"
+
+#: popups.kv:35
+msgid "Input full name/cypher"
+msgstr "Введіти ім’я користувача"
+
+#: popups.kv:30
+msgid "Login form"
+msgstr "Вікно входу"

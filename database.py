@@ -15,6 +15,7 @@ week_len = day_num * lesson_num
 
 teacher_list = [teacher.decode('cp1251')[:-2] for teacher
                 in open('./db/_Teachers.txt', 'rt').readlines()]
+# Slice teacher list, context search
 
 group_list = [group[:-2] for group in open('./db/dihc.txt', 'rt').readlines()]
 

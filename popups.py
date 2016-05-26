@@ -15,16 +15,16 @@ from kivy.app import App
 # Data which will form the view of popup, e.g. label, button text
 # Division may be useful for translation
 data_group = {
-    'title': 'Group schedule',
-    'btn_text': 'Choose group cypher'
+    'title': _('Group schedule'),
+    'btn_text': _('Choose group cypher')
 }
 data_teacher = {
-    'title': 'Teacher schedule',
-    'btn_text': 'Choose teacher'
+    'title': _('Teacher schedule'),
+    'btn_text': _('Choose teacher')
 }
 data_room = {
-    'title': 'Room schedule',
-    'btn_text': 'Choose room number'
+    'title': _('Room schedule'),
+    'btn_text': _('Choose room number')
 }
 popup_data = {
     'group': data_group,

@@ -8,7 +8,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import BooleanProperty, ListProperty, NumericProperty
 from kivy.lang import Builder
 from kivy.app import App
-from lessons import lesson_click, data_lesson, Lesson, week_days, day_times
+from lessons import data_lesson, Lesson, week_days, day_times
 
 ruler_hint = 0.08
 

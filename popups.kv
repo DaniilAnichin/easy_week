@@ -7,7 +7,7 @@
             id: choice_btn
             text: root.btn_text
         Button:
-            text: 'Accept'
+            text: _('Accept')
             on_press: root.on_release(root.choice_btn.text)
             on_release: root.dismiss()
 
@@ -20,23 +20,23 @@
             text: "Input full name/cypher"
         TextInput:
         Button:
-            text: "Accept"
+            text: _('Accept')
             on_release: root.dismiss()
 
 <LoginPopup>:
     size_hint: .3, .3
-    title: 'Login form(Second field is password, if you are a teacher)'
+    title: _('Login form')
     login_input: login_input
     password_input: password_input
     BoxLayout:
         orientation: 'vertical'
         TextInput:
             id: login_input
-            text: "Input full name/cypher"
+            text: _('Input username')
         TextInput:
             id: password_input
             password: True
         Button:
-            text: "Accept"
+            text: _('Accept')
             on_press: root.accept(root.login_input.text, root.password_input.text)
             on_release: root.dismiss()

@@ -1,0 +1,88 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#: lessons.py:22
+msgid "Lecture"
+msgstr "Lecture"
+
+#: lessons.py:23
+msgid "Practice"
+msgstr "Practice"
+
+#: lessons.py:24
+msgid "Laboratory"
+msgstr "Laboratory"
+
+#: lessons.py:31
+msgid "Monday"
+msgstr "Monday"
+
+#: lessons.py:32
+msgid "Tuesday"
+msgstr "Tuesday"
+
+#: lessons.py:33
+msgid "Wednesday"
+msgstr "Wednesday"
+
+#: lessons.py:34
+msgid "Thursday"
+msgstr "Thursday"
+
+#: lessons.py:35
+msgid "Friday"
+msgstr "Friday"
+
+#: lessons.py:36
+msgid "Saturday"
+msgstr "Saturday"
+
+#: lessons.py:37
+msgid "Sunday"
+msgstr "Sunday"
+
+#: lessons.py:72
+msgid ""
+"\n"
+"In %s room"
+"In %s room"
+msgstr ""
+"\n"
+"In %s room"
+
+#: popups.py:18
+msgid "Group schedule"
+msgstr "Group schedule"
+
+#: popups.py:19
+msgid "Choose group cypher"
+msgstr "Choose group cypher"
+
+#: popups.py:22
+msgid "Teacher schedule"
+msgstr "Teacher schedule"
+
+#: popups.py:23
+msgid "Choose teacher"
+msgstr "Choose teacher"
+
+#: popups.py:26
+msgid "Room schedule"
+msgstr "Room schedule"
+
+#: popups.py:27
+msgid "Choose room number"
+msgstr "Choose room number"
+
+#: popups.kv:10
+msgid "Accept"
+msgstr "Accept"
+
+#: popups.kv:35
+msgid "Input full name/cypher"
+msgstr "Input full name/cypher"
+
+#: popups.kv:30
+msgid "Login form"
+msgstr "Login form"

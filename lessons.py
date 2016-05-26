@@ -19,22 +19,22 @@ day_times = [
     '16:10 - 17:45'
 ]
 lesson_types = {
-    'lect': 'Lecture',
-    'pract': 'Practice',
-    'lab': 'Laboratory'
+    'lect': _('Lecture'),
+    'pract': _('Practice'),
+    'lab': _('Laboratory')
 }
 week_types = {
-    'upper': 'upper',
-    'lower': 'lower'
+    'upper': 'I',
+    'lower': 'II'
 }
 week_days = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday'
+    _('Monday'),
+    _('Tuesday'),
+    _('Wednesday'),
+    _('Thursday'),
+    _('Friday'),
+    _('Saturday'),
+    _('Sunday')
 ]
 # Test popup_data for lessons, just example
 data_lesson = [dict(teacher='Orlovskiy I.V.', lesson='High Math II',
@@ -63,28 +63,25 @@ class Lesson(FocusBehavior, Button):
         self.lines = len(self.text.split('\n'))
 
     def __str__(self):
+        # Change color due to the lesson type
         result = '%s...' % self.lesson.decode('utf-8')[:12].encode('utf-8')
         result += '\n%s' % lesson_types[self.type]
         if not self.view_type.startswith('teacher'):
             result += '\n%s...' % self.teacher.decode('utf-8')[:12].encode('utf-8')
         if not self.view_type.startswith('room'):
-            result += '\nIn %s room' % self.room
+            result += _('\nIn %s room') % self.room
         if not self.view_type.startswith('group'):
-            result += '\n%s...' % ', '.join(self.groups)[:17]
+            groups = ', '.join(self.groups)
+            result += '\n%s' % groups[:17] + '...' if len(groups) > 17 else ''
         # if not self.view_type.endswith('s'):
         #     result += '\nAt %s week' % week_types[self.week]
         #     result += '\n%s, %s' % (week_days[self.day], day_times[self.number])
         return result
 
 
-def lesson_click(b):
-    # test function, will die soon
-    print 'And this too!({})'.format(b.lesson)
-
-
 class LessonsApp(App):
     def build(self):
-        button = Lesson(on_press=print_function, **data_lesson[0])
+        button = Lesson(**data_lesson[0])
         return button
 
 

@@ -3,6 +3,12 @@
 """
 Main window for easy week, includes Action bar and logging
 """
+import gettext
+eng = gettext.translation('easy_week', './locale', languages=['en'])
+ua = gettext.translation('easy_week', './locale', languages=['ua'])
+ru = gettext.translation('easy_week', './locale', languages=['ru'])
+
+ua.install()
 from functools import partial
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.actionbar import ActionBar
@@ -14,6 +20,7 @@ from schedule import LessonTable
 from popups import ChoicePopup, LoginPopup, popup_data
 from database import collect_lessons, group_list, teacher_list, room_list, \
     day_num, lesson_num, week_len
+
 
 
 class MainWindow(BoxLayout):
