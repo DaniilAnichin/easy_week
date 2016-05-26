@@ -17,10 +17,10 @@ from kivy.properties import ListProperty, OptionProperty, ObjectProperty, \
 from kivy.lang import Builder
 from kivy.app import App
 from schedule import LessonTable
+from lessons import week_types
 from popups import ChoicePopup, LoginPopup, popup_data
 from database import collect_lessons, group_list, teacher_list, room_list, \
     day_num, lesson_num, week_len
-
 
 
 class MainWindow(BoxLayout):
@@ -36,12 +36,10 @@ class MainWindow(BoxLayout):
 
     def __init__(self, **kwargs):
         super(MainWindow, self).__init__(**kwargs)
-        self.no_resize = False
-        self.log_label.text = 'loading database...(wait a bit, pls)'
         self.set_table()
 
     def set_table(self, table_type=None, content=None, week=None):
-        self.log_label.text = 'Preparing data'
+        self.log_label.text = _('Preparing data')
         self.clear_table()
         if week is not None:
             self.week = week
@@ -60,17 +58,20 @@ class MainWindow(BoxLayout):
         if len(self.lesson_set) is not 0:
             if self.week is 'upper':
                 lesson_table = LessonTable(
-                    lesson_set=self.lesson_set[:self.day_num]
+                    lesson_set=self.lesson_set[:self.day_num],
+                    cap_text=week_types[self.week]
                 )
             else:
                 lesson_table = LessonTable(
-                    lesson_set=self.lesson_set[self.day_num:]
+                    lesson_set=self.lesson_set[self.day_num:],
+                    cap_text=week_types[self.week]
                 )
-            self.log_label.text = 'Showing %s schedule' % self.content
-            self.title.title = '%s schedule, %s week' % (self.content, self.week)
+            self.title.title = _('%s schedule, %s week').decode('utf-8') % \
+                               (self.content, week_types[self.week])
+            self.log_label.text = self.title.title
             self.table.add_widget(lesson_table)
         else:
-            self.log_label.text = 'Troubles loading schedule'
+            self.log_label.text = _('Troubles loading schedule')
 
     def clear_table(self):
         if isinstance(self.table, BoxLayout):
@@ -84,14 +85,14 @@ class MainWindow(BoxLayout):
     def login(self, login, password):
         # if users['login'].password == password: (from db)
         # self.user = ...
-        self.log_label.text = 'You have logged in as %s' % login
+        self.log_label.text = _('You have logged in as %s') % login
         # else:
         #     self.log_label.text = 'Incorrect password, try again'
 
     # Helpful functions
     def logout(self):
         # self.user = ...
-        self.log_label.text = 'You have logged out'
+        self.log_label.text = _('You have logged out')
 
     def show_group_popup(self):
         ChoicePopup(on_release=partial(self.set_table, 'group'),

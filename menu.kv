@@ -5,36 +5,34 @@
     title: title
     ActionBar:
         pos_hint: {'top':1}
-
         ActionView:
             use_separator: True
             ActionPrevious:
                 id: title
-                title: 'Action Bar'
                 with_previous: False
             ActionButton:
-                text: 'Both'
+                text: _('Both')
             ActionButton:
-                text: 'Switch'
+                text: _('Switch')
                 on_press: root.switch_week()
             ActionGroup:
                 text: 'Types'
                 ActionToggleButton:
                     id: group_button
                     group: 'type'
-                    text: 'Group'
+                    text: _('Group')
                     icon: './static/group.png'
                     on_press: root.show_group_popup()
                 ActionToggleButton:
                     id: teacher_button
                     group: 'type'
-                    text: 'Teacher'
+                    text: _('Teacher')
                     icon: './static/teacher.png'
                     on_press: root.show_teacher_popup()
                 ActionToggleButton:
                     id: room_button
                     group: 'type'
-                    text: 'Room'
+                    text: _('Room')
                     icon: './static/room.png'
                     on_press: root.show_room_popup()
             ActionGroup:
@@ -42,18 +40,18 @@
                 text: 'Menu'
                 ActionButton:
                     id: login_button
-                    text: 'Login'
+                    text: _('Login')
                     size_hint_y: None
                     height: 40
                     on_press: root.show_login_popup()
                 ActionButton:
                     id: logout_button
-                    text: 'Logout'
+                    text: _('Logout')
                     size_hint_y: None
                     height: 40
                     on_press: root.logout()
                 ActionButton:
-                    text: 'Exit'
+                    text: _('Exit')
                     size_hint_y: None
                     height: 40
                     on_press: app.stop()
@@ -63,7 +61,6 @@
         id: log_label
         size_hint_y: 0.05
         pos_hint: {'bottom': 1}
-        text: 'Success'
         font_size: root.log_label.height * 0.8
         padding_x: 10
         canvas.before:

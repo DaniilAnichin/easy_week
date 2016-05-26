@@ -50,7 +50,7 @@ msgstr ""
 "\n"
 "У %s-ї аудиторії"
 
-
+##############################
 #: popups.py:18
 msgid "Group schedule"
 msgstr "Розклад групи"
@@ -80,9 +80,63 @@ msgid "Accept"
 msgstr "Підтвердити"
 
 #: popups.kv:35
-msgid "Input full name/cypher"
-msgstr "Введіти ім’я користувача"
+msgid "Input username"
+msgstr "Введіть ім’я користувача"
 
 #: popups.kv:30
 msgid "Login form"
 msgstr "Вікно входу"
+
+##############################
+#: ./main_app.py:42
+msgid "Preparing data"
+msgstr "Підготовка даних"
+
+#: ./main_app.py:69
+msgid "%s schedule, %s week"
+msgstr "Розклад для %s на %s тиждень"
+
+#: ./main_app.py:73
+msgid "Troubles loading schedule"
+msgstr "Проблеми із завантаженням розкладу"
+
+#: ./main_app.py:87
+msgid "You have logged in as %s"
+msgstr "Ви увійшли як %s"
+
+#: ./main_app.py:94
+msgid "You have logged out"
+msgstr "Ви вийшли із облікового запису"
+
+##############################
+#: ./menu.kv
+msgid "Exit"
+msgstr "Закрити"
+
+#: ./menu.kv
+msgid "Logout"
+msgstr "Вийти"
+
+#: ./menu.kv
+msgid "Login"
+msgstr "Увійти"
+
+#: ./menu.kv
+msgid "Room"
+msgstr "Кімнати"
+
+#: ./menu.kv
+msgid "Teacher"
+msgstr "Викладачі"
+
+#: ./menu.kv
+msgid "Group"
+msgstr "Групи"
+
+#: ./menu.kv
+msgid "Switch"
+msgstr "Інший"
+
+#: ./menu.kv
+msgid "Both"
+msgstr "Обидва"

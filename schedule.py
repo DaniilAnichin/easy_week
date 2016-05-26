@@ -5,7 +5,8 @@ All necessary table definitions for Easy Week
 """
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
-from kivy.properties import BooleanProperty, ListProperty, NumericProperty
+from kivy.properties import BooleanProperty, ListProperty, NumericProperty, \
+    StringProperty
 from kivy.lang import Builder
 from kivy.app import App
 from lessons import data_lesson, Lesson, week_days, day_times
@@ -22,6 +23,7 @@ class LessonTable(FloatLayout):
     day_num = NumericProperty(0)
     lesson_num = NumericProperty(0)
     double_week = BooleanProperty(False)
+    cap_text = StringProperty()
 
     def __init__(self, **kwargs):
         super(LessonTable, self).__init__(**kwargs)
@@ -52,7 +54,7 @@ class LessonTable(FloatLayout):
 
         for j in range(self.lesson_num):
             button = KindaButton(
-                text='\n\n'.join(day_times[j].split(' - ')),
+                text='\n'.join(day_times[j].split(' - ')),
                 size_hint=(ruler_hint, (1 - ruler_hint) / self.lesson_num),
                 pos_hint={'x': 0,
                           'y': (1 - ruler_hint)*(1-(j + 1.) / self.lesson_num)}
@@ -61,6 +63,7 @@ class LessonTable(FloatLayout):
 
         # Adding cap
         button = KindaButton(
+            text=self.cap_text,
             size_hint=(ruler_hint, ruler_hint),
             pos_hint={'x': 0,
                       'y': 1 - ruler_hint}
@@ -70,10 +73,10 @@ class LessonTable(FloatLayout):
 
 class ScheduleApp(App):
     def build(self):
-        lesson_table = LessonTable(lesson_set=[[Lesson(on_release=lesson_click,
-                                                       **data_lesson[0])
+        lesson_table = LessonTable(lesson_set=[[Lesson(**data_lesson[0])
                                                 for i in range(5)]
-                                               for j in range(6)])
+                                               for j in range(6)],
+                                   cap_text='ytjg')
         return lesson_table
 
 

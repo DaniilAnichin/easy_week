@@ -36,6 +36,19 @@ week_days = [
     _('Saturday'),
     _('Sunday')
 ]
+colors = {
+    'red': [1, 0, 0, 1],
+    'green': [0, 1, 0, 1],
+    'yellow': [0, 1, 1, 1],
+    'blue': [0, 0, 1, 1],
+    'orange': [0.9, 0.9, 0.0, 1],
+    'pink': [1, 0.71, 0.75, 1]
+}
+lesson_colors = {
+    'lect': colors['blue'],
+    'pract': colors['green'],
+    'lab': colors['red']
+}
 # Test popup_data for lessons, just example
 data_lesson = [dict(teacher='Orlovskiy I.V.', lesson='High Math II',
                     type='lect', groups=['IK-51', 'IK-52'], room='18/413',
@@ -55,7 +68,8 @@ class Lesson(FocusBehavior, Button):
     day = BoundedNumericProperty(0, min=0, max=5)
     number = BoundedNumericProperty(0, min=0, max=4)
     lines = NumericProperty(1)
-    view_type = OptionProperty('group', options=['group', 'teacher', 'room'])
+    view_type = OptionProperty('empty', options=['group', 'teacher', 'room',
+                                                 'empty'])
 
     def __init__(self, **kwargs):
         super(Lesson, self).__init__(**kwargs)
@@ -64,15 +78,18 @@ class Lesson(FocusBehavior, Button):
 
     def __str__(self):
         # Change color due to the lesson type
-        result = '%s...' % self.lesson.decode('utf-8')[:12].encode('utf-8')
-        result += '\n%s' % lesson_types[self.type]
+        if self.view_type == 'empty':
+            return ''
+        self.background_color = lesson_colors[self.type]
+        result = '%s...' % self.lesson.decode('utf-8')[:10].encode('utf-8')
+        # result += '\n%s' % lesson_types[self.type]
         if not self.view_type.startswith('teacher'):
-            result += '\n%s...' % self.teacher.decode('utf-8')[:12].encode('utf-8')
+            result += '\n%s...' % self.teacher.decode('utf-8')[:10].encode('utf-8')
         if not self.view_type.startswith('room'):
             result += _('\nIn %s room') % self.room
         if not self.view_type.startswith('group'):
             groups = ', '.join(self.groups)
-            result += '\n%s' % groups[:17] + '...' if len(groups) > 17 else ''
+            result += '\n%s' % groups[:17] + ('...' if len(groups) > 17 else '')
         # if not self.view_type.endswith('s'):
         #     result += '\nAt %s week' % week_types[self.week]
         #     result += '\n%s, %s' % (week_days[self.day], day_times[self.number])

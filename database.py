@@ -13,14 +13,24 @@ day_num = 6
 lesson_num = 5
 week_len = day_num * lesson_num
 
-teacher_list = [teacher.decode('cp1251')[:-2] for teacher
-                in open('./db/_Teachers.txt', 'rt').readlines()]
-# Slice teacher list, context search
+
+def get_teacher_list():
+    # Slice teacher list, context search
+    teacher_set = set()
+    with open('./db/_Teachers.txt', 'rt') as out:
+        teachers = out.readlines()
+        for teacher in teachers:
+            teach_s = teacher.decode('cp1251')[:-2].split(', ')
+            teacher_set.update(teach_s)
+    teachers_list = list(teacher_set)
+    teachers_list.sort()
+    return teachers_list
+
+teacher_list = get_teacher_list()
 
 group_list = [group[:-2] for group in open('./db/dihc.txt', 'rt').readlines()]
-
 room_path = db_path + 'Rooms' + path_delimiter
-room_list = [i*100 + j for i in range(2, 6) for j in range(1, 39)]
+room_list = [i * 100 + j for i in range(2, 6) for j in range(1, 39)]
 
 
 type_dict = {
@@ -66,7 +76,7 @@ def collect_lessons(content_type, content):
                     week=('upper' if i < week_len else 'lower'),
                     day=(i / lesson_num % day_num),
                     number=(i % lesson_num),
-                    view_type='teacher'
+                    view_type='empty'
                 )
 
     elif content_type is 'group':
@@ -95,27 +105,33 @@ def collect_lessons(content_type, content):
                     week=('upper' if i < week_len else 'lower'),
                     day=(i / lesson_num % day_num),
                     number=(i % lesson_num),
-                    view_type='group'
+                    view_type='empty'
                 )
     elif content_type is 'room':
         try:
-            with open(room_path+'Lec'+path_delimiter+str(content)+'.csv', 'r') as f:
-                roomList = list(UnicodeReader(f, csv.excel, 'cp1251', delimiter=';'))
+            with open(room_path + 'Lec' + path_delimiter + str(
+                    content) + '.csv', 'r') as f:
+                roomList = list(
+                    UnicodeReader(f, csv.excel, 'cp1251', delimiter=';'))
                 # type = type_dict[unicode('Лек', 'utf-8')]
         except IOError:
             try:
-                with open(room_path+'Lab'+path_delimiter+str(content)+'.csv', 'r') as f:
-                    roomList = list(UnicodeReader(f, csv.excel, 'cp1251', delimiter=';'))
+                with open(room_path + 'Lab' + path_delimiter + str(
+                        content) + '.csv', 'r') as f:
+                    roomList = list(
+                        UnicodeReader(f, csv.excel, 'cp1251', delimiter=';'))
                     # type = type_dict[unicode('Лаб', 'utf-8')]
             except IOError:
                 try:
-                    with open(room_path+'Prac'+path_delimiter+str(content)+'.csv', 'r') as f:
-                        roomList = list(UnicodeReader(f, csv.excel, 'cp1251', delimiter=';'))
+                    with open(room_path + 'Prac' + path_delimiter + str(
+                            content) + '.csv', 'r') as f:
+                        roomList = list(UnicodeReader(f, csv.excel, 'cp1251',
+                                                      delimiter=';'))
                         # type = type_dict[unicode('Прак', 'utf-8')]
                 except IOError:
                     print 'Oops..'
                     return lesson_set
-        
+
         for i in range(60):
             lesson = roomList[i][0]
             if lesson != u'0':
@@ -155,7 +171,7 @@ def collect_lessons(content_type, content):
                     week=('upper' if i < week_len else 'lower'),
                     day=(i / lesson_num % day_num),
                     number=(i % lesson_num),
-                    view_type='room'
+                    view_type='empty'
                 )
     else:
         print 'Oops..'

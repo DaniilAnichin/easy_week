@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2016-05-25 23:13+EEST\n"
+"POT-Creation-Date: 2016-05-26 16:03+EEST\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -13,4 +13,25 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
 "Generated-By: pygettext.py 1.5\n"
+
+
+#: ./main_app.py:42
+msgid "Preparing data"
+msgstr ""
+
+#: ./main_app.py:69
+msgid "%s schedule, %s week"
+msgstr ""
+
+#: ./main_app.py:73
+msgid "Troubles loading schedule"
+msgstr ""
+
+#: ./main_app.py:87
+msgid "You have logged in as %s"
+msgstr ""
+
+#: ./main_app.py:94
+msgid "You have logged out"
+msgstr ""
 

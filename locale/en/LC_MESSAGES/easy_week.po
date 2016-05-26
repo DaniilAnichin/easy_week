@@ -51,6 +51,7 @@ msgstr ""
 "\n"
 "In %s room"
 
+##############################
 #: popups.py:18
 msgid "Group schedule"
 msgstr "Group schedule"
@@ -80,9 +81,63 @@ msgid "Accept"
 msgstr "Accept"
 
 #: popups.kv:35
-msgid "Input full name/cypher"
-msgstr "Input full name/cypher"
+msgid "Input username"
+msgstr "Input username"
 
 #: popups.kv:30
 msgid "Login form"
 msgstr "Login form"
+
+##############################
+#: ./main_app.py:42
+msgid "Preparing data"
+msgstr ""
+
+#: ./main_app.py:69
+msgid "%s schedule, %s week"
+msgstr ""
+
+#: ./main_app.py:73
+msgid "Troubles loading schedule"
+msgstr ""
+
+#: ./main_app.py:87
+msgid "You have logged in as %s"
+msgstr ""
+
+#: ./main_app.py:94
+msgid "You have logged out"
+msgstr ""
+
+##############################
+#: ./menu.kv
+msgid "Exit"
+msgstr "Exit"
+
+#: ./menu.kv
+msgid "Logout"
+msgstr "Logout"
+
+#: ./menu.kv
+msgid "Login"
+msgstr "Login"
+
+#: ./menu.kv
+msgid "Room"
+msgstr "Room"
+
+#: ./menu.kv
+msgid "Teacher"
+msgstr "Teacher"
+
+#: ./menu.kv
+msgid "Group"
+msgstr "Group"
+
+#: ./menu.kv
+msgid "Switch"
+msgstr "Switch"
+
+#: ./menu.kv
+msgid "Both"
+msgstr "Both"
