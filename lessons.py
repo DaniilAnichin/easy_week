@@ -81,18 +81,19 @@ class Lesson(FocusBehavior, Button):
         if self.view_type == 'empty':
             return ''
         self.background_color = lesson_colors[self.type]
-        result = '%s...' % self.lesson.decode('utf-8')[:10].encode('utf-8')
+        result = '%s' % self.lesson.decode('utf-8')[:12].encode('utf-8')
+        if len(self.lesson.decode('utf-8')) > 12:
+            result += '...'
         # result += '\n%s' % lesson_types[self.type]
         if not self.view_type.startswith('teacher'):
-            result += '\n%s...' % self.teacher.decode('utf-8')[:10].encode('utf-8')
+            result += '\n%s' % self.teacher.decode('utf-8')[:12].encode('utf-8')
+        if len(self.teacher.decode('utf-8')) > 12:
+            result += '...'
         if not self.view_type.startswith('room'):
             result += _('\nIn %s room') % self.room
         if not self.view_type.startswith('group'):
             groups = ', '.join(self.groups)
-            result += '\n%s' % groups[:17] + ('...' if len(groups) > 17 else '')
-        # if not self.view_type.endswith('s'):
-        #     result += '\nAt %s week' % week_types[self.week]
-        #     result += '\n%s, %s' % (week_days[self.day], day_times[self.number])
+            result += '\n%s' % groups[:14] + ('...' if len(groups) > 17 else '')
         return result
 
 

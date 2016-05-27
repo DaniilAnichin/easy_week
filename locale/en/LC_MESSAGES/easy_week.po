@@ -91,23 +91,35 @@ msgstr "Login form"
 ##############################
 #: ./main_app.py:42
 msgid "Preparing data"
-msgstr ""
+msgstr "Preparing data"
 
 #: ./main_app.py:69
 msgid "%s schedule, %s week"
-msgstr ""
+msgstr "%s schedule, %s week"
 
 #: ./main_app.py:73
 msgid "Troubles loading schedule"
-msgstr ""
+msgstr "Troubles loading schedule"
 
 #: ./main_app.py:87
 msgid "You have logged in as %s"
-msgstr ""
+msgstr "You have logged in as %s"
 
 #: ./main_app.py:94
 msgid "You have logged out"
-msgstr ""
+msgstr "You have logged out"
+
+#: ./main_app.py
+msgid "Wrong group passed: %s"
+msgstr "Wrong group passed: %s"
+
+#: ./main_app.py
+msgid "Wrong teacher passed: %s"
+msgstr "Wrong teacher passed: %s"
+
+#: ./main_app.py
+msgid "Wrong room passed: %s"
+msgstr "Wrong room passed: %s"
 
 ##############################
 #: ./menu.kv
@@ -141,3 +153,7 @@ msgstr "Switch"
 #: ./menu.kv
 msgid "Both"
 msgstr "Both"
+
+#: ./menu.kv
+msgid "Menu"
+msgstr "Menu"

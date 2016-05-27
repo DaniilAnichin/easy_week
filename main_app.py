@@ -4,6 +4,7 @@
 Main window for easy week, includes Action bar and logging
 """
 import gettext
+
 eng = gettext.translation('easy_week', './locale', languages=['en'])
 ua = gettext.translation('easy_week', './locale', languages=['ua'])
 ru = gettext.translation('easy_week', './locale', languages=['ru'])
@@ -20,7 +21,7 @@ from schedule import LessonTable
 from lessons import week_types
 from popups import ChoicePopup, LoginPopup, popup_data
 from database import collect_lessons, group_list, teacher_list, room_list, \
-    day_num, lesson_num, week_len
+    day_num, lesson_num
 
 
 class MainWindow(BoxLayout):
@@ -40,7 +41,6 @@ class MainWindow(BoxLayout):
 
     def set_table(self, table_type=None, content=None, week=None):
         self.log_label.text = _('Preparing data')
-        self.clear_table()
         if week is not None:
             self.week = week
 
@@ -48,12 +48,24 @@ class MainWindow(BoxLayout):
             self.table_type = table_type
 
         if content is not None:
+            if self.table_type is 'group' and content not in group_list:
+                self.log_label.text = _('Wrong group passed: %s') % content
+                return -1
+            if self.table_type is 'teacher' and content not in teacher_list:
+                self.log_label.text = _('Wrong teacher passed: %s') % content
+                return -1
+            if self.table_type is 'room' and content not in room_list:
+                self.log_label.text = _('Wrong room passed: %s') % content
+                return -1
             # black magic
             # .encode('utf-8').decode('utf-8')
             self.content = content
 
-        self.lesson_set = collect_lessons(content_type=self.table_type,
-                                          content=self.content)
+        self.clear_table()
+        self.lesson_set = collect_lessons(
+            content_type=self.table_type,
+            content=self.content
+        )
 
         if len(self.lesson_set) is not 0:
             if self.week is 'upper':
@@ -85,7 +97,8 @@ class MainWindow(BoxLayout):
     def login(self, login, password):
         # if users['login'].password == password: (from db)
         # self.user = ...
-        self.log_label.text = _('You have logged in as %s') % login
+        self.log_label.text = _('You have logged in as %s').decode(
+            'utf-8') % login
         # else:
         #     self.log_label.text = 'Incorrect password, try again'
 

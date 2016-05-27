@@ -49,7 +49,7 @@ class ChoicePopup(Popup):
 
         for choice in self.choices:
             button = Button(
-                text=str(choice) if isinstance(choice, int) else choice,
+                text=choice,
                 size_hint_y=None,
                 height=35
             )
