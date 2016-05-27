@@ -87,14 +87,31 @@ class Lesson(FocusBehavior, Button):
         # result += '\n%s' % lesson_types[self.type]
         if not self.view_type.startswith('teacher'):
             result += '\n%s' % self.teacher.decode('utf-8')[:12].encode('utf-8')
-        if len(self.teacher.decode('utf-8')) > 12:
-            result += '...'
+            if len(self.teacher.decode('utf-8')) > 12:
+                result += '...'
         if not self.view_type.startswith('room'):
             result += _('\nIn %s room') % self.room
         if not self.view_type.startswith('group'):
             groups = ', '.join(self.groups)
             result += '\n%s' % groups[:14] + ('...' if len(groups) > 17 else '')
         return result
+
+    def __eq__(self, other):
+        result = True
+        if self.teacher != other.teacher:
+            result = False
+        if self.lesson != other.lesson:
+            result = False
+        if self.groups != other.groups:
+            result = False
+        if self.room != other.room:
+            result = False
+        if self.type != other.type:
+            result = False
+        return result
+
+    def empty(self):
+        return self.view_type == 'empty'
 
 
 class LessonsApp(App):

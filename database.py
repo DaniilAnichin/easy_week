@@ -14,24 +14,27 @@ lesson_num = 5
 week_len = day_num * lesson_num
 
 
-def get_teacher_list():
+def get_teacher_list(raw=False):
     # Slice teacher list, context search
     teacher_set = set()
     with open('./db/_Teachers.txt', 'rt') as out:
         teachers = out.readlines()
         for teacher in teachers:
-            teach_s = teacher.decode('cp1251')[:-2].split(', ')
+            if not raw:
+                teach_s = teacher.decode('cp1251')[:-2].split(', ')
+            else:
+                teach_s = {teacher.decode('cp1251')[:-2]}
             teacher_set.update(teach_s)
     teachers_list = list(teacher_set)
     teachers_list.sort()
     return teachers_list
 
 teacher_list = get_teacher_list()
+r_teacher_list = get_teacher_list(raw=True)
 
 group_list = [_group[:-2] for _group in open('./db/dihc.txt', 'rt').readlines()]
 room_path = db_path + 'Rooms' + path_delimiter
 room_list = [str(k * 100 + l) for k in range(2, 6) for l in range(1, 39)]
-
 
 type_dict = {
     unicode('Лек', 'utf-8'): 'lect',
@@ -164,6 +167,25 @@ def collect_lessons(content_type, content):
     else:
         print 'Oops..'
     return lesson_set
+
+
+def merge_schedule(first, second):
+    lesson_set = [[None for i in range(lesson_num)] for j in range(day_num * 2)]
+    for i in range(week_len * 2):
+        first_one = first[i / lesson_num][i % lesson_num]
+        second_one = second[i / lesson_num][i % lesson_num]
+        if first_one == second_one:
+            result = first_one
+        elif first_one.empty():
+            result = second_one
+        elif second_one.empty():
+            result = first_one
+        else:
+            print 'Have errors merging tables'
+            return first
+        lesson_set[i / lesson_num][i % lesson_num] = result
+    return lesson_set
+
 
 if __name__ == '__main__':
     pass

@@ -20,8 +20,7 @@ from kivy.app import App
 from schedule import LessonTable
 from lessons import week_types
 from popups import ChoicePopup, LoginPopup, popup_data
-from database import collect_lessons, group_list, teacher_list, room_list, \
-    day_num, lesson_num
+from database import *
 
 
 class MainWindow(BoxLayout):
@@ -62,10 +61,28 @@ class MainWindow(BoxLayout):
             self.content = content
 
         self.clear_table()
-        self.lesson_set = collect_lessons(
-            content_type=self.table_type,
-            content=self.content
-        )
+
+        if self.table_type is 'teacher':
+            for teacher in r_teacher_list:
+                if self.content in teacher:
+                    if 'lesson_set' not in vars():
+                        lesson_set = collect_lessons(
+                            content_type=self.table_type,
+                            content=teacher
+                        )
+                    else:
+                        second_set = collect_lessons(
+                            content_type=self.table_type,
+                            content=teacher
+                        )
+                        lesson_set = merge_schedule(lesson_set, second_set)
+
+            self.lesson_set = lesson_set
+        else:
+            self.lesson_set = collect_lessons(
+                content_type=self.table_type,
+                content=self.content
+            )
 
         if len(self.lesson_set) is not 0:
             if self.week is 'upper':
@@ -86,8 +103,9 @@ class MainWindow(BoxLayout):
             self.log_label.text = _('Troubles loading schedule')
 
     def clear_table(self):
-        if isinstance(self.table, BoxLayout):
-            self.table.clear_widgets()
+        if len(self.table.children) > 0:
+            self.table.children[0].clear_widgets()
+        self.table.clear_widgets()
 
     def switch_week(self):
         self.week = 'upper' if self.week == 'lower' else 'lower'

@@ -76,7 +76,7 @@ class ScheduleApp(App):
         lesson_table = LessonTable(lesson_set=[[Lesson(**data_lesson[0])
                                                 for i in range(5)]
                                                for j in range(6)],
-                                   cap_text='ytjg')
+                                   cap_text='cap')
         return lesson_table
 
 
