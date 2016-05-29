@@ -4,7 +4,7 @@
 Definitions for Easy Week lesson structure
 """
 from kivy.uix.button import Button
-from kivy.uix.behaviors.focus import FocusBehavior
+from kivy.uix.behaviors.drag import DragBehavior
 from kivy.properties import StringProperty, ListProperty, OptionProperty, \
     BoundedNumericProperty, NumericProperty
 from kivy.app import App
@@ -58,7 +58,7 @@ data_lesson = [dict(teacher='Orlovskiy I.V.', lesson='High Math II',
                     week='lower', day=4, number=3)]
 
 
-class Lesson(FocusBehavior, Button):
+class Lesson(DragBehavior, Button):
     teacher = StringProperty()
     lesson = StringProperty()
     groups = ListProperty()
