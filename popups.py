@@ -39,26 +39,40 @@ class ChoicePopup(Popup):
     """
     btn_text = StringProperty()
     choices = ListProperty()
-    choice_btn = ObjectProperty(None)
-    on_release = ObjectProperty()
+    choice_input = ObjectProperty(None)
+    on_release = ObjectProperty(None)
+    dropdown = ObjectProperty(None)
 
     def __init__(self, on_release, **kwargs):
         self.on_release = on_release
         super(ChoicePopup, self).__init__(**kwargs)
-        drop_down = DropDown()
-
-        for choice in self.choices:
-            button = Button(
-                text=choice,
-                size_hint_y=None,
-                height=35
-            )
-            button.bind(on_release=lambda btn: drop_down.select(btn.text))
-            drop_down.add_widget(button)
-        self.choice_btn.bind(on_release=drop_down.open)
-        drop_down.bind(
-            on_select=lambda instance, x: setattr(self.choice_btn, 'text', x)
+        self.dropdown = DropDown()
+        self.choice_input.bind(text=self.make_dropdown, focus=self.on_focus)
+        self.dropdown.bind(
+            on_select=lambda instance, x: setattr(self.choice_input, 'text', x)
         )
+
+    def make_dropdown(self, *args):
+        self.dropdown.clear_widgets()
+        for choice in self.choices:
+            if self.choice_input.text in choice:
+                button = Button(
+                    text=choice,
+                    size_hint_y=None,
+                    height=35
+                )
+                button.bind(
+                    on_release=lambda btn: self.dropdown.select(btn.text)
+                )
+                self.dropdown.add_widget(button)
+            else:
+                pass
+        self.dropdown.open(self.choice_input)
+
+    @staticmethod
+    def on_focus(instance, value):
+        if value:
+            instance.text = ''
 
 
 class LoginPopup(Popup):

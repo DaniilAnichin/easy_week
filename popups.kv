@@ -1,14 +1,14 @@
 <ChoicePopup>:
     size_hint: .3, .3
-    choice_btn: choice_btn
+    choice_input: choice_input
     BoxLayout:
         orientation: 'vertical'
-        Button:
-            id: choice_btn
+        TextInput:
+            id: choice_input
             text: root.btn_text
         Button:
             text: _('Accept')
-            on_press: root.on_release(root.choice_btn.text)
+            on_press: root.on_release(root.choice_input.text)
             on_release: root.dismiss()
 
 <LessonPopup>:
