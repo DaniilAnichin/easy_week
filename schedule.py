@@ -8,6 +8,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import BooleanProperty, ListProperty, NumericProperty, \
     StringProperty
 from kivy.lang import Builder
+from kivy.clock import Clock
 from kivy.app import App
 from lessons import data_lesson, Lesson, week_days, day_times
 
@@ -69,6 +70,20 @@ class LessonTable(FloatLayout):
                       'y': 1 - ruler_hint}
         )
         self.add_widget(button)
+
+        Clock.schedule_once(lambda dt: self.set_lesson_pos(), 1)
+
+    def set_lesson_pos(self):
+        for i in range(self.day_num):
+            for j in range(self.lesson_num):
+                lesson = self.lesson_set[i][j]
+                lesson.pos_hint.pop('x')
+                lesson.pos_hint.pop('y')
+                lesson.pos = (
+                    self.width * (ruler_hint + i * (1 - ruler_hint) / self.day_num),
+                    self.height * (1 - ruler_hint - (j + 1) *
+                                   (1 - ruler_hint) / self.lesson_num)
+                )
 
 
 class ScheduleApp(App):
