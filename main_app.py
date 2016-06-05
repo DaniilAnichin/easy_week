@@ -30,7 +30,7 @@ class MainWindow(BoxLayout):
     week = OptionProperty('upper', options=['upper', 'lower'])
     table_type = OptionProperty('teacher', options=['group', 'teacher', 'room'])
     content = StringProperty(unicode('вик. Міхнєва Ю. Р.', 'utf-8'))
-    table = ObjectProperty()
+    table = ObjectProperty(None)
     log_label = ObjectProperty(None)
     title = ObjectProperty(None)
 

@@ -5,6 +5,8 @@
     title: title
     ActionBar:
         pos_hint: {'top':1}
+        # size_hint_y: 0.08
+        # text_size: root.height / 2
         ActionView:
             use_separator: True
             ActionPrevious:
@@ -17,19 +19,19 @@
                 on_press: root.switch_week()
             ActionGroup:
                 text: 'Types'
-                ActionToggleButton:
+                ActionButton:
                     id: group_button
                     group: 'type'
                     text: _('Group')
                     icon: './static/group.png'
                     on_press: root.show_group_popup()
-                ActionToggleButton:
+                ActionButton:
                     id: teacher_button
                     group: 'type'
                     text: _('Teacher')
                     icon: './static/teacher.png'
                     on_press: root.show_teacher_popup()
-                ActionToggleButton:
+                ActionButton:
                     id: room_button
                     group: 'type'
                     text: _('Room')
@@ -41,19 +43,13 @@
                 ActionButton:
                     id: login_button
                     text: _('Login')
-                    size_hint_y: None
-                    height: 40
                     on_press: root.show_login_popup()
                 ActionButton:
                     id: logout_button
                     text: _('Logout')
-                    size_hint_y: None
-                    height: 40
                     on_press: root.logout()
                 ActionButton:
                     text: _('Exit')
-                    size_hint_y: None
-                    height: 40
                     on_press: app.stop()
     BoxLayout:
         id: table

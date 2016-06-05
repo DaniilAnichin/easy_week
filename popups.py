@@ -11,7 +11,6 @@ from kivy.properties import StringProperty, ObjectProperty, ListProperty
 from database import teacher_list
 from kivy.app import App
 
-
 # Data which will form the view of popup, e.g. label, button text
 # Division may be useful for translation
 data_group = {
@@ -55,7 +54,7 @@ class ChoicePopup(Popup):
     def make_dropdown(self, *args):
         self.dropdown.clear_widgets()
         for choice in self.choices:
-            if self.choice_input.text in choice:
+            if self.choice_input.text in choice or self.choice_input.text == '':
                 button = Button(
                     text=choice,
                     size_hint_y=None,
@@ -91,9 +90,12 @@ class LessonPopup(Popup):
     """
     Popup form for editing the lesson object
     """
+    lesson = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(LessonPopup, self).__init__(**kwargs)
+
+        # update_lesson
 
 
 class PopupsApp(App):

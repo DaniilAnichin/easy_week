@@ -8,6 +8,7 @@ from kivy.uix.behaviors.drag import DragBehavior
 from kivy.properties import StringProperty, ListProperty, OptionProperty, \
     BoundedNumericProperty, NumericProperty
 from kivy.app import App
+from popups import LessonPopup
 
 # Data which will form the view of pair, e.g. week days, time lapse
 # Division may be useful for translation
@@ -75,6 +76,8 @@ class Lesson(DragBehavior, Button):
         super(Lesson, self).__init__(**kwargs)
         self.text = self.__str__()
         self.lines = len(self.text.split('\n'))
+        # self.bind(on_press=LessonPopup(lesson=self).open)
+        # self.bind(on_release=LessonPopup(lesson=self).open)
 
     def __str__(self):
         # Change color due to the lesson type

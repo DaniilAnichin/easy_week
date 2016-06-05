@@ -15,13 +15,12 @@ class MyBubbleApp(App):
                              size_hint=(None, None))
         my_btn = Button(text='Press to view bubble',
                         pos=(300, 300),
-                        on_press=show_bubble)
+                        on_press=self.show_bubble)
         layout.add_widget(my_btn)
         root.add_widget(layout)
         return root
 
-
-def show_bubble(self, *args):
+    def show_bubble(self, *args):
         my_bubble = Bubble(orientation='horizontal', pos=(280, 400))
         # Customizing my bubble
         my_bubble.background_color = (0, 0, 0, .5)
