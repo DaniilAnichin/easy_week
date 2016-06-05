@@ -23,10 +23,10 @@ class UnicodeWriter:
     which is encoded in the given encoding.
     """
 
-    def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
+    def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwargs):
         # Redirect output to a queue
         self.queue = cStringIO.StringIO()
-        self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
+        self.writer = csv.writer(self.queue, dialect=dialect, **kwargs)
         self.stream = f
         self.encoder = codecs.getincrementalencoder(encoding)()
 
@@ -46,6 +46,7 @@ class UnicodeWriter:
         for row in rows:
             self.writerow(row)
 
+
 class UTF8Recoder:
     """
     Iterator that reads an encoded stream and reencodes the input to UTF-8
@@ -58,6 +59,7 @@ class UTF8Recoder:
 
     def next(self):
         return self.reader.next().encode("utf-8")
+
 
 class UnicodeReader:
     """
@@ -75,21 +77,29 @@ class UnicodeReader:
 
     def __iter__(self):
         return self
-                
+
+
 def deleteContent(pfile):
     pfile.seek(0)
     pfile.truncate()
         
+
 class Group:
     name = ''
     path = ''
     dataList = []
+
     def __init__(self, name):
         self.name = name
-        self.path = "D:\KPI\Kursach\Db\\"
+        self.path = db_path
         try:
-            f=open(self.path+"Groups\\"+name+".csv", 'rb')
-            self.dataList = list(UnicodeReader(f, csv.excel, 'cp1251', delimiter=';'))
+            f = open(
+                self.path + 'Groups' + path_delimiter + name + '.csv',
+                'rb'
+            )
+            self.dataList = list(
+                UnicodeReader(f, csv.excel, 'cp1251', delimiter=';')
+            )
             f.close()
         except IOError:
             pass
@@ -98,57 +108,77 @@ class Group:
     def addLesson(self, lesName, lesType, room, time):
         if lesType is u'' :
             for row in self.dataList[1:]:
-                if not ( cmp(lesName, row[0][:row[0].index(u'\u003a')]) or cmp(lesType, row[1]) ):                      #u'\u003a' = ':'
+                if not (cmp(lesName, row[0][:row[0].index(u'\u003a')]) or cmp(lesType, row[1]) ):                      #u'\u003a' = ':'
                     if row[3].count(unicode(':', 'utf-8')) < int(row[2]):
                         row[3] = row[3]+str(time)+','+str(room)+':'                
-                fg = open(self.path+'Groups\\'+self.name+'.csv', 'wb')
-                fgWriter = UnicodeWriter(fg, csv.excel, 'cp1251', delimiter = ';')
+                fg = open(
+                    self.path + 'Groups' + path_delimiter + self.name + '.csv',
+                    'wb'
+                )
+                fgWriter = UnicodeWriter(fg, csv.excel, 'cp1251', delimiter=';')
                 fgWriter.writerows(self.dataList)
                 fg.close()
                 return 0
             return -1
         
-        
         try:
-                f = open(self.path+'Rooms\\'+typeDict[lesType]+'\\'+str(room)+'.csv', 'rb')
-                nonUniLesType = typeDict[lesType]
+            f = open(
+                self.path + 'Rooms' + path_delimiter + typeDict[lesType] +
+                path_delimiter + str(room) + '.csv',
+                'rb'
+            )
+            nonUniLesType = typeDict[lesType]
         except IOError:
-                print '1'
-                return -1
-        roomList = list(UnicodeReader(f, csv.excel, 'cp1251', delimiter = ';'))
+            print '1'
+            return -1
+
+        roomList = list(UnicodeReader(f, csv.excel, 'cp1251', delimiter=';'))
+
         f.close()
         if cmp(roomList[time][0], str(0)):
-                print '2'
-                return -1
+            print '2'
+            return -1
         if not str(room) in self.dataList[0][0]:
-                print '3'
-                return -1
+            print '3'
+            return -1
         if cmp(self.getInfoByTime(time)[0], ''):
-                return -1
+            return -1
         
         #lesName = unicode(lesName, 'utf-8')
         #lesType = unicode(lesType, 'utf-8')
         for row in self.dataList[1:]:
-            if not ( cmp(lesName, row[0][:row[0].index(u'\u003a')]) or cmp(lesType, row[1]) ):                      #u'\u003a' = ':'
+            if not (cmp(lesName, row[0][:row[0].index(u'\u003a')]) or cmp(lesType, row[1])):                      #u'\u003a' = ':'
                 if row[3].count(unicode(':', 'utf-8')) < int(row[2]):
                     teacher = Teacher(row[0][row[0].index(u'\u003a')+1:])
                     if cmp(lesType, unicode('Лек', 'utf-8')):
                         for trow in teacher.dataList:
-                            if not ( cmp(lesName, trow[0][:trow[0].index(u'\u003a')]) or cmp(lesType, trow[1]) or cmp(self.name, trow[0][trow[0].index(u'\u003a')+1:] )):
+                            if not (cmp(lesName, trow[0][:trow[0].index(u'\u003a')]) or cmp(lesType, trow[1]) or cmp(self.name, trow[0][trow[0].index(u'\u003a')+1:])):
                                 print "We are so deep, near the bottom"
                                 row[3] = row[3]+str(time)+','+str(room)+':'
                                 trow[3] = trow[3]+str(time)+','+str(room)+':'
                                 roomList[time][0] = self.name+':'+lesName+':'+lesType+':'+row[0][row[0].index(':')+1:]
                                 try:
-                                    ft = open(self.path+'Tmp\\'+'Teach\\'+teacher.name+'.csv', 'wb')
+                                    ft = open(
+                                        self.path+'Tmp'+path_delimiter+'Teach' +
+                                        path_delimiter+teacher.name+'.csv',
+                                        'wb'
+                                    )
                                     print teacher.name.encode('cp1251')
-                                    fg = open(self.path+'Tmp\\'+'Groups\\'+self.name+'.csv', 'wb')
-                                    fr = open(self.path+'Tmp\\'+'Rooms\\'+nonUniLesType+'\\'+str(room)+'.csv', 'wb')
+                                    fg = open(
+                                        self.path+'Tmp'+path_delimiter+'Groups'+
+                                        path_delimiter+self.name+'.csv', 'wb'
+                                    )
+                                    fr = open(
+                                        self.path+'Tmp'+path_delimiter+'Rooms'+
+                                        path_delimiter+nonUniLesType+
+                                        path_delimiter+str(room)+'.csv', 'wb'
+                                    )
                                 except IOError:
                                     print "Why, tell me why"
-                                ftWriter = UnicodeWriter(ft, csv.excel, 'cp1251', delimiter = ';')
-                                fgWriter = UnicodeWriter(fg, csv.excel, 'cp1251', delimiter = ';')
-                                frWriter = UnicodeWriter(fr, csv.excel, 'cp1251', delimiter = ';')
+                                    return -1
+                                ftWriter = UnicodeWriter(ft, csv.excel, 'cp1251', delimiter=';')
+                                fgWriter = UnicodeWriter(fg, csv.excel, 'cp1251', delimiter=';')
+                                frWriter = UnicodeWriter(fr, csv.excel, 'cp1251', delimiter=';')
                                 ftWriter.writerows(teacher.dataList)
                                 fgWriter.writerows(self.dataList)
                                 frWriter.writerows(roomList)
@@ -168,24 +198,31 @@ class Group:
                             if les.getInfoByTime(time)[0] is not '':
                                 return -1
                         for trow in teacher.dataList:
-                            if not ( cmp(lesName, trow[0][:trow[0].index(u'\u003a')]) or cmp(lesType, trow[1]) or cmp(self.name[:-1], trow[0][trow[0].index(u'\u003a')+1:] )):
+                            if not (cmp(lesName, trow[0][:trow[0].index(u'\u003a')]) or cmp(lesType, trow[1]) or cmp(self.name[:-1], trow[0][trow[0].index(u'\u003a')+1:])):
                                 print "We are so deep, near the bottom"
                                 row[3] = row[3]+str(time)+','+str(room)+':'
                                 for group in stream:
                                     for line in group.dataList[1:]:
-                                         if not ( cmp(lesName, line[0][:line[0].index(u'\u003a')]) or cmp(lesType, line[1]) ):
+                                        if not (cmp(lesName, line[0][:line[0].index(u'\u003a')]) or cmp(lesType, line[1])):
                                             line[3] = line[3]+str(time)+','+str(room)+':'
                                 trow[3] = trow[3]+str(time)+','+str(room)+':'
                                 roomList[time][0] = self.name[:-1]+':'+lesName+':'+lesType+':'+row[0][row[0].index(':')+1:]
                                 try:
-                                    ft = open(self.path+'Tmp\\'+'Teach\\'+row[0][row[0].index(':')+1:]+'.csv', 'wb')
-                                    fg = open(self.path+'Tmp\\'+'Groups\\'+self.name+'.csv', 'wb')
-                                    fr = open(self.path+'Tmp\\'+'Rooms\\'+nonUniLesType+'\\'+str(room)+'.csv', 'wb')
+                                    ft = open(self.path+'Tmp'+path_delimiter+'Teach'+path_delimiter+row[0][row[0].index(':')+1:]+'.csv', 'wb')
+                                    fg = open(self.path+'Tmp'+path_delimiter+'Groups'+path_delimiter+self.name+'.csv', 'wb')
+                                    fr = open(self.path+'Tmp'+path_delimiter+'Rooms'+path_delimiter+nonUniLesType+path_delimiter+str(room)+'.csv', 'wb')
                                 except IOError:
                                     print "Why, tell me why"
-                                ftWriter = UnicodeWriter(ft, csv.excel, 'cp1251', delimiter = ';')
-                                fgWriter = UnicodeWriter(fg, csv.excel, 'cp1251', delimiter = ';')
-                                frWriter = UnicodeWriter(fr, csv.excel, 'cp1251', delimiter = ';')
+                                    return -1
+                                ftWriter = UnicodeWriter(
+                                    ft, csv.excel, 'cp1251', delimiter=';'
+                                )
+                                fgWriter = UnicodeWriter(
+                                    fg, csv.excel, 'cp1251', delimiter=';'
+                                )
+                                frWriter = UnicodeWriter(
+                                    fr, csv.excel, 'cp1251', delimiter=';'
+                                )
                                 ftWriter.writerows(teacher.dataList)
                                 fgWriter.writerows(self.dataList)
                                 frWriter.writerows(roomList)
@@ -193,8 +230,8 @@ class Group:
                                 fg.close()
                                 fr.close()
                                 for group in stream:
-                                    fg = open(self.path+'Groups\\'+group.name+'.csv', 'wb')
-                                    fgWriter = UnicodeWriter(fg, csv.excel, 'cp1251', delimiter = ';')
+                                    fg = open(self.path+'Groups'+path_delimiter+group.name+'.csv', 'wb')
+                                    fgWriter = UnicodeWriter(fg, csv.excel, 'cp1251', delimiter=';')
                                     fgWriter.writerows(group.dataList)
                                     fg.close()
                                 return 0
@@ -216,11 +253,12 @@ class Group:
                 else:
                     ftime = ''
         return['', '', '', '']
+
     def getTimeByLesson(self, lesName, lesType):
         lesName = unicode(lesName, 'utf-8')
         lesType = unicode(lesType, 'utf-8')
         for row in self.dataList[1:]:
-            if not ( cmp(lesName, row[0][:row[0].index(u'\u003a')]) or cmp(lesType, row[1]) ):
+            if not (cmp(lesName, row[0][:row[0].index(u'\u003a')]) or cmp(lesType, row[1])):
                 times = []
                 a = row[3].count(':')
                 retrow = ''
@@ -240,7 +278,7 @@ class Group:
         if info[0] is not '':
             teacher = Teacher(info[3])
             try:
-                f = open(self.path+'Rooms\\'+typeDict[info[2]]+'\\'+info[0]+'.csv', 'rb')
+                f = open(self.path+'Rooms'+path_delimiter+typeDict[info[2]]+path_delimiter+info[0]+'.csv', 'rb')
                 nonUniLesType = typeDict[info[2]]
             except IOError:
                 print '1'
@@ -272,15 +310,16 @@ class Group:
                             ftime = ''
             roomList[time] = '0'
             try:
-                ft = open(self.path+'Tmp\\'+'Teach\\'+teacher.name+'.csv', 'wb')
                 #print teacher.name.encode('cp1251')
-                fg = open(self.path+'Tmp\\'+'Groups\\'+self.name+'.csv', 'wb')
-                fr = open(self.path+'Tmp\\'+'Rooms\\'+nonUniLesType+'\\'+info[0]+'.csv', 'wb')
+                ft = open(self.path+'Tmp'+path_delimiter+'Teach'+path_delimiter+teacher.name+'.csv', 'wb')
+                fg = open(self.path+'Tmp'+path_delimiter+'Groups'+path_delimiter+self.name+'.csv', 'wb')
+                fr = open(self.path+'Tmp'+path_delimiter+'Rooms'+path_delimiter+nonUniLesType+path_delimiter+info[0]+'.csv', 'wb')
             except IOError:
                 print "Why, tell me why"
-            ftWriter = UnicodeWriter(ft, csv.excel, 'cp1251', delimiter = ';')
-            fgWriter = UnicodeWriter(fg, csv.excel, 'cp1251', delimiter = ';')
-            frWriter = UnicodeWriter(fr, csv.excel, 'cp1251', delimiter = ';')
+                return -1
+            ftWriter = UnicodeWriter(ft, csv.excel, 'cp1251', delimiter=';')
+            fgWriter = UnicodeWriter(fg, csv.excel, 'cp1251', delimiter=';')
+            frWriter = UnicodeWriter(fr, csv.excel, 'cp1251', delimiter=';')
             ftWriter.writerows(teacher.dataList)
             fgWriter.writerows(self.dataList)
             frWriter.writerows(roomList)
@@ -291,25 +330,27 @@ class Group:
         else:
             return -1
 
+
 class Teacher:
-    
     dataList = []
     name = ''
     path = ''
     
     def __init__(self, name):
         self.name = name
-        self.path = "D:\KPI\Kursach\Db\\"
+        self.path = db_path
         try:
-            f=open(self.path+'Teach\\'+name+".csv", 'rb')
-            self.dataList = list(UnicodeReader(f, csv.excel, 'cp1251', delimiter=';'))
+            f = open(self.path+'Teach'+path_delimiter+name+'.csv', 'rb')
+            self.dataList = list(
+                UnicodeReader(f, csv.excel, 'cp1251', delimiter=';')
+            )
             f.close()
         except IOError:
             print "None such teacher : {0}".format(name.encode('cp1251'))
         
     def addLesson(self, lesName, lesType, room, time, groupName=''):
         try:
-            f = open(self.path+'Rooms\\'+typeDict[lesType]+'\\'+str(room)+'.csv', 'rb')
+            f = open(self.path+'Rooms'+path_delimiter+typeDict[lesType]+path_delimiter+str(room)+'.csv', 'rb')
             #nonUniLesType = typeDict[lesType]
         except IOError:
             print '1'
@@ -317,7 +358,7 @@ class Teacher:
             print str(room)
             print time
             return -1
-        roomList = list(UnicodeReader(f, csv.excel, 'cp1251', delimiter = ';'))
+        roomList = list(UnicodeReader(f, csv.excel, 'cp1251', delimiter=';'))
         f.close()
         if cmp(roomList[time][0], str(0)):
             print '2'
@@ -329,10 +370,10 @@ class Teacher:
         #lesType = unicode(lesType, 'utf-8')
         if cmp(self.getInfoByTime(time)[0], ''):
             return -1
-        if      not cmp(lesType, unicode('Лек', 'utf-8')):
+        if not cmp(lesType, unicode('Лек', 'utf-8')):
             stream = []
             for row in self.dataList:
-                if not ( cmp(lesName, row[0][:row[0].index(u'\u003a')]) or cmp(lesType, row[1]) ):
+                if not (cmp(lesName, row[0][:row[0].index(u'\u003a')]) or cmp(lesType, row[1])):
                     for i in range(6):
                         stream.append(Group(row[0][row[0].index(u'\u003a')+1:]+str(i+1)))
                         if not cmp(stream[i].dataList, []):
@@ -346,36 +387,37 @@ class Teacher:
                 if not str(room) in stream[0].dataList[0][0]:
                     #print 'yo'
                     return -1
-                if not int(row[2])>row[3].count(u'\u003a'):
+                if not int(row[2]) > row[3].count(u'\u003a'):
                     #print 'yoyo'
                     return -1
                 row[3] = row[3]+str(time)+','+str(room)+':'
                 for group in stream:
                     for line in group.dataList[1:]:
-                         if not ( cmp(lesName, line[0][:line[0].index(u'\u003a')]) or cmp(lesType, line[1]) ):
+                         if not (cmp(lesName, line[0][:line[0].index(u'\u003a')]) or cmp(lesType, line[1])):
                             line[3] = line[3]+str(time)+','+str(room)+':'
                 roomList[time][0] = stream[0].name[:-1]+':'+lesName+':'+lesType+':'+self.name
                 try:
-                    ft = open(self.path+'Tmp\\'+'Teach\\'+self.name+'.csv', 'wb')
-                    fr = open(self.path+'Tmp\\'+'Rooms\\'+typeDict[lesType]+'\\'+str(room)+'.csv', 'wb')
+                    ft = open(self.path+'Tmp'+path_delimiter+'Teach'+path_delimiter+self.name+'.csv', 'wb')
+                    fr = open(self.path+'Tmp'+path_delimiter+'Rooms'+path_delimiter+typeDict[lesType]+path_delimiter+str(room)+'.csv', 'wb')
                 except IOError:
                     print "Why, tell me why"
-                ftWriter = UnicodeWriter(ft, csv.excel, 'cp1251', delimiter = ';')
-                frWriter = UnicodeWriter(fr, csv.excel, 'cp1251', delimiter = ';')
+                    return -1
+                ftWriter = UnicodeWriter(ft, csv.excel, 'cp1251', delimiter=';')
+                frWriter = UnicodeWriter(fr, csv.excel, 'cp1251', delimiter=';')
                 ftWriter.writerows(self.dataList)
                 frWriter.writerows(roomList)
                 ft.close()
                 fr.close()
                 for group in stream:
-                    fg = open(self.path+'Tmp\\'+'Groups\\'+group.name+'.csv', 'wb')
-                    fgWriter = UnicodeWriter(fg, csv.excel, 'cp1251', delimiter = ';')
+                    fg = open(self.path+'Tmp'+path_delimiter+'Groups'+path_delimiter+group.name+'.csv', 'wb')
+                    fgWriter = UnicodeWriter(fg, csv.excel, 'cp1251', delimiter=';')
                     fgWriter.writerows(group.dataList)
                     fg.close()
                 return 0
         else:
             #group = Group
             for row in self.dataList:
-                if not ( cmp(lesName, row[0][:row[0].index(u'\u003a')]) or cmp(lesType, row[1]) or cmp(row[0][row[0].index(u'\u003a')+1:], groupName)):
+                if not (cmp(lesName, row[0][:row[0].index(u'\u003a')]) or cmp(lesType, row[1]) or cmp(row[0][row[0].index(u'\u003a')+1:], groupName)):
                     group = Group(groupName)
                 else:
                     continue
@@ -383,22 +425,23 @@ class Teacher:
                     return -1
                 if not str(room) in group.dataList[0][0]:
                     return -1
-                if not int(row[2])>row[3].count(u'\u003a'):
+                if not int(row[2]) > row[3].count(u'\u003a'):
                     return -1
                 row[3] = row[3]+str(time)+','+str(room)+':'
                 for line in group.dataList[1:]:
-                    if not ( cmp(lesName, line[0][:line[0].index(u'\u003a')]) or cmp(lesType, line[1]) ):
+                    if not (cmp(lesName, line[0][:line[0].index(u'\u003a')]) or cmp(lesType, line[1])):
                         line[3] = line[3]+str(time)+','+str(room)+':'
                 roomList[time][0] = group.name+':'+lesName+':'+lesType+':'+self.name
                 try:
-                    ft = open(self.path+'Tmp\\'+'Teach\\'+self.name+'.csv', 'wb')
-                    fg = open(self.path+'Tmp\\'+'Groups\\'+group.name+'.csv', 'wb')
-                    fr = open(self.path+'Tmp\\'+'Rooms\\'+typeDict[lesType]+'\\'+str(room)+'.csv', 'wb')
+                    ft = open(self.path+'Tmp'+path_delimiter+'Teach'+path_delimiter+self.name+'.csv', 'wb')
+                    fg = open(self.path+'Tmp'+path_delimiter+'Groups'+path_delimiter+group.name+'.csv', 'wb')
+                    fr = open(self.path+'Tmp'+path_delimiter+'Rooms'+path_delimiter+typeDict[lesType]+path_delimiter+str(room)+'.csv', 'wb')
                 except IOError:
                     print "Why, tell me why"
-                ftWriter = UnicodeWriter(ft, csv.excel, 'cp1251', delimiter = ';')
-                fgWriter = UnicodeWriter(fg, csv.excel, 'cp1251', delimiter = ';')
-                frWriter = UnicodeWriter(fr, csv.excel, 'cp1251', delimiter = ';')
+                    return -1
+                ftWriter = UnicodeWriter(ft, csv.excel, 'cp1251', delimiter=';')
+                fgWriter = UnicodeWriter(fg, csv.excel, 'cp1251', delimiter=';')
+                frWriter = UnicodeWriter(fr, csv.excel, 'cp1251', delimiter=';')
                 ftWriter.writerows(self.dataList)
                 fgWriter.writerows(group.dataList)
                 frWriter.writerows(roomList)
@@ -406,6 +449,7 @@ class Teacher:
                 fg.close()
                 fr.close()
                 return 0
+
     def getInfoByTime(self, time):
         for row in self.dataList:
             a = row[3].count(':')
@@ -425,7 +469,7 @@ class Teacher:
         lesName = unicode(lesName, 'utf-8')
         lesType = unicode(lesType, 'utf-8')
         for row in self.dataList[1:]:
-            if not ( cmp(lesName, row[0][:row[0].index(u'\u003a')]) or cmp(lesType, row[1]) ):
+            if not (cmp(lesName, row[0][:row[0].index(u'\u003a')]) or cmp(lesType, row[1])):
                 times = []
                 a = row[3].count(':')
                 retrow = ''
@@ -441,51 +485,54 @@ class Teacher:
 
 
 def addNewLessonForGroupAndTeacher(group, teacher, count, lessonName, type):
-    group.dataList.append(lessonName+u'\u003a'+teacher, type, str(count),'')
+    group.dataList.append(lessonName+u'\u003a'+teacher, type, str(count), '')
     if type is unicode('Лек', 'utf-8'):
         teacher.dataList.append(lessonName+u'\u003a'+group[:-1], type, str(count), '')
     else:
         teacher.dataList.append(lessonName+u'\u003a'+group, type, str(count), '')
     temp = group.dataList[0]
-    group.dataList = sorted(group.dataList[1:],key = lambda lrow:lrow[2], reverse= True)
+    group.dataList = sorted(group.dataList[1:], key=lambda lrow:lrow[2], reverse=True)
     group.dataList.insert(0, temp)
-    teacher.dataList = sorted(teacher.dataList[1:],key = lambda lrow:lrow[2], reverse= True)
+    teacher.dataList = sorted(teacher.dataList[1:], key=lambda lrow:lrow[2], reverse=True)
     try:
-        ft = open(teacher.path+'Teach\\'+teacher.name+'.csv', 'wb')
-        fg = open(teacher.path+'Groups\\'+group.name+'.csv', 'wb')
+        ft = open(teacher.path+'Teach'+path_delimiter+teacher.name+'.csv', 'wb')
+        fg = open(teacher.path+'Groups'+path_delimiter+group.name+'.csv', 'wb')
     except IOError:
         print "Why, tell me why"
-    ftWriter = UnicodeWriter(ft, csv.excel, 'cp1251', delimiter = ';')
-    fgWriter = UnicodeWriter(fg, csv.excel, 'cp1251', delimiter = ';')
+        return -1
+    ftWriter = UnicodeWriter(ft, csv.excel, 'cp1251', delimiter=';')
+    fgWriter = UnicodeWriter(fg, csv.excel, 'cp1251', delimiter=';')
     ftWriter.writerows(teacher.dataList)
     fgWriter.writerows(group.dataList)
     ft.close()
     fg.close()
     return 0
-    
-def deleteLessonForGroupAndTeacher(group, teacher, count, lessonName, type):
+
+
+def deleteLessonForGroupAndTeacher(group, teacher, count, lesName, lesType):
     for row in group.dataList[1:]:
-        if not ( cmp(lesName, row[0][:row[0].index(u'\u003a')]) or cmp(lesType, row[1]) ):
+        if not (cmp(lesName, row[0][:row[0].index(u'\u003a')]) or cmp(lesType, row[1])):
             del group.dataList[row]
             break
         
     if type is unicode('Лек', 'utf-8'):
         for row in teacher.dataList:
-            if not ( cmp(lesName, row[0][:row[0].index(u'\u003a')]) or cmp(lesType, row[1])):
+            if not (cmp(lesName, row[0][:row[0].index(u'\u003a')]) or cmp(lesType, row[1])):
                 del teacher.dataList[row]
                 break    
     else:
         for row in teacher.dataList:
-            if not ( cmp(lesName, row[0][:row[0].index(u'\u003a')]) or cmp(lesType, row[1]) or cmp(group.name, row[0][row[0].index(u'\u003a')+1:])):
+            if not (cmp(lesName, row[0][:row[0].index(u'\u003a')]) or cmp(lesType, row[1]) or cmp(group.name, row[0][row[0].index(u'\u003a')+1:])):
                 del teacher.dataList[row]
                 break
     try:
-        ft = open(teacher.path+'Teach\\'+teacher.name+'.csv', 'wb')
-        fg = open(teacher.path+'Groups\\'+group.name+'.csv', 'wb')
+        ft = open(teacher.path+'Teach'+path_delimiter+teacher.name+'.csv', 'wb')
+        fg = open(teacher.path+'Groups'+path_delimiter+group.name+'.csv', 'wb')
     except IOError:
         print "Why, tell me why"
-    ftWriter = UnicodeWriter(ft, csv.excel, 'cp1251', delimiter = ';')
-    fgWriter = UnicodeWriter(fg, csv.excel, 'cp1251', delimiter = ';')
+        return -1
+    ftWriter = UnicodeWriter(ft, csv.excel, 'cp1251', delimiter=';')
+    fgWriter = UnicodeWriter(fg, csv.excel, 'cp1251', delimiter=';')
     ftWriter.writerows(teacher.dataList)
     fgWriter.writerows(group.dataList)
     ft.close()

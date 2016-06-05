@@ -12,7 +12,6 @@ ru = gettext.translation('easy_week', './locale', languages=['ru'])
 ua.install()
 from functools import partial
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.actionbar import ActionBar
 from kivy.properties import ListProperty, OptionProperty, ObjectProperty, \
     StringProperty, NumericProperty
 from kivy.lang import Builder
@@ -143,10 +142,6 @@ class MainWindow(BoxLayout):
     def show_login_popup(self):
         p = LoginPopup(accept=self.login)
         p.open()
-
-
-class LessonBar(ActionBar):
-    pass
 
 
 class MenuApp(App):

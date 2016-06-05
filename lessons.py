@@ -4,6 +4,7 @@
 Definitions for Easy Week lesson structure
 """
 from kivy.uix.button import Button
+from kivy.uix.popup import Popup
 from kivy.uix.behaviors.drag import DragBehavior
 from kivy.properties import StringProperty, ListProperty, OptionProperty, \
     BoundedNumericProperty, NumericProperty
@@ -112,6 +113,16 @@ class Lesson(DragBehavior, Button):
 
     def empty(self):
         return self.view_type == 'empty'
+
+
+class LessonPopup(Popup):
+    """
+    Popup form for editing the lesson object
+    """
+
+    def __init__(self, **kwargs):
+        super(LessonPopup, self).__init__(**kwargs)
+
 
 
 class LessonsApp(App):

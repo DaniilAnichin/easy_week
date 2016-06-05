@@ -6,3 +6,15 @@
     drag_distance: 0
 
     markup: True
+
+<LessonPopup>:
+    size_hint: .5, .5
+    title: 'Editing lesson'
+    BoxLayout:
+        orientation: 'vertical'
+        TextInput:
+            text: "Input full name/cypher"
+        TextInput:
+        Button:
+            text: _('Accept')
+            on_release: root.dismiss()
