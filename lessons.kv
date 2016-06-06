@@ -50,8 +50,8 @@
                 text: _('Room')
                 size_hint_x: 0.3
             ChoiceInput:
-                text: _('Group')
-                choices: lesson_types.values()
+                text: lesson_types[root.lesson.type]
+                choices: [value.decode('utf-8') for value in lesson_types.values()]
                 size_hint_x: 0.35
             ChoiceInput:
                 text: root.lesson.room
@@ -68,7 +68,7 @@
                 state: 'down' if root.lesson.week == 'lower' else 'normal'
             ChoiceInput:
                 text: week_days[root.lesson.day]
-                choices: week_days
+                choices: [day.decode('utf-8') for day in week_days]
                 size_hint_x: 0.35
             ChoiceInput:
                 text: day_times[root.lesson.number]
