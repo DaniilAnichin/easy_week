@@ -4,11 +4,10 @@
 Definitions for Easy Week lesson structure
 """
 from kivy.uix.button import Button
+from kivy.uix.popup import Popup
 from kivy.uix.behaviors.drag import DragBehavior
-from kivy.properties import StringProperty, ListProperty, OptionProperty, \
-    BoundedNumericProperty, NumericProperty
+from kivy.properties import *
 from kivy.app import App
-from popups import LessonPopup
 
 # Data which will form the view of pair, e.g. week days, time lapse
 # Division may be useful for translation
@@ -76,8 +75,6 @@ class Lesson(DragBehavior, Button):
         super(Lesson, self).__init__(**kwargs)
         self.text = self.__str__()
         self.lines = len(self.text.split('\n'))
-        # self.bind(on_press=LessonPopup(lesson=self).open)
-        # self.bind(on_release=LessonPopup(lesson=self).open)
 
     def __str__(self):
         # Change color due to the lesson type
@@ -99,6 +96,10 @@ class Lesson(DragBehavior, Button):
             result += '\n%s' % groups[:14] + ('...' if len(groups) > 17 else '')
         return result
 
+    def on_release(self):
+        lesson_popup = LessonPopup(lesson=self)
+        lesson_popup.open()
+
     def __eq__(self, other):
         result = True
         if self.teacher != other.teacher:
@@ -115,6 +116,16 @@ class Lesson(DragBehavior, Button):
 
     def empty(self):
         return self.view_type == 'empty'
+
+
+class LessonPopup(Popup):
+    """
+    Popup form for editing the lesson object
+    """
+    lesson = ObjectProperty(None)
+
+    def __init__(self, **kwargs):
+        super(LessonPopup, self).__init__(**kwargs)
 
 
 class LessonsApp(App):

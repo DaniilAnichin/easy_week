@@ -6,3 +6,63 @@
     drag_distance: 0
 
     markup: True
+
+<LessonPopup>:
+    size_hint: .5, .5
+    title: 'Editing lesson'
+    auto_dismiss: False
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            Label:
+                text: _('Group')
+                size_hint_x: 0.3
+            TextInput:
+                text: ', '.join(root.lesson.groups)
+                size_hint_x: 0.7
+        BoxLayout:
+            Label:
+                text: _('Teacher')
+                size_hint_x: 0.3
+            TextInput:
+                text: root.lesson.teacher
+                size_hint_x: 0.7
+        BoxLayout:
+            size_hint_y: 2
+            Label:
+                text: _('Lesson')
+                size_hint_x: 0.3
+            TextInput:
+                text: root.lesson.lesson
+                size_hint_x: 0.7
+        BoxLayout:
+            Label:
+                text: _('Room')
+                size_hint_x: 0.3
+            TextInput:
+                text: _('Group')
+                size_hint_x: 0.35
+            TextInput:
+                text: ', '.join(root.lesson.groups)
+                size_hint_x: 0.35
+        BoxLayout:
+            Button:
+                text: _('I')
+                size_hint_x: 0.15
+            Button:
+                text: _('II')
+                size_hint_x: 0.15
+            TextInput:
+                text: 'Monday'
+                size_hint_x: 0.35
+            TextInput:
+                text: '8:30 - 10:05'
+                size_hint_x: 0.35
+        BoxLayout:
+            Button:
+                text: _('Dismiss')
+                on_release: root.dismiss()
+            Button:
+                text: _('Accept')
+                on_press: root.update(root.lesson, root.new_lesson)
+                on_release: root.dismiss()

@@ -86,18 +86,6 @@ class LoginPopup(Popup):
         super(Popup, self).__init__(**kwargs)
 
 
-class LessonPopup(Popup):
-    """
-    Popup form for editing the lesson object
-    """
-    lesson = ObjectProperty(None)
-
-    def __init__(self, **kwargs):
-        super(LessonPopup, self).__init__(**kwargs)
-
-        # update_lesson
-
-
 class PopupsApp(App):
     def build(self):
         b = Button(on_press=self.show_popup)
