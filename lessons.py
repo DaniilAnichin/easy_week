@@ -4,6 +4,8 @@
 Definitions for Easy Week lesson structure
 """
 from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
+from kivy.uix.dropdown import DropDown
 from kivy.uix.popup import Popup
 from kivy.uix.behaviors.drag import DragBehavior
 from kivy.properties import *
@@ -118,11 +120,47 @@ class Lesson(DragBehavior, Button):
         return self.view_type == 'empty'
 
 
+class ChoiceInput(TextInput):
+    choices = ListProperty()
+    drop_down = ObjectProperty(None)
+
+    def __init__(self, **kwargs):
+        super(ChoiceInput, self).__init__(**kwargs)
+        self.drop_down = DropDown()
+        self.bind(focus=self.on_focus)
+        self.drop_down.bind(
+            on_select=lambda instance, x: setattr(self, 'text', x)
+        )
+
+    def make_drop_down(self, *args):
+        self.drop_down.clear_widgets()
+        for choice in self.choices:
+            if self.text in choice or self.text == '':
+                button = Button(
+                    text=choice,
+                    size_hint_y=None,
+                    height=35
+                )
+                button.bind(
+                    on_release=lambda btn: self.drop_down.select(btn.text)
+                )
+                self.drop_down.add_widget(button)
+        if len(self.drop_down.children) > 0:
+            self.drop_down.open(self)
+
+    def on_focus(self, *args):
+        self.bind(text=self.make_drop_down)
+
+
 class LessonPopup(Popup):
     """
     Popup form for editing the lesson object
     """
     lesson = ObjectProperty(None)
+    drop_down = ObjectProperty(None)
+    choices = ListProperty()
+    choice_input = ObjectProperty(None)
+    on_release = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(LessonPopup, self).__init__(**kwargs)

@@ -1,3 +1,11 @@
+#:import day_times lessons.day_times
+#:import week_days lessons.week_days
+#:import week_types lessons.week_types
+#:import lesson_types lessons.lesson_types
+#:import teacher_list database.teacher_list
+#:import group_list database.group_list
+#:import room_list database.room_list
+
 <Lesson>:
     font_size: self.height / (self.lines + 3)
     # Define the properties for the drag
@@ -17,52 +25,60 @@
             Label:
                 text: _('Group')
                 size_hint_x: 0.3
-            TextInput:
+            ChoiceInput:
                 text: ', '.join(root.lesson.groups)
+                choices: group_list
                 size_hint_x: 0.7
         BoxLayout:
             Label:
                 text: _('Teacher')
                 size_hint_x: 0.3
-            TextInput:
+            ChoiceInput:
                 text: root.lesson.teacher
+                choices: teacher_list
                 size_hint_x: 0.7
         BoxLayout:
             size_hint_y: 2
             Label:
                 text: _('Lesson')
                 size_hint_x: 0.3
-            TextInput:
+            ChoiceInput:
                 text: root.lesson.lesson
                 size_hint_x: 0.7
         BoxLayout:
             Label:
                 text: _('Room')
                 size_hint_x: 0.3
-            TextInput:
+            ChoiceInput:
                 text: _('Group')
+                choices: lesson_types.values()
                 size_hint_x: 0.35
-            TextInput:
-                text: ', '.join(root.lesson.groups)
+            ChoiceInput:
+                text: root.lesson.room
+                choices: room_list
                 size_hint_x: 0.35
         BoxLayout:
-            Button:
-                text: _('I')
+            ToggleButton:
+                text: week_types['upper']
                 size_hint_x: 0.15
-            Button:
-                text: _('II')
+                state: 'down' if root.lesson.week == 'upper' else 'normal'
+            ToggleButton:
+                text: week_types['lower']
                 size_hint_x: 0.15
-            TextInput:
-                text: 'Monday'
+                state: 'down' if root.lesson.week == 'lower' else 'normal'
+            ChoiceInput:
+                text: week_days[root.lesson.day]
+                choices: week_days
                 size_hint_x: 0.35
-            TextInput:
-                text: '8:30 - 10:05'
+            ChoiceInput:
+                text: day_times[root.lesson.number]
                 size_hint_x: 0.35
+                choices: day_times
         BoxLayout:
             Button:
                 text: _('Dismiss')
                 on_release: root.dismiss()
             Button:
                 text: _('Accept')
-                on_press: root.update(root.lesson, root.new_lesson)
+                # on_press: root.update(root.lesson, root.new_lesson)
                 on_release: root.dismiss()
