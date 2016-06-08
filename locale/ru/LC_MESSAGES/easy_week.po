@@ -8,11 +8,11 @@ msgstr "Лекция"
 
 #: lessons.py:23
 msgid "Practice"
-msgstr "Практическое занятие"
+msgstr "Практическая"
 
 #: lessons.py:24
 msgid "Laboratory"
-msgstr "Лабораторное занятие"
+msgstr "Лабораторная"
 
 #: lessons.py:31
 msgid "Monday"

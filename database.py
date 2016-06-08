@@ -187,8 +187,9 @@ def merge_schedule(first, second):
     return lesson_set
 
 
-def update_lesson(lesson, temp=True):
-    print 'Lesson %s updated, %s' % (lesson.lesson, 'Temp' if temp else 'Perm')
+def update_lesson(lesson_window, temp=True):
+    print 'Lesson %s updated, %s' % \
+          (lesson_window.lesson, 'Temp' if temp else 'Perm')
 
 
 if __name__ == '__main__':

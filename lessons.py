@@ -157,13 +157,35 @@ class LessonPopup(Popup):
     Popup form for editing the lesson object
     """
     lesson = ObjectProperty(None)
-    drop_down = ObjectProperty(None)
-    choices = ListProperty()
-    choice_input = ObjectProperty(None)
-    on_release = ObjectProperty(None)
+    new_lesson = ObjectProperty(None)
+    group_input = ObjectProperty(None)
+    teacher_input = ObjectProperty(None)
+    lesson_input = ObjectProperty(None)
+    type_input = ObjectProperty(None)
+    room_input = ObjectProperty(None)
+    day_input = ObjectProperty(None)
+    time_input = ObjectProperty(None)
+    first_week = ObjectProperty(None)
+    second_week = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(LessonPopup, self).__init__(**kwargs)
+
+    def update(self):
+        self.new_lesson = Lesson(
+            teacher=self.teacher_input.text,
+            lesson=self.lesson_input.text.encode('utf-8'),
+            groups=self.group_input.text.encode('utf-8').split(', '),
+            room=self.room_input.text.encode('utf-8'),
+            week=('lower' if self.second_week.state == 'down' else 'upper'),
+            day=week_days.index(self.day_input.text.encode('utf-8')),
+            number=day_times.index(self.time_input.text),
+            view_type=self.lesson.view_type
+        )
+        for _type in lesson_types.keys():
+            if lesson_types[_type] == self.type_input.text.encode('utf-8'):
+                self.new_lesson.type = _type
+        print self.lesson_input.text
 
 
 class LessonsApp(App):
