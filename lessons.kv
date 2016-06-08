@@ -63,7 +63,7 @@
                 size_hint_x: 0.3
             ChoiceInput:
                 text: lesson_types[root.lesson.type]
-                choices: lesson_types.values()
+                choices: [value.decode('utf-8') for value in lesson_types.values()]
                 id: type_input
                 size_hint_x: 0.35
             ChoiceInput:
@@ -84,7 +84,7 @@
                 id: second_week
             ChoiceInput:
                 text: week_days[root.lesson.day]
-                choices: week_days
+                choices: [day.decode('utf-8') for day in week_days]
                 id: day_input
                 size_hint_x: 0.35
             ChoiceInput:
