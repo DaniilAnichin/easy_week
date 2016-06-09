@@ -4,10 +4,11 @@
 Definitions for Easy Week lesson structure
 """
 from kivy.uix.button import Button
+from kivy.uix.textinput import TextInput
+from kivy.uix.dropdown import DropDown
 from kivy.uix.popup import Popup
 from kivy.uix.behaviors.drag import DragBehavior
-from kivy.properties import StringProperty, ListProperty, OptionProperty, \
-    BoundedNumericProperty, NumericProperty
+from kivy.properties import *
 from kivy.app import App
 
 # Data which will form the view of pair, e.g. week days, time lapse
@@ -71,6 +72,7 @@ class Lesson(DragBehavior, Button):
     lines = NumericProperty(1)
     view_type = OptionProperty('empty', options=['group', 'teacher', 'room',
                                                  'empty'])
+    update = ObjectProperty()
 
     def __init__(self, **kwargs):
         super(Lesson, self).__init__(**kwargs)
@@ -97,6 +99,9 @@ class Lesson(DragBehavior, Button):
             result += '\n%s' % groups[:14] + ('...' if len(groups) > 17 else '')
         return result
 
+    def on_release(self):
+        LessonPopup(lesson=self).open()
+
     def __eq__(self, other):
         result = True
         if self.teacher != other.teacher:
@@ -115,14 +120,77 @@ class Lesson(DragBehavior, Button):
         return self.view_type == 'empty'
 
 
+class ChoiceInput(TextInput):
+    choices = ListProperty()
+    drop_down = ObjectProperty()
+
+    def __init__(self, **kwargs):
+        super(ChoiceInput, self).__init__(**kwargs)
+        self.drop_down = DropDown()
+        self.bind(focus=self.on_focus)
+        self.drop_down.bind(
+            on_select=lambda instance, x: setattr(self, 'text', x)
+        )
+
+    def make_drop_down(self, *args):
+        self.drop_down.clear_widgets()
+        for choice in self.choices:
+            if self.text in choice or self.text == '':
+                button = Button(
+                    text=choice,
+                    size_hint_y=None,
+                    height=35
+                )
+                button.bind(
+                    on_release=lambda btn: self.drop_down.select(btn.text)
+                )
+                self.drop_down.add_widget(button)
+        if len(self.drop_down.children) > 0:
+            self.drop_down.open(self)
+
+    def on_focus(self, *args):
+        self.bind(text=self.make_drop_down)
+
+
 class LessonPopup(Popup):
     """
     Popup form for editing the lesson object
     """
+    lesson = ObjectProperty()
+    new_lesson = ObjectProperty()
+    group_input = ObjectProperty()
+    teacher_input = ObjectProperty()
+    lesson_input = ObjectProperty()
+    type_input = ObjectProperty()
+    room_input = ObjectProperty()
+    day_input = ObjectProperty()
+    time_input = ObjectProperty()
+    first_week = ObjectProperty()
+    second_week = ObjectProperty()
 
     def __init__(self, **kwargs):
         super(LessonPopup, self).__init__(**kwargs)
 
+    def update(self):
+        self.new_lesson = Lesson(
+            teacher=self.teacher_input.text,
+            lesson=self.lesson_input.text.encode('utf-8'),
+            groups=self.group_input.text.encode('utf-8').split(', '),
+            room=self.room_input.text.encode('utf-8'),
+            week=('lower' if self.second_week.state == 'down' else 'upper'),
+            day=week_days.index(self.day_input.text.encode('utf-8')),
+            number=day_times.index(self.time_input.text),
+            view_type=self.lesson.view_type
+        )
+        if self.second_week.state == self.first_week.state == 'up':
+            pass
+        for _type in lesson_types.keys():
+            if lesson_types[_type] == self.type_input.text.encode('utf-8'):
+                self.new_lesson.type = _type
+        self.lesson.update(
+            old_lesson=self.lesson,
+            new_lesson=self.new_lesson
+        )
 
 
 class LessonsApp(App):

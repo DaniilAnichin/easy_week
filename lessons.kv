@@ -1,3 +1,11 @@
+#:import day_times lessons.day_times
+#:import week_days lessons.week_days
+#:import week_types lessons.week_types
+#:import lesson_types lessons.lesson_types
+#:import teacher_list database.teacher_list
+#:import group_list database.group_list
+#:import room_list database.room_list
+
 <Lesson>:
     font_size: self.height / (self.lines + 3)
     # Define the properties for the drag
@@ -10,11 +18,88 @@
 <LessonPopup>:
     size_hint: .5, .5
     title: 'Editing lesson'
+    auto_dismiss: False
+    group_input: group_input
+    teacher_input: group_input
+    lesson_input: lesson_input
+    type_input: type_input
+    room_input: room_input
+    day_input: day_input
+    time_input: time_input
+    first_week: first_week
+    second_week: second_week
     BoxLayout:
         orientation: 'vertical'
-        TextInput:
-            text: "Input full name/cypher"
-        TextInput:
-        Button:
-            text: _('Accept')
-            on_release: root.dismiss()
+        BoxLayout:
+            Label:
+                text: _('Group')
+                size_hint_x: 0.3
+            ChoiceInput:
+                text: ', '.join(root.lesson.groups)
+                choices: group_list
+                id: group_input
+                size_hint_x: 0.7
+        BoxLayout:
+            Label:
+                text: _('Teacher')
+                size_hint_x: 0.3
+            ChoiceInput:
+                text: root.lesson.teacher
+                choices: teacher_list
+                id: teacher_input
+                size_hint_x: 0.7
+        BoxLayout:
+            size_hint_y: 2
+            Label:
+                text: _('Lesson')
+                size_hint_x: 0.3
+            TextInput:
+                text: root.lesson.lesson
+                id: lesson_input
+                size_hint_x: 0.7
+        BoxLayout:
+            Label:
+                text: _('Room')
+                size_hint_x: 0.3
+            ChoiceInput:
+                text: lesson_types[root.lesson.type]
+                choices: [value.decode('utf-8') for value in lesson_types.values()]
+                id: type_input
+                size_hint_x: 0.35
+            ChoiceInput:
+                text: root.lesson.room
+                choices: room_list
+                id: room_input
+                size_hint_x: 0.35
+        BoxLayout:
+            ToggleButton:
+                group: 'week'
+                allow_no_selection: False
+                text: week_types['upper']
+                size_hint_x: 0.15
+                state: 'down' if root.lesson.week == 'upper' else 'normal'
+                id: first_week
+            ToggleButton:
+                group: 'week'
+                text: week_types['lower']
+                size_hint_x: 0.15
+                state: 'down' if root.lesson.week == 'lower' else 'normal'
+                id: second_week
+            ChoiceInput:
+                text: week_days[root.lesson.day]
+                choices: [day.decode('utf-8') for day in week_days]
+                id: day_input
+                size_hint_x: 0.35
+            ChoiceInput:
+                text: day_times[root.lesson.number]
+                size_hint_x: 0.35
+                id: time_input
+                choices: day_times
+        BoxLayout:
+            Button:
+                text: _('Dismiss')
+                on_release: root.dismiss()
+            Button:
+                text: _('Accept')
+                on_press: root.update()
+                on_release: root.dismiss()

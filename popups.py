@@ -10,7 +10,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import StringProperty, ObjectProperty, ListProperty
 from database import teacher_list
 from kivy.app import App
-
+from kivy.uix.behaviors import ToggleButtonBehavior
 
 # Data which will form the view of popup, e.g. label, button text
 # Division may be useful for translation
@@ -55,7 +55,7 @@ class ChoicePopup(Popup):
     def make_dropdown(self, *args):
         self.dropdown.clear_widgets()
         for choice in self.choices:
-            if self.choice_input.text in choice:
+            if self.choice_input.text in choice or self.choice_input.text == '':
                 button = Button(
                     text=choice,
                     size_hint_y=None,

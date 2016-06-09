@@ -9,6 +9,7 @@ eng = gettext.translation('easy_week', './locale', languages=['en'])
 ua = gettext.translation('easy_week', './locale', languages=['ua'])
 ru = gettext.translation('easy_week', './locale', languages=['ru'])
 
+# ua.install(unicode=True)
 ua.install()
 from functools import partial
 from kivy.uix.boxlayout import BoxLayout
@@ -29,7 +30,7 @@ class MainWindow(BoxLayout):
     week = OptionProperty('upper', options=['upper', 'lower'])
     table_type = OptionProperty('teacher', options=['group', 'teacher', 'room'])
     content = StringProperty(unicode('вик. Міхнєва Ю. Р.', 'utf-8'))
-    table = ObjectProperty()
+    table = ObjectProperty(None)
     log_label = ObjectProperty(None)
     title = ObjectProperty(None)
 
@@ -47,13 +48,13 @@ class MainWindow(BoxLayout):
 
         if content is not None:
             if self.table_type is 'group' and content not in group_list:
-                self.log_label.text = _('Wrong group passed: %s') % content
+                self.log_label.text = _('Wrong group passed: %s').decode('utf-8') % content
                 return -1
             if self.table_type is 'teacher' and content not in teacher_list:
-                self.log_label.text = _('Wrong teacher passed: %s') % content
+                self.log_label.text = _('Wrong teacher passed: %s').decode('utf-8') % content
                 return -1
             if self.table_type is 'room' and content not in room_list:
-                self.log_label.text = _('Wrong room passed: %s') % content
+                self.log_label.text = _('Wrong room passed: %s').decode('utf-8') % content
                 return -1
             # black magic
             # .encode('utf-8').decode('utf-8')

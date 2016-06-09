@@ -40,6 +40,8 @@ class LessonTable(FloatLayout):
                     'x': ruler_hint + i * (1 - ruler_hint) / self.day_num,
                     'y': 1 - ruler_hint - (j + 1) *
                                           (1 - ruler_hint) / self.lesson_num}
+                # lesson.bind(on_release=LessonPopup(lesson=lesson).open)
+
                 self.add_widget(lesson)
 
         # Filling table with rulers-buttons(labels, in future)
