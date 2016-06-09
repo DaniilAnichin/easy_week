@@ -1,3 +1,13 @@
+#:import random random.random
+
 <KindaButton>:
     font_size: min(root.height / 2, 1.8 * root.width / len(root.text.split('\n')[0]))
     disabled: True
+
+<LessonHolder>:
+    canvas.before:
+        Color:
+            rgba: random(), random(), random(), 1.0
+        Rectangle:
+            pos: self.pos
+            size: self.size
