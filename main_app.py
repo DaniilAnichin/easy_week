@@ -9,6 +9,7 @@ eng = gettext.translation('easy_week', './locale', languages=['en'])
 ua = gettext.translation('easy_week', './locale', languages=['ua'])
 ru = gettext.translation('easy_week', './locale', languages=['ru'])
 
+# ua.install(unicode=True)
 ua.install()
 from functools import partial
 from kivy.uix.boxlayout import BoxLayout

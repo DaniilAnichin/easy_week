@@ -72,7 +72,8 @@ def collect_lessons(content_type, content):
                     week=('upper' if i < week_len else 'lower'),
                     day=(i / lesson_num % day_num),
                     number=(i % lesson_num),
-                    view_type='teacher'
+                    view_type='teacher',
+                    update=update_lesson
                 )
                 lesson_set[i / lesson_num][i % lesson_num] = my_lesson
             else:
@@ -81,7 +82,8 @@ def collect_lessons(content_type, content):
                     week=('upper' if i < week_len else 'lower'),
                     day=(i / lesson_num % day_num),
                     number=(i % lesson_num),
-                    view_type='empty'
+                    view_type='empty',
+                    update=update_lesson
                 )
 
     elif content_type is 'group':
@@ -103,7 +105,8 @@ def collect_lessons(content_type, content):
                     week=('upper' if i < week_len else 'lower'),
                     day=(i / lesson_num % day_num),
                     number=(i % lesson_num),
-                    view_type='group'
+                    view_type='group',
+                    update=update_lesson
                 )
                 lesson_set[i / lesson_num][i % lesson_num] = my_lesson
             else:
@@ -112,7 +115,8 @@ def collect_lessons(content_type, content):
                     week=('upper' if i < week_len else 'lower'),
                     day=(i / lesson_num % day_num),
                     number=(i % lesson_num),
-                    view_type='empty'
+                    view_type='empty',
+                    update=update_lesson
                 )
     elif content_type is 'room':
         try:
@@ -154,7 +158,8 @@ def collect_lessons(content_type, content):
                     week=('upper' if i < week_len else 'lower'),
                     day=(i / lesson_num % day_num),
                     number=(i % lesson_num),
-                    view_type='room'
+                    view_type='room',
+                    update=update_lesson
                 )
                 lesson_set[i / lesson_num][i % lesson_num] = my_lesson
             else:
@@ -162,7 +167,8 @@ def collect_lessons(content_type, content):
                     week=('upper' if i < week_len else 'lower'),
                     day=(i / lesson_num % day_num),
                     number=(i % lesson_num),
-                    view_type='empty'
+                    view_type='empty',
+                    update=update_lesson
                 )
     else:
         print 'Oops..'
@@ -187,9 +193,10 @@ def merge_schedule(first, second):
     return lesson_set
 
 
-def update_lesson(lesson_window, temp=True):
+def update_lesson(old_lesson, new_lessons, temp=True):
     print 'Lesson %s updated, %s' % \
-          (lesson_window.lesson, 'Temp' if temp else 'Perm')
+          (old_lesson.lesson, 'Temp' if temp else 'Perm')
+    print 'To %s' % new_lessons[0].lesson
 
 
 if __name__ == '__main__':

@@ -72,6 +72,7 @@ class Lesson(DragBehavior, Button):
     lines = NumericProperty(1)
     view_type = OptionProperty('empty', options=['group', 'teacher', 'room',
                                                  'empty'])
+    update = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(Lesson, self).__init__(**kwargs)
@@ -172,7 +173,7 @@ class LessonPopup(Popup):
         super(LessonPopup, self).__init__(**kwargs)
 
     def update(self):
-        self.new_lesson = Lesson(
+        self.new_lesson = [Lesson(
             teacher=self.teacher_input.text,
             lesson=self.lesson_input.text.encode('utf-8'),
             groups=self.group_input.text.encode('utf-8').split(', '),
@@ -181,11 +182,16 @@ class LessonPopup(Popup):
             day=week_days.index(self.day_input.text.encode('utf-8')),
             number=day_times.index(self.time_input.text),
             view_type=self.lesson.view_type
-        )
+        )]
+        if self.second_week.state == self.first_week.state == 'up':
+            pass
         for _type in lesson_types.keys():
             if lesson_types[_type] == self.type_input.text.encode('utf-8'):
-                self.new_lesson.type = _type
-        print self.lesson_input.text
+                self.new_lesson[0].type = _type
+        self.lesson.update(
+            old_lesson=self.lesson,
+            new_lessons=self.new_lesson
+        )
 
 
 class LessonsApp(App):
