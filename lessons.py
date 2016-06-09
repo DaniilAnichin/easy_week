@@ -72,7 +72,7 @@ class Lesson(DragBehavior, Button):
     lines = NumericProperty(1)
     view_type = OptionProperty('empty', options=['group', 'teacher', 'room',
                                                  'empty'])
-    update = ObjectProperty(None)
+    update = ObjectProperty()
 
     def __init__(self, **kwargs):
         super(Lesson, self).__init__(**kwargs)
@@ -100,8 +100,7 @@ class Lesson(DragBehavior, Button):
         return result
 
     def on_release(self):
-        lesson_popup = LessonPopup(lesson=self)
-        lesson_popup.open()
+        LessonPopup(lesson=self).open()
 
     def __eq__(self, other):
         result = True
@@ -123,7 +122,7 @@ class Lesson(DragBehavior, Button):
 
 class ChoiceInput(TextInput):
     choices = ListProperty()
-    drop_down = ObjectProperty(None)
+    drop_down = ObjectProperty()
 
     def __init__(self, **kwargs):
         super(ChoiceInput, self).__init__(**kwargs)
@@ -157,23 +156,23 @@ class LessonPopup(Popup):
     """
     Popup form for editing the lesson object
     """
-    lesson = ObjectProperty(None)
-    new_lesson = ObjectProperty(None)
-    group_input = ObjectProperty(None)
-    teacher_input = ObjectProperty(None)
-    lesson_input = ObjectProperty(None)
-    type_input = ObjectProperty(None)
-    room_input = ObjectProperty(None)
-    day_input = ObjectProperty(None)
-    time_input = ObjectProperty(None)
-    first_week = ObjectProperty(None)
-    second_week = ObjectProperty(None)
+    lesson = ObjectProperty()
+    new_lesson = ObjectProperty()
+    group_input = ObjectProperty()
+    teacher_input = ObjectProperty()
+    lesson_input = ObjectProperty()
+    type_input = ObjectProperty()
+    room_input = ObjectProperty()
+    day_input = ObjectProperty()
+    time_input = ObjectProperty()
+    first_week = ObjectProperty()
+    second_week = ObjectProperty()
 
     def __init__(self, **kwargs):
         super(LessonPopup, self).__init__(**kwargs)
 
     def update(self):
-        self.new_lesson = [Lesson(
+        self.new_lesson = Lesson(
             teacher=self.teacher_input.text,
             lesson=self.lesson_input.text.encode('utf-8'),
             groups=self.group_input.text.encode('utf-8').split(', '),
@@ -182,15 +181,15 @@ class LessonPopup(Popup):
             day=week_days.index(self.day_input.text.encode('utf-8')),
             number=day_times.index(self.time_input.text),
             view_type=self.lesson.view_type
-        )]
+        )
         if self.second_week.state == self.first_week.state == 'up':
             pass
         for _type in lesson_types.keys():
             if lesson_types[_type] == self.type_input.text.encode('utf-8'):
-                self.new_lesson[0].type = _type
+                self.new_lesson.type = _type
         self.lesson.update(
             old_lesson=self.lesson,
-            new_lessons=self.new_lesson
+            new_lesson=self.new_lesson
         )
 
 

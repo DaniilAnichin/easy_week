@@ -193,10 +193,11 @@ def merge_schedule(first, second):
     return lesson_set
 
 
-def update_lesson(old_lesson, new_lessons, temp=True):
-    print 'Lesson %s updated, %s' % \
-          (old_lesson.lesson, 'Temp' if temp else 'Perm')
-    print 'To %s' % new_lessons[0].lesson
+def update_lesson(old_lesson, new_lesson, temp=True):
+    # print 'Lesson %s updated, %s' % \
+    #       (old_lesson.lesson, 'Temp' if temp else 'Perm')
+    print 'Lesson %s updated' % old_lesson.lesson
+    print 'To %s' % new_lesson.lesson
 
 
 if __name__ == '__main__':

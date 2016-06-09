@@ -53,7 +53,7 @@
             Label:
                 text: _('Lesson')
                 size_hint_x: 0.3
-            ChoiceInput:
+            TextInput:
                 text: root.lesson.lesson
                 id: lesson_input
                 size_hint_x: 0.7
@@ -73,11 +73,14 @@
                 size_hint_x: 0.35
         BoxLayout:
             ToggleButton:
+                group: 'week'
+                allow_no_selection: False
                 text: week_types['upper']
                 size_hint_x: 0.15
                 state: 'down' if root.lesson.week == 'upper' else 'normal'
                 id: first_week
             ToggleButton:
+                group: 'week'
                 text: week_types['lower']
                 size_hint_x: 0.15
                 state: 'down' if root.lesson.week == 'lower' else 'normal'
