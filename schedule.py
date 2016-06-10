@@ -5,6 +5,7 @@ All necessary table definitions for Easy Week
 """
 from kivy.uix.button import Button
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.scatter import Scatter
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import BooleanProperty, ListProperty, NumericProperty, \
     StringProperty
@@ -64,9 +65,10 @@ class LessonTable(FloatLayout):
                 #     'x': ruler_hint + i * (1 - ruler_hint) / self.day_num,
                 #     'y': 1 - ruler_hint - (j + 1) *
                 #                           (1 - ruler_hint) / self.lesson_num}
+                # if not lesson.empty():
                 box.add_widget(lesson)
                 self.add_widget(box)
-                lesson.bind(pos=self.move_lesson)
+                lesson.bind(on_touch_up=self.move_lesson)
 
         # Filling table with rulers-buttons(labels, in future)
         for i in range(self.day_num):
@@ -111,13 +113,19 @@ class LessonTable(FloatLayout):
                 )
 
     def move_lesson(*args):
-        for i in range(len(args)):
+        for i in range(len(args) - 1):
             print i, args[i]
+        print args[1].center
 
         # for child in self.children:
         #     if isinstance(child, LessonHolder):
         #         if child.has_inside(lesson):
         #             print child
+
+    def clear_table(self):
+        for child in self.children:
+            if isinstance(child, LessonHolder):
+                child.clear_widgets()
 
 
 class ScheduleApp(App):

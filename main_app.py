@@ -104,6 +104,7 @@ class MainWindow(BoxLayout):
 
     def clear_table(self):
         if len(self.table.children) > 0:
+            self.table.children[0].clear_table()
             self.table.children[0].clear_widgets()
         self.table.clear_widgets()
 
