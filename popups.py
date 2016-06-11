@@ -89,7 +89,7 @@ class LoginPopup(Popup):
 
 class LessonPopup(Popup):
     """
-    Popup form for editing the lesson object
+    Popup form for editing the m_lesson object
     """
 
     def __init__(self, **kwargs):

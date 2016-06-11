@@ -1,12 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-#
 """
-Definitions for Easy Week lesson structure
+Definitions for Easy Week m_lesson structure
 """
 from kivy.uix.button import Button
-from kivy.uix.behaviors.drag import DragBehavior
-from kivy.properties import StringProperty, ListProperty, OptionProperty, \
-    BoundedNumericProperty, NumericProperty
+from kivy.properties import *
 from kivy.app import App
 
 # Data which will form the view of pair, e.g. week days, time lapse
@@ -50,26 +48,31 @@ lesson_colors = {
     'lab': colors['red']
 }
 # Test popup_data for lessons, just example
-data_lesson = [dict(teacher='Orlovskiy I.V.', lesson='High Math II',
-                    type='lect', groups=['IK-51', 'IK-52'], room='18/413',
-                    week='upper', day=1, number=1),
-               dict(teacher='Lisovichenko O.I.', lesson='OOP',
-                    type='pract', groups=['IK-51'], room='18/438',
-                    week='lower', day=4, number=3)]
+data_lesson = [
+    dict(
+        teacher='Orlovskiy I.V.', lesson='High Math II', type='lect',
+        groups=['IK-51', 'IK-52'], room='18/413', week='upper', day=1, number=1
+    ), dict(
+        teacher='Lisovichenko O.I.', lesson='OOP', type='pract',
+        groups=['IK-51'], room='18/438', week='lower', day=4, number=3
+    )
+]
 
 
-class Lesson(DragBehavior, Button):
-    teacher = StringProperty()
-    lesson = StringProperty()
+class Lesson(Button):
+    _db_id = NumericProperty()
+    teacher = StringProperty('')
+    lesson = StringProperty('')
     groups = ListProperty()
-    room = StringProperty()
+    room = StringProperty('')
     type = OptionProperty('pract', options=['lect', 'pract', 'lab'])
     week = OptionProperty('lower', options=['lower', 'upper'])
     day = BoundedNumericProperty(0, min=0, max=5)
     number = BoundedNumericProperty(0, min=0, max=4)
     lines = NumericProperty(1)
-    view_type = OptionProperty('empty', options=['group', 'teacher', 'room',
-                                                 'empty'])
+    view_type = OptionProperty(
+        'empty', options=['group', 'teacher', 'room', 'empty']
+    )
 
     def __init__(self, **kwargs):
         super(Lesson, self).__init__(**kwargs)
@@ -77,7 +80,7 @@ class Lesson(DragBehavior, Button):
         self.lines = len(self.text.split('\n'))
 
     def __str__(self):
-        # Change color due to the lesson type
+        # Change color due to the m_lesson type
         if self.view_type == 'empty':
             return ''
         self.background_color = lesson_colors[self.type]

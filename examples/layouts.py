@@ -27,12 +27,12 @@ class LessonTable(FloatLayout):
         for i in range(self.day_num):
             for j in range(self.lesson_num):
                 lesson = self.lesson_set[i][j]
-                # lesson.size_hint = (None, None)
+                # m_lesson.size_hint = (None, None)
                 lesson.size_hint = (1 / self.day_num,
                                     1 / self.lesson_num)
-                # lesson.size = (self.width / self.day_num,
+                # m_lesson.size = (self.width / self.day_num,
                 #                self.height / self.lesson_num)
-                # lesson.size = (120, 80)
+                # m_lesson.size = (120, 80)
                 lesson.pos_hint = {'x': i / self.day_num,
                                    'y': j / self.lesson_num}
                 self.add_widget(self.lesson_set[i][j])
