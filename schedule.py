@@ -11,7 +11,9 @@ from kivy.properties import *
 from kivy.lang import Builder
 from kivy.clock import Clock
 from kivy.app import App
-from lessons import week_days, day_times
+from lessons import Lesson
+from text_data import week_days, day_times, data_lesson
+from popups import Popup
 
 ruler_hint = 0.08
 
@@ -24,18 +26,17 @@ class LessonHolder(BoxLayout):
     day = NumericProperty()
     number = NumericProperty()
 
-    def has_inside(self, lesson_center):
-        result = True
-        print 'Lesson center: ', lesson_center
-        if 2 * abs(self.x - lesson_center[0]) > self.width:
-            result = False
-        if 2 * abs(self.y - lesson_center[1]) > self.height:
-            result = False
-        return result
+    def add_widget(self, widget, index=0):
+        if widget.m_lesson:
+            widget.m_lesson.day = self.day
+            widget.m_lesson.number = self.number
+        return super(BoxLayout, self).add_widget(widget, index)
 
 
 class DraggableLesson(Magnet):
+    old_parent = ObjectProperty(None)
     m_lesson = ObjectProperty(None, force_dispatch=True)
+    table = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(DraggableLesson, self).__init__(**kwargs)
@@ -48,7 +49,10 @@ class DraggableLesson(Magnet):
             self.m_lesson.size = self.m_lesson.size
             self.m_lesson.size_hint = (None, None)
             self.remove_widget(self.m_lesson)
-            self.parent.parent.add_widget(self.m_lesson)
+            if not self.table:
+                self.table = self.parent.parent
+            self.old_parent = self.parent
+            self.table.add_widget(self.m_lesson)
             self.center = touch.pos
             self.m_lesson.center = touch.pos
             return True
@@ -63,15 +67,17 @@ class DraggableLesson(Magnet):
             for box in boxes:
                 if isinstance(box, LessonHolder) and \
                         box.collide_point(*touch.pos):
-                    self.parent.remove_widget(self)
-                    box.add_widget(self)
+                    if self.parent is not box:
+                        self.parent.remove_widget(self)
+                        box.add_widget(self)
 
         return super(DraggableLesson, self).on_touch_move(touch)
 
     def on_touch_up(self, touch):
         if touch.grab_current == self:
-            self.parent.parent.remove_widget(self.m_lesson)
+            self.table.remove_widget(self.m_lesson)
             self.add_widget(self.m_lesson)
+            self.table.switch_lessons(self.parent, self.old_parent)
             touch.ungrab(self)
             return True
 
@@ -144,10 +150,25 @@ class LessonTable(FloatLayout):
                 for grandchild in child.children:
                     grandchild.clear_widgets()
 
+    @staticmethod
+    def switch_lessons(holder, old_holder):
+        # run popup, get result, blah blah
+        draggable = holder.children[1]
+        # if blah
+        holder.remove_widget(draggable)
+        old_holder.add_widget(draggable)
+        print 'Moving moving'
+        print holder
+        print old_holder
+
 
 class ScheduleApp(App):
     def build(self):
-        pass
+        lesson_table = LessonTable(lesson_set=[[Lesson(**data_lesson[0])
+                                                for i in range(5)]
+                                               for j in range(6)],
+                                   cap_text='cap')
+        return lesson_table
 
 
 if __name__ == '__main__':

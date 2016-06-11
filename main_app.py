@@ -3,13 +3,6 @@
 """
 Main window for easy week, includes Action bar and logging
 """
-import gettext
-
-eng = gettext.translation('easy_week', './locale', languages=['en'])
-ua = gettext.translation('easy_week', './locale', languages=['ua'])
-ru = gettext.translation('easy_week', './locale', languages=['ru'])
-
-ua.install()
 from functools import partial
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.actionbar import ActionBar
@@ -18,8 +11,8 @@ from kivy.properties import ListProperty, OptionProperty, ObjectProperty, \
 from kivy.lang import Builder
 from kivy.app import App
 from schedule import LessonTable
-from lessons import week_types
-from popups import ChoicePopup, LoginPopup, popup_data
+from text_data import week_types, popup_data
+from popups import ChoicePopup, LoginPopup
 from database import *
 
 
@@ -48,13 +41,16 @@ class MainWindow(BoxLayout):
 
         if content is not None:
             if self.table_type is 'group' and content not in group_list:
-                self.log_label.text = _('Wrong group passed: %s') % content
+                self.log_label.text = \
+                    _('Wrong group passed: %s').decode('utf-8') % content
                 return -1
             if self.table_type is 'teacher' and content not in teacher_list:
-                self.log_label.text = _('Wrong teacher passed: %s') % content
+                self.log_label.text = \
+                    _('Wrong teacher passed: %s').decode('utf-8') % content
                 return -1
             if self.table_type is 'room' and content not in room_list:
-                self.log_label.text = _('Wrong room passed: %s') % content
+                self.log_label.text = \
+                    _('Wrong room passed: %s').decode('utf-8') % content
                 return -1
             # black magic
             # .encode('utf-8').decode('utf-8')
