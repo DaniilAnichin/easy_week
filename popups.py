@@ -8,29 +8,9 @@ from kivy.uix.popup import Popup
 from kivy.uix.dropdown import DropDown
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import StringProperty, ObjectProperty, ListProperty
-from database import teacher_list
 from kivy.app import App
-from kivy.uix.behaviors import ToggleButtonBehavior
-
-# Data which will form the view of popup, e.g. label, button text
-# Division may be useful for translation
-data_group = {
-    'title': _('Group schedule'),
-    'btn_text': _('Choose group cypher')
-}
-data_teacher = {
-    'title': _('Teacher schedule'),
-    'btn_text': _('Choose teacher')
-}
-data_room = {
-    'title': _('Room schedule'),
-    'btn_text': _('Choose room number')
-}
-popup_data = {
-    'group': data_group,
-    'teacher': data_teacher,
-    'room': data_room
-}
+from database import teacher_list
+from text_data import popup_data
 
 
 class ChoicePopup(Popup):
@@ -84,7 +64,17 @@ class LoginPopup(Popup):
 
     def __init__(self, accept, **kwargs):
         self.accept = accept
-        super(Popup, self).__init__(**kwargs)
+        super(LoginPopup, self).__init__(**kwargs)
+
+
+class SwitchPopup(Popup):
+    """
+    Popup form for editing the m_lesson object
+    """
+
+    def __init__(self, **kwargs):
+        super(SwitchPopup, self).__init__(**kwargs)
+        self.text = 'switching sth'
 
 
 class PopupsApp(App):
@@ -97,7 +87,6 @@ class PopupsApp(App):
         return box
 
     def show_popup(self, b):
-        # LessonPopup().open()
         ChoicePopup(
             choices=teacher_list,
             on_release=print_function,

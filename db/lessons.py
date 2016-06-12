@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-#
 """
-Definitions for Easy Week lesson structure
+Definitions for Easy Week m_lesson structure
 """
 from kivy.uix.button import Button
 from kivy.properties import StringProperty, ListProperty, OptionProperty, \

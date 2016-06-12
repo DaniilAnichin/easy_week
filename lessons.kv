@@ -1,18 +1,13 @@
-#:import day_times lessons.day_times
-#:import week_days lessons.week_days
-#:import week_types lessons.week_types
-#:import lesson_types lessons.lesson_types
+#:import day_times text_data.day_times
+#:import week_days text_data.week_days
+#:import week_types text_data.week_types
+#:import lesson_types text_data.lesson_types
 #:import teacher_list database.teacher_list
 #:import group_list database.group_list
 #:import room_list database.room_list
 
 <Lesson>:
     font_size: self.height / (self.lines + 3)
-    # Define the properties for the drag
-    drag_rectangle: self.x, self.y, self.width, self.height
-    drag_timeout: 1000
-    drag_distance: 0
-
     markup: True
 
 <LessonPopup>:
