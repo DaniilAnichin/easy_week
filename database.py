@@ -7,7 +7,7 @@ import csv
 from lessons import Lesson
 from db import Tools_for_db
 from db.BlakMagicAlogorithm import UnicodeReader
-from db.Tools_for_db import db_path, path_delimiter
+from db.Tools_for_db import db_path, path_delimiter, Teacher, Group
 
 day_num = 6
 lesson_num = 5
@@ -41,6 +41,11 @@ type_dict = {
     unicode('Лаб', 'utf-8'): 'lab',
     unicode('Прак', 'utf-8'): 'pract'
 }
+reverse_type_dict = {
+    'lect': unicode('Лек', 'utf-8'),
+    'lab': unicode('Лаб', 'utf-8'),
+    'pract': unicode('Прак', 'utf-8')
+}
 
 
 def get_groups(stream):
@@ -54,7 +59,7 @@ def get_groups(stream):
 def collect_lessons(content_type, content):
     lesson_set = [[None for i in range(lesson_num)] for j in range(day_num * 2)]
     if content_type is 'teacher':
-        teacher = Tools_for_db.Teacher(name=content)
+        teacher = Teacher(name=content)
         for i in range(week_len * 2):
             lesson = teacher.getInfoByTime(i)
             if lesson[0] is not '':
@@ -82,12 +87,12 @@ def collect_lessons(content_type, content):
                     week=('upper' if i < week_len else 'lower'),
                     day=(i / lesson_num % day_num),
                     number=(i % lesson_num),
-                    view_type='empty',
+                    view_type='teacher',
                     update=update_lesson
                 )
 
     elif content_type is 'group':
-        group = Tools_for_db.Group(name=content)
+        group = Group(name=content)
         for i in range(week_len * 2):
             lesson = group.getInfoByTime(i)
             if lesson[0] is not '':
@@ -115,7 +120,7 @@ def collect_lessons(content_type, content):
                     week=('upper' if i < week_len else 'lower'),
                     day=(i / lesson_num % day_num),
                     number=(i % lesson_num),
-                    view_type='empty',
+                    view_type='group',
                     update=update_lesson
                 )
     elif content_type is 'room':
@@ -137,8 +142,10 @@ def collect_lessons(content_type, content):
                         lessons = list(
                             UnicodeReader(f, csv.excel, 'cp1251', delimiter=';'))
                 except IOError:
-                    print 'Oops..'
-                    return lesson_set
+                    print 'Oops(room loading problem)..'
+                    lessons = [
+                        [u'0', u'0', u'0', u'0'] for i in range(week_len * 2)
+                    ]
 
         for i in range(week_len * 2):
             lesson = lessons[i][0]
@@ -167,11 +174,12 @@ def collect_lessons(content_type, content):
                     week=('upper' if i < week_len else 'lower'),
                     day=(i / lesson_num % day_num),
                     number=(i % lesson_num),
-                    view_type='empty',
+                    view_type='room',
                     update=update_lesson
                 )
     else:
-        print 'Oops..'
+        print 'Oops.. (wrong type passed)'
+        return 0
     return lesson_set
 
 
@@ -194,11 +202,33 @@ def merge_schedule(first, second):
 
 
 def update_lesson(old_lesson, new_lesson, temp=True):
-    # print 'Lesson %s updated, %s' % \
-    #       (old_lesson.lesson, 'Temp' if temp else 'Perm')
+    # if not new_lesson.groups:
+    #     print 'Troubles with groups'
+    #     return -1
+    # if not old_lesson.empty():
+    #     for group_name in old_lesson.groups:
+    #         group = Group(group_name)
+    #         number = old_lesson.number + old_lesson.day * lesson_num + \
+    #                  week_len if old_lesson.week == 'lower' else ''
+    #         group.removeLessonByTime(number, temp)
+    # for group_name in new_lesson.groups:
+    #     group = Group(group_name)
+    #     number = new_lesson.number + new_lesson.day * lesson_num + \
+    #              week_len if new_lesson.week == 'lower' else 0
+    #     group.addLesson(
+    #         new_lesson.lesson.decode('utf-8'),
+    #         reverse_type_dict[new_lesson.type],
+    #         new_lesson.room,
+    #         number,
+    #         temp
+    #     )
+
     print 'Lesson %s updated' % old_lesson.lesson
     print 'To %s' % new_lesson.lesson
 
 
 if __name__ == '__main__':
+    for i in collect_lessons('room', '521'):
+        for j in i:
+            print [j]
     pass

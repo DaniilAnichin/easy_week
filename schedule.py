@@ -13,7 +13,6 @@ from kivy.clock import Clock
 from kivy.app import App
 from lessons import Lesson
 from text_data import week_days, day_times, data_lesson
-from popups import Popup
 
 ruler_hint = 0.08
 
@@ -28,8 +27,10 @@ class LessonHolder(BoxLayout):
 
     def add_widget(self, widget, index=0):
         if widget.m_lesson:
+            old_lesson = Lesson(**widget.m_lesson.__dict__())
             widget.m_lesson.day = self.day
             widget.m_lesson.number = self.number
+            widget.m_lesson.update(widget.m_lesson, old_lesson)
         return super(BoxLayout, self).add_widget(widget, index)
 
 
@@ -83,6 +84,13 @@ class DraggableLesson(Magnet):
 
         return super(DraggableLesson, self).on_touch_up(touch)
 
+    def collide_point(self, x, y):
+        x_left = self.center_x - (self.width / 2.0)
+        x_right = self.center_x
+        y_bottom = self.center_y - (self.height / 2.0)
+        y_top = self.center_y + (self.height / 2.0)
+        return x_left <= x <= x_right and y_bottom <= y <= y_top
+
 
 class LessonTable(FloatLayout):
     lesson_set = ListProperty()
@@ -100,7 +108,9 @@ class LessonTable(FloatLayout):
         for day in range(self.day_num):
             for number in range(self.lesson_num):
                 lesson = self.lesson_set[day][number]
-                box = LessonHolder(day=day, number=number)
+                box = LessonHolder(
+                    day=day, number=number, orientation='vertical'
+                )
                 box.size_hint = (
                     (1 - ruler_hint) / self.day_num,
                     (1 - ruler_hint) / self.lesson_num
@@ -109,7 +119,7 @@ class LessonTable(FloatLayout):
                     'x': ruler_hint + day * (1 - ruler_hint) / self.day_num,
                     'y': 1 - ruler_hint - (number + 1) *
                                           (1 - ruler_hint) / self.lesson_num}
-
+                # if not lesson.empty():
                 box.add_widget(DraggableLesson(m_lesson=lesson))
                 self.add_widget(box)
 
@@ -150,6 +160,9 @@ class LessonTable(FloatLayout):
                 for grandchild in child.children:
                     grandchild.clear_widgets()
 
+    # def save_table(self, temp):
+    #     print 'Table saved'
+
     @staticmethod
     def switch_lessons(holder, old_holder):
         # run popup, get result, blah blah
@@ -157,9 +170,6 @@ class LessonTable(FloatLayout):
         # if blah
         holder.remove_widget(draggable)
         old_holder.add_widget(draggable)
-        print 'Moving moving'
-        print holder
-        print old_holder
 
 
 class ScheduleApp(App):

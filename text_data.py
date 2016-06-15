@@ -64,7 +64,7 @@ data_lesson = [
 
 
 def lesson_to_str(lesson):
-    if lesson.view_type == 'empty':
+    if lesson.empty():
         return ''
     result = '%s' % lesson.lesson.decode('utf-8')[:12].encode('utf-8')
     if len(lesson.lesson.decode('utf-8')) > 12:

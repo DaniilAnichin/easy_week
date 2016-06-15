@@ -41,13 +41,14 @@
                 mode: 'spinner'
                 text: _('Menu')
                 ActionButton:
-                    id: login_button
                     text: _('Login')
                     on_press: root.show_login_popup()
                 ActionButton:
-                    id: logout_button
                     text: _('Logout')
                     on_press: root.logout()
+                # ActionButton:
+                    # text: _('Save')
+                    # on_press: root.save_table()
                 ActionButton:
                     text: _('Exit')
                     on_press: app.stop()

@@ -29,7 +29,6 @@ lesson_colors = {
 
 
 class Lesson(Button):
-    _db_id = NumericProperty()
     teacher = StringProperty('')
     lesson = StringProperty('')
     groups = ListProperty()
@@ -48,6 +47,8 @@ class Lesson(Button):
         super(Lesson, self).__init__(**kwargs)
         self.text = self.__str__()
         self.lines = len(self.text.split('\n'))
+        bind_data = {key: self.redraw for key in self.__dict__().keys()}
+        self.bind(**bind_data)
 
     def __str__(self):
         # Change color due to the lesson type
@@ -73,7 +74,26 @@ class Lesson(Button):
         return result
 
     def empty(self):
-        return self.view_type == 'empty'
+        result = self.teacher == '' or self.room == '' or self.lesson == ''
+        return result
+
+    def __dict__(self):
+        data = dict(
+            teacher=self.teacher,
+            lesson=self.lesson,
+            groups=self.groups,
+            room=self.room,
+            type=self.type,
+            week=self.week,
+            day=self.day,
+            view_type=self.view_type,
+            update=self.update
+        )
+        return data
+
+    def redraw(self, *args):
+        self.text = self.__str__()
+        self.lines = len(self.text.split('\n'))
 
 
 class ChoiceInput(TextInput):
@@ -147,6 +167,10 @@ class LessonPopup(Popup):
             old_lesson=self.lesson,
             new_lesson=self.new_lesson
         )
+        data = self.new_lesson.__dict__()
+        for key in data.keys():
+            if key != 'update':
+                setattr(self.lesson, key, data[key])
 
 
 class LessonsApp(App):

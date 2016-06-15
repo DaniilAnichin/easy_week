@@ -156,3 +156,12 @@ msgstr "Обе"
 #: ./menu.kv
 msgid "Menu"
 msgstr "Меню"
+
+msgid "Lesson"
+msgstr "Предмет"
+
+msgid "Dismiss"
+msgstr "Отменить"
+
+msgid "Editing lesson"
+msgstr "Редактирование пары"

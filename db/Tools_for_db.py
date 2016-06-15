@@ -105,8 +105,9 @@ class Group:
             pass
             #print "None such group : {0}".format(name)
             
-    def addLesson(self, lesName, lesType, room, time):
-        if lesType is u'' :
+    def addLesson(self, lesName, lesType, room, time, temp):
+        adding_path = 'Tmp' + path_delimiter if temp else ''
+        if lesType is u'':
             for row in self.dataList[1:]:
                 if not (cmp(lesName, row[0][:row[0].index(u'\u003a')]) or cmp(lesType, row[1]) ):                      #u'\u003a' = ':'
                     if row[3].count(unicode(':', 'utf-8')) < int(row[2]):
@@ -136,13 +137,11 @@ class Group:
 
         f.close()
         if cmp(roomList[time][0], str(0)):
-            print '2'
-            return -1
+            print '2 - was empty in room'
         if not str(room) in self.dataList[0][0]:
-            print '3'
-            return -1
+            print '3 - was empty in room'
         if cmp(self.getInfoByTime(time)[0], ''):
-            return -1
+            print '4 - was empty in room'
         
         #lesName = unicode(lesName, 'utf-8')
         #lesType = unicode(lesType, 'utf-8')
@@ -159,17 +158,17 @@ class Group:
                                 roomList[time][0] = self.name+':'+lesName+':'+lesType+':'+row[0][row[0].index(':')+1:]
                                 try:
                                     ft = open(
-                                        self.path+'Tmp'+path_delimiter+'Teach' +
+                                        self.path+adding_path+'Teach' +
                                         path_delimiter+teacher.name+'.csv',
                                         'wb'
                                     )
                                     print teacher.name.encode('cp1251')
                                     fg = open(
-                                        self.path+'Tmp'+path_delimiter+'Groups'+
+                                        self.path+adding_path+'Groups'+
                                         path_delimiter+self.name+'.csv', 'wb'
                                     )
                                     fr = open(
-                                        self.path+'Tmp'+path_delimiter+'Rooms'+
+                                        self.path+adding_path+'Rooms'+
                                         path_delimiter+nonUniLesType+
                                         path_delimiter+str(room)+'.csv', 'wb'
                                     )
@@ -208,9 +207,9 @@ class Group:
                                 trow[3] = trow[3]+str(time)+','+str(room)+':'
                                 roomList[time][0] = self.name[:-1]+':'+lesName+':'+lesType+':'+row[0][row[0].index(':')+1:]
                                 try:
-                                    ft = open(self.path+'Tmp'+path_delimiter+'Teach'+path_delimiter+row[0][row[0].index(':')+1:]+'.csv', 'wb')
-                                    fg = open(self.path+'Tmp'+path_delimiter+'Groups'+path_delimiter+self.name+'.csv', 'wb')
-                                    fr = open(self.path+'Tmp'+path_delimiter+'Rooms'+path_delimiter+nonUniLesType+path_delimiter+str(room)+'.csv', 'wb')
+                                    ft = open(self.path+adding_path+'Teach'+path_delimiter+row[0][row[0].index(':')+1:]+'.csv', 'wb')
+                                    fg = open(self.path+adding_path+'Groups'+path_delimiter+self.name+'.csv', 'wb')
+                                    fr = open(self.path+adding_path+'Rooms'+path_delimiter+nonUniLesType+path_delimiter+str(room)+'.csv', 'wb')
                                 except IOError:
                                     print "Why, tell me why"
                                     return -1
@@ -271,9 +270,9 @@ class Group:
                         times.append(retrow)
                         retrow=''
                 return times
-    
-    
-    def removeLessonByTime(self, time):
+
+    def removeLessonByTime(self, time, temp):
+        adding_path = 'Tmp' + path_delimiter if temp else ''
         info = self.getInfoByTime(time)
         if info[0] is not '':
             teacher = Teacher(info[3])
@@ -311,9 +310,9 @@ class Group:
             roomList[time] = '0'
             try:
                 #print teacher.name.encode('cp1251')
-                ft = open(self.path+'Tmp'+path_delimiter+'Teach'+path_delimiter+teacher.name+'.csv', 'wb')
-                fg = open(self.path+'Tmp'+path_delimiter+'Groups'+path_delimiter+self.name+'.csv', 'wb')
-                fr = open(self.path+'Tmp'+path_delimiter+'Rooms'+path_delimiter+nonUniLesType+path_delimiter+info[0]+'.csv', 'wb')
+                ft = open(self.path+adding_path+'Teach'+path_delimiter+teacher.name+'.csv', 'wb')
+                fg = open(self.path+adding_path+'Groups'+path_delimiter+self.name+'.csv', 'wb')
+                fr = open(self.path+adding_path+'Rooms'+path_delimiter+nonUniLesType+path_delimiter+info[0]+'.csv', 'wb')
             except IOError:
                 print "Why, tell me why"
                 return -1
@@ -348,7 +347,8 @@ class Teacher:
         except IOError:
             print "None such teacher : {0}".format(name.encode('cp1251'))
         
-    def addLesson(self, lesName, lesType, room, time, groupName=''):
+    def addLesson(self, lesName, lesType, room, time, groupName='', temp=False):
+        adding_path = 'Tmp' + path_delimiter if temp else ''
         try:
             f = open(self.path+'Rooms'+path_delimiter+typeDict[lesType]+path_delimiter+str(room)+'.csv', 'rb')
             #nonUniLesType = typeDict[lesType]
@@ -397,8 +397,8 @@ class Teacher:
                             line[3] = line[3]+str(time)+','+str(room)+':'
                 roomList[time][0] = stream[0].name[:-1]+':'+lesName+':'+lesType+':'+self.name
                 try:
-                    ft = open(self.path+'Tmp'+path_delimiter+'Teach'+path_delimiter+self.name+'.csv', 'wb')
-                    fr = open(self.path+'Tmp'+path_delimiter+'Rooms'+path_delimiter+typeDict[lesType]+path_delimiter+str(room)+'.csv', 'wb')
+                    ft = open(self.path+adding_path+'Teach'+path_delimiter+self.name+'.csv', 'wb')
+                    fr = open(self.path+adding_path+'Rooms'+path_delimiter+typeDict[lesType]+path_delimiter+str(room)+'.csv', 'wb')
                 except IOError:
                     print "Why, tell me why"
                     return -1
@@ -409,7 +409,7 @@ class Teacher:
                 ft.close()
                 fr.close()
                 for group in stream:
-                    fg = open(self.path+'Tmp'+path_delimiter+'Groups'+path_delimiter+group.name+'.csv', 'wb')
+                    fg = open(self.path+adding_path+'Groups'+path_delimiter+group.name+'.csv', 'wb')
                     fgWriter = UnicodeWriter(fg, csv.excel, 'cp1251', delimiter=';')
                     fgWriter.writerows(group.dataList)
                     fg.close()
@@ -433,9 +433,9 @@ class Teacher:
                         line[3] = line[3]+str(time)+','+str(room)+':'
                 roomList[time][0] = group.name+':'+lesName+':'+lesType+':'+self.name
                 try:
-                    ft = open(self.path+'Tmp'+path_delimiter+'Teach'+path_delimiter+self.name+'.csv', 'wb')
-                    fg = open(self.path+'Tmp'+path_delimiter+'Groups'+path_delimiter+group.name+'.csv', 'wb')
-                    fr = open(self.path+'Tmp'+path_delimiter+'Rooms'+path_delimiter+typeDict[lesType]+path_delimiter+str(room)+'.csv', 'wb')
+                    ft = open(self.path+adding_path+'Teach'+path_delimiter+self.name+'.csv', 'wb')
+                    fg = open(self.path+adding_path+'Groups'+path_delimiter+group.name+'.csv', 'wb')
+                    fr = open(self.path+adding_path+'Rooms'+path_delimiter+typeDict[lesType]+path_delimiter+str(room)+'.csv', 'wb')
                 except IOError:
                     print "Why, tell me why"
                     return -1

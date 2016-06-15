@@ -103,6 +103,12 @@ class MainWindow(BoxLayout):
             self.table.children[0].clear_widgets()
         self.table.clear_widgets()
 
+    # def save_table(self):
+    #     if len(self.table.children) != 1:
+    #         print 'Something happened wrong with table'
+    #         return -1
+    #     return self.table.children[0].save_table(temp=False)
+
     def switch_week(self):
         self.week = 'upper' if self.week == 'lower' else 'lower'
         self.clear_table()
