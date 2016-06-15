@@ -222,9 +222,9 @@ def update_lesson(old_lesson, new_lesson, temp=True):
     #         number,
     #         temp
     #     )
-
-    print 'Lesson %s updated' % old_lesson.lesson
-    print 'To %s' % new_lesson.lesson
+    if not (old_lesson.empty() and new_lesson.empty()):
+        print 'Lesson %s updated' % old_lesson.lesson
+        print 'To %s' % new_lesson.lesson
 
 
 if __name__ == '__main__':

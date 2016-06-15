@@ -74,7 +74,8 @@ class Lesson(Button):
         return result
 
     def empty(self):
-        result = self.teacher == '' or self.room == '' or self.lesson == ''
+        result = not (self.teacher and self.room and self.groups)
+        # result = not (self.teacher and self.room and self.lesson and self.groups)
         return result
 
     def __dict__(self):
