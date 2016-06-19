@@ -107,7 +107,7 @@ class Group:
             
     def addLesson(self, lesName, lesType, room, time, temp):
         adding_path = 'Tmp' + path_delimiter if temp else ''
-        if lesType is u'':
+        if lesType == u'':
             for row in self.dataList[1:]:
                 if not (cmp(lesName, row[0][:row[0].index(u'\u003a')]) or cmp(lesType, row[1]) ):                      #u'\u003a' = ':'
                     if row[3].count(unicode(':', 'utf-8')) < int(row[2]):
@@ -137,11 +137,13 @@ class Group:
 
         f.close()
         if cmp(roomList[time][0], str(0)):
-            print '2 - was empty in room'
+            print 'room busy'
+            return 'room busy'
         if not str(room) in self.dataList[0][0]:
-            print '3 - was empty in room'
+            print '3 - wrong group room'
         if cmp(self.getInfoByTime(time)[0], ''):
-            print '4 - was empty in room'
+            print 'group busy'
+            return 'group busy'
         
         #lesName = unicode(lesName, 'utf-8')
         #lesType = unicode(lesType, 'utf-8')
@@ -153,8 +155,11 @@ class Group:
                         for trow in teacher.dataList:
                             if not (cmp(lesName, trow[0][:trow[0].index(u'\u003a')]) or cmp(lesType, trow[1]) or cmp(self.name, trow[0][trow[0].index(u'\u003a')+1:])):
                                 print "We are so deep, near the bottom"
-                                row[3] = row[3]+str(time)+','+str(room)+':'
+                                if teacher.getInfoByTime(time)[0] != u'':
+                                    print 'teacher busy'
+                                    return 'teacher busy'
                                 trow[3] = trow[3]+str(time)+','+str(room)+':'
+                                row[3] = row[3]+str(time)+','+str(room)+':'
                                 roomList[time][0] = self.name+':'+lesName+':'+lesType+':'+row[0][row[0].index(':')+1:]
                                 try:
                                     ft = open(
@@ -274,7 +279,7 @@ class Group:
     def removeLessonByTime(self, time, temp):
         adding_path = 'Tmp' + path_delimiter if temp else ''
         info = self.getInfoByTime(time)
-        if info[0] is not '':
+        if info[0] != u'':
             teacher = Teacher(info[3])
             try:
                 f = open(self.path+'Rooms'+path_delimiter+typeDict[info[2]]+path_delimiter+info[0]+'.csv', 'rb')
@@ -345,7 +350,7 @@ class Teacher:
             )
             f.close()
         except IOError:
-            print "None such teacher : {0}".format(name.encode('cp1251'))
+            print "None such teacher :{0}".format(name.encode('cp1251'))
         
     def addLesson(self, lesName, lesType, room, time, groupName='', temp=False):
         adding_path = 'Tmp' + path_delimiter if temp else ''

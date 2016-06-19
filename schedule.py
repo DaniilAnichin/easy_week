@@ -27,10 +27,8 @@ class LessonHolder(BoxLayout):
 
     def add_widget(self, widget, index=0):
         if widget.m_lesson:
-            old_lesson = Lesson(**widget.m_lesson.__dict__())
             widget.m_lesson.day = self.day
             widget.m_lesson.number = self.number
-            widget.m_lesson.update(widget.m_lesson, old_lesson)
         return super(BoxLayout, self).add_widget(widget, index)
 
 
@@ -76,10 +74,10 @@ class DraggableLesson(Magnet):
 
     def on_touch_up(self, touch):
         if touch.grab_current == self:
-            self.table.switch_lessons(self.parent, self.old_parent)
             self.table.remove_widget(self.m_lesson)
             self.add_widget(self.m_lesson)
             touch.ungrab(self)
+            self.table.switch_lessons(self.parent, self.old_parent)
             return True
 
         return super(DraggableLesson, self).on_touch_up(touch)
@@ -166,9 +164,26 @@ class LessonTable(FloatLayout):
     @staticmethod
     def switch_lessons(holder, old_holder):
         # run popup, get result, blah blah
-        draggable = holder.children[-1]
-        # if blah
+        draggable = holder.children[-1]   # lesson to move back
         holder.remove_widget(draggable)
+        if holder.children and not (holder.children[0].m_lesson.empty() or
+                                    draggable.m_lesson.empty()):
+            new_less = holder.children[0].m_lesson
+            old_less = Lesson(**new_less.__dict__())
+            setattr(old_less, 'day', old_holder.day)
+            setattr(old_less, 'number', old_holder.number)
+            result = draggable.m_lesson.switch(draggable.m_lesson, old_less)
+        elif holder.children and not holder.children[0].m_lesson.empty():
+            new_less = holder.children[0].m_lesson
+            old_less = Lesson(**new_less.__dict__())
+            setattr(old_less, 'day', old_holder.day)
+            setattr(old_less, 'number', old_holder.number)
+            result = new_less.update(old_less, new_less)
+        elif not draggable.m_lesson.empty():
+            from_drag_with_time = Lesson(**draggable.m_lesson.__dict__())
+            setattr(from_drag_with_time, 'day', old_holder.day)
+            setattr(from_drag_with_time, 'number', old_holder.number)
+            result = draggable.m_lesson.update(draggable.m_lesson, from_drag_with_time)
         old_holder.add_widget(draggable)
 
 

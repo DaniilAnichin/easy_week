@@ -7,7 +7,6 @@ from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.dropdown import DropDown
 from kivy.uix.popup import Popup
-from kivy.uix.behaviors.drag import DragBehavior
 from kivy.properties import *
 from kivy.app import App
 from text_data import data_lesson, lesson_to_str, lesson_types, week_days, \
@@ -42,6 +41,8 @@ class Lesson(Button):
         'empty', options=['group', 'teacher', 'room', 'empty']
     )
     update = ObjectProperty()
+    switch = ObjectProperty()
+    errors = BooleanProperty(False)
 
     def __init__(self, **kwargs):
         super(Lesson, self).__init__(**kwargs)
@@ -88,7 +89,8 @@ class Lesson(Button):
             week=self.week,
             day=self.day,
             view_type=self.view_type,
-            update=self.update
+            update=self.update,
+            switch=self.switch
         )
         return data
 
@@ -148,6 +150,10 @@ class LessonPopup(Popup):
     def __init__(self, **kwargs):
         super(LessonPopup, self).__init__(**kwargs)
 
+    def dismiss(self, *largs, **kwargs):
+        super(LessonPopup, self).dismiss(*largs, **kwargs)
+        del self
+
     def update(self):
         self.new_lesson = Lesson(
             teacher=self.teacher_input.text,
@@ -164,14 +170,17 @@ class LessonPopup(Popup):
         for _type in lesson_types.keys():
             if lesson_types[_type] == self.type_input.text.encode('utf-8'):
                 self.new_lesson.type = _type
-        self.lesson.update(
+        result = self.lesson.update(
             old_lesson=self.lesson,
             new_lesson=self.new_lesson
         )
-        data = self.new_lesson.__dict__()
-        for key in data.keys():
-            if key != 'update':
-                setattr(self.lesson, key, data[key])
+        if 'not result':
+            data = self.new_lesson.__dict__()
+            for key in data.keys():
+                if key != 'update':
+                    setattr(self.lesson, key, data[key])
+        else:
+            self.lesson.errors = True
 
 
 class LessonsApp(App):

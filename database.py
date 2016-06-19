@@ -5,7 +5,6 @@ Definitions for Easy Week database structure
 """
 import csv
 from lessons import Lesson
-from db import Tools_for_db
 from db.BlakMagicAlogorithm import UnicodeReader
 from db.Tools_for_db import db_path, path_delimiter, Teacher, Group
 
@@ -78,7 +77,8 @@ def collect_lessons(content_type, content):
                     day=(i / lesson_num % day_num),
                     number=(i % lesson_num),
                     view_type='teacher',
-                    update=update_lesson
+                    update=update_lesson,
+                    switch=switch_lessons
                 )
                 lesson_set[i / lesson_num][i % lesson_num] = my_lesson
             else:
@@ -88,7 +88,8 @@ def collect_lessons(content_type, content):
                     day=(i / lesson_num % day_num),
                     number=(i % lesson_num),
                     view_type='teacher',
-                    update=update_lesson
+                    update=update_lesson,
+                    switch=switch_lessons
                 )
 
     elif content_type is 'group':
@@ -111,7 +112,8 @@ def collect_lessons(content_type, content):
                     day=(i / lesson_num % day_num),
                     number=(i % lesson_num),
                     view_type='group',
-                    update=update_lesson
+                    update=update_lesson,
+                    switch=switch_lessons
                 )
                 lesson_set[i / lesson_num][i % lesson_num] = my_lesson
             else:
@@ -121,7 +123,8 @@ def collect_lessons(content_type, content):
                     day=(i / lesson_num % day_num),
                     number=(i % lesson_num),
                     view_type='group',
-                    update=update_lesson
+                    update=update_lesson,
+                    switch=switch_lessons
                 )
     elif content_type is 'room':
         try:
@@ -166,7 +169,8 @@ def collect_lessons(content_type, content):
                     day=(i / lesson_num % day_num),
                     number=(i % lesson_num),
                     view_type='room',
-                    update=update_lesson
+                    update=update_lesson,
+                    switch=switch_lessons
                 )
                 lesson_set[i / lesson_num][i % lesson_num] = my_lesson
             else:
@@ -175,7 +179,8 @@ def collect_lessons(content_type, content):
                     day=(i / lesson_num % day_num),
                     number=(i % lesson_num),
                     view_type='room',
-                    update=update_lesson
+                    update=update_lesson,
+                    switch=switch_lessons
                 )
     else:
         print 'Oops.. (wrong type passed)'
@@ -201,30 +206,105 @@ def merge_schedule(first, second):
     return lesson_set
 
 
-def update_lesson(old_lesson, new_lesson, temp=True):
-    # if not new_lesson.groups:
-    #     print 'Troubles with groups'
-    #     return -1
-    # if not old_lesson.empty():
-    #     for group_name in old_lesson.groups:
-    #         group = Group(group_name)
-    #         number = old_lesson.number + old_lesson.day * lesson_num + \
-    #                  week_len if old_lesson.week == 'lower' else ''
-    #         group.removeLessonByTime(number, temp)
-    # for group_name in new_lesson.groups:
-    #     group = Group(group_name)
-    #     number = new_lesson.number + new_lesson.day * lesson_num + \
-    #              week_len if new_lesson.week == 'lower' else 0
-    #     group.addLesson(
-    #         new_lesson.lesson.decode('utf-8'),
-    #         reverse_type_dict[new_lesson.type],
-    #         new_lesson.room,
-    #         number,
-    #         temp
-    #     )
+def update_lesson(old_lesson, new_lesson, temp=False):
     if not (old_lesson.empty() and new_lesson.empty()):
+        if not new_lesson.groups:
+            print 'Troubles with groups'
+            return -1
+        if not old_lesson.empty():
+            for group_name in old_lesson.groups:
+                group = Group(group_name)
+                number = old_lesson.number + old_lesson.day * lesson_num + \
+                         (week_len if old_lesson.week == 'lower' else 0)
+                group.removeLessonByTime(number, temp)
+        for group_name in new_lesson.groups:
+            group = Group(group_name)
+            number = new_lesson.number + new_lesson.day * lesson_num + \
+                     (week_len if new_lesson.week == 'lower' else 0)
+            result = group.addLesson(
+                new_lesson.lesson.decode('utf-8'),
+                reverse_type_dict[new_lesson.type],
+                new_lesson.room,
+                number,
+                temp
+            )
+            if result:
+                print result
+                if not old_lesson.empty():
+                    for old_group_name in old_lesson.groups:
+                        group = Group(old_group_name)
+                        number = old_lesson.number + old_lesson.day * lesson_num + \
+                                 (week_len if old_lesson.week == 'lower' else 0)
+                        group.addLesson(
+                            old_lesson.lesson.decode('utf-8'),
+                            reverse_type_dict[old_lesson.type],
+                            old_lesson.room,
+                            number,
+                            temp
+                        )
+                return -1
         print 'Lesson %s updated' % old_lesson.lesson
         print 'To %s' % new_lesson.lesson
+    return 0
+
+
+def switch_lessons(first_lesson, second_lesson, temp=False):
+    # Switches lessons in time
+    if not (second_lesson.groups or first_lesson.groups):
+        print 'Troubles with groups'
+        return -1
+    groups = [
+        Group(first_lesson.groups[0]),
+        Group(second_lesson.groups[0])
+    ]
+    numbers = [
+        first_lesson.number + first_lesson.day * lesson_num +
+        (week_len if first_lesson.week == 'lower' else 0),
+        second_lesson.number + second_lesson.day * lesson_num +
+        (week_len if second_lesson.week == 'lower' else 0)
+    ]
+
+    groups[0].removeLessonByTime(numbers[0], temp)
+    groups[1].removeLessonByTime(numbers[1], temp)
+    results = [
+        groups[0].addLesson(
+            first_lesson.lesson.decode('utf-8'),
+            reverse_type_dict[first_lesson.type],
+            first_lesson.room,
+            numbers[1],
+            temp
+        ), groups[1].addLesson(
+            second_lesson.lesson.decode('utf-8'),
+            reverse_type_dict[second_lesson.type],
+            second_lesson.room,
+            numbers[0],
+            temp
+        )
+    ]
+
+    if results[0] or results[1]:
+        print results[0]
+        print results[1]
+        groups[0].removeLessonByTime(numbers[1], temp)
+        groups[1].removeLessonByTime(numbers[0], temp)
+        results = [
+            groups[0].addLesson(
+                first_lesson.lesson.decode('utf-8'),
+                reverse_type_dict[first_lesson.type],
+                first_lesson.room,
+                numbers[0],
+                temp
+            ), groups[1].addLesson(
+                second_lesson.lesson.decode('utf-8'),
+                reverse_type_dict[second_lesson.type],
+                second_lesson.room,
+                numbers[1],
+                temp
+            )
+        ]
+        return -1
+    print 'Lesson %s and %s switched' % (first_lesson, second_lesson)
+    return 0
 
 
 if __name__ == '__main__':
