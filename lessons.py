@@ -160,13 +160,13 @@ class LessonPopup(Popup):
             lesson=self.lesson_input.text.encode('utf-8'),
             groups=self.group_input.text.encode('utf-8').split(', '),
             room=self.room_input.text.encode('utf-8'),
-            week=('lower' if self.second_week.state == 'down' else 'upper'),
-            day=week_days.index(self.day_input.text.encode('utf-8')),
-            number=day_times.index(self.time_input.text),
+            week=self.lesson.week,
+            day=self.lesson.day,
+            number=self.lesson.number,
             view_type=self.lesson.view_type
         )
-        if self.second_week.state == self.first_week.state == 'up':
-            pass
+        # if self.second_week.state == self.first_week.state == 'up':
+        #     pass
         for _type in lesson_types.keys():
             if lesson_types[_type] == self.type_input.text.encode('utf-8'):
                 self.new_lesson.type = _type
@@ -177,7 +177,7 @@ class LessonPopup(Popup):
         if 'not result':
             data = self.new_lesson.__dict__()
             for key in data.keys():
-                if key != 'update':
+                if key != 'update' and key != 'switch':
                     setattr(self.lesson, key, data[key])
         else:
             self.lesson.errors = True

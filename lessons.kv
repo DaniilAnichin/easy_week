@@ -19,10 +19,10 @@
     lesson_input: lesson_input
     type_input: type_input
     room_input: room_input
-    day_input: day_input
-    time_input: time_input
-    first_week: first_week
-    second_week: second_week
+    # day_input: day_input
+    # time_input: time_input
+    # first_week: first_week
+    # second_week: second_week
     BoxLayout:
         orientation: 'vertical'
         BoxLayout:
@@ -66,30 +66,30 @@
                 choices: room_list
                 id: room_input
                 size_hint_x: 0.35
-        BoxLayout:
-            ToggleButton:
-                group: 'week'
-                allow_no_selection: False
-                text: week_types['upper']
-                size_hint_x: 0.15
-                state: 'down' if root.lesson.week == 'upper' else 'normal'
-                id: first_week
-            ToggleButton:
-                group: 'week'
-                text: week_types['lower']
-                size_hint_x: 0.15
-                state: 'down' if root.lesson.week == 'lower' else 'normal'
-                id: second_week
-            ChoiceInput:
-                text: week_days[root.lesson.day]
-                choices: [day.decode('utf-8') for day in week_days]
-                id: day_input
-                size_hint_x: 0.35
-            ChoiceInput:
-                text: day_times[root.lesson.number]
-                size_hint_x: 0.35
-                id: time_input
-                choices: day_times
+        # BoxLayout:
+        #     ToggleButton:
+        #         group: 'week'
+        #         allow_no_selection: False
+        #         text: week_types['upper']
+        #         size_hint_x: 0.15
+        #         state: 'down' if root.lesson.week == 'upper' else 'normal'
+        #         id: first_week
+        #     ToggleButton:
+        #         group: 'week'
+        #         text: week_types['lower']
+        #         size_hint_x: 0.15
+        #         state: 'down' if root.lesson.week == 'lower' else 'normal'
+        #         id: second_week
+        #     ChoiceInput:
+        #         text: week_days[root.lesson.day]
+        #         choices: [day.decode('utf-8') for day in week_days]
+        #         id: day_input
+        #         size_hint_x: 0.35
+        #     ChoiceInput:
+        #         text: day_times[root.lesson.number]
+        #         size_hint_x: 0.35
+        #         id: time_input
+        #         choices: day_times
         BoxLayout:
             Button:
                 text: _('Dismiss')

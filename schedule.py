@@ -161,8 +161,7 @@ class LessonTable(FloatLayout):
     # def save_table(self, temp):
     #     print 'Table saved'
 
-    @staticmethod
-    def switch_lessons(holder, old_holder):
+    def switch_lessons(self, holder, old_holder):
         # run popup, get result, blah blah
         draggable = holder.children[-1]   # lesson to move back
         holder.remove_widget(draggable)
@@ -184,7 +183,17 @@ class LessonTable(FloatLayout):
             setattr(from_drag_with_time, 'day', old_holder.day)
             setattr(from_drag_with_time, 'number', old_holder.number)
             result = draggable.m_lesson.update(draggable.m_lesson, from_drag_with_time)
+        else:
+            result = 0
         old_holder.add_widget(draggable)
+        if result:
+            self.parent.parent.log_label.text = str(result)
+            old_drag = old_holder.children[0]
+            old_holder.remove_widget(old_drag)
+            new_drag = holder.children[0]
+            holder.remove_widget(new_drag)
+            old_holder.add_widget(new_drag)
+            holder.add_widget(old_drag)
 
 
 class ScheduleApp(App):

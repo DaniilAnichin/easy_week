@@ -242,7 +242,7 @@ def update_lesson(old_lesson, new_lesson, temp=False):
                             number,
                             temp
                         )
-                return -1
+                return result
         print 'Lesson %s updated' % old_lesson.lesson
         print 'To %s' % new_lesson.lesson
     return 0
@@ -302,7 +302,7 @@ def switch_lessons(first_lesson, second_lesson, temp=False):
                 temp
             )
         ]
-        return -1
+        return results[0]
     print 'Lesson %s and %s switched' % (first_lesson, second_lesson)
     return 0
 
